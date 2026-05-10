@@ -30,6 +30,13 @@ const matterMono = localFont({
   weight: "300",
 });
 
+const ntype = localFont({
+  src: "../public/fonts/NType82-Regular.otf",
+  variable: "--font-ntype",
+  display: "swap",
+  weight: "400",
+});
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -50,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${inter.variable} h-full antialiased`}
+      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${ntype.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>

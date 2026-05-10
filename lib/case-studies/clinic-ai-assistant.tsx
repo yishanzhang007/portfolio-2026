@@ -385,7 +385,7 @@ export function ClinicAIAssistant() {
           Quote from a user interview
         </p>
         <div className="bg-panel rounded-[6px] p-[12px] -mt-[8px]">
-          <p className="font-['NType_82'] text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]">
+          <p className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
             “She repeats back like five times. And patients get frustrated that she keeps
             repeating the same thing and they just hang up.”
           </p>
@@ -447,7 +447,7 @@ export function ClinicAIAssistant() {
         </div>
 
         <div className="bg-panel rounded-[6px] p-[12px] mt-[16px]">
-          <p className="font-['NType_82'] text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]">
+          <p className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
             “I&apos;ve been very impressed with everything. This is obviously
             the right way to go — AI automation for the front desk for sure.”
           </p>
