@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Front Desk · Call abandonment dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #0f0f10;
+    --ink-soft: #4a4a4a;
+    --muted: #888;
+    --line: #ececec;
+    --bg: #f8f7f3;
+    --good: #1f7a48;
+    --good-soft: #d6ebde;
+    --warn: #c1c1c1;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    padding: 56px 64px 80px;
+    max-width: 1280px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 900px;
+  }
+  .subhead {
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 0 0 44px 0;
+    line-height: 1.55;
+    max-width: 760px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-bottom: 48px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+  }
+  .stat .label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .stat .value {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .stat .value .arrow {
+    color: var(--muted);
+    font-weight: 400;
+    margin: 0 6px;
+  }
+  .stat .delta {
+    font-size: 12px;
+    color: var(--good);
+    font-weight: 500;
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+  }
+  .stat .delta.neutral {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .panel {
+    margin-bottom: 48px;
+  }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .panel-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .chart-wrap {
+    height: 340px;
+  }
+  .chart-wrap.short {
+    height: 260px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+  }
+  .legend-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .footnote {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-top: 24px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 32px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="eyebrow">Front Desk · Weekly · Feb 16 – Apr 26, 2026</div>
+<h1>Abandonment rate dropped 22 points while weekly volume scaled 27×.</h1>
+<p class="subhead">As iteration shipped — clearer greetings, prompt tightening, voice tuning, eval-gated releases — patients hung up three times less often, even as the agent handled exponentially more calls.</p>
+
+<div class="stats">
+  <div class="stat">
+    <div class="label">Abandonment Rate</div>
+    <div class="value">32.6%<span class="arrow">→</span>10.6%</div>
+    <div class="delta">−22 pp · 67% relative drop</div>
+  </div>
+  <div class="stat">
+    <div class="label">Weekly Call Volume</div>
+    <div class="value">215<span class="arrow">→</span>5,746</div>
+    <div class="delta">27× growth</div>
+  </div>
+  <div class="stat">
+    <div class="label">Total Calls Handled</div>
+    <div class="value">26,238</div>
+    <div class="delta neutral">10 weeks</div>
+  </div>
+  <div class="stat">
+    <div class="label">Calls Retained</div>
+    <div class="value">21,942</div>
+    <div class="delta">83.6% of all callers</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Abandonment rate over time</div>
+    <div class="panel-sub">% of calls where patient hung up</div>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="rateChart"></canvas>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title">Weekly call volume — handled vs. abandoned</div>
+    <div class="panel-sub">Volume scaling without quality regression</div>
+  </div>
+  <div class="chart-wrap short">
+    <canvas id="volumeChart"></canvas>
+  </div>
+  <div class="legend">
+    <span class="legend-key"><span class="legend-swatch" style="background:#1f7a48"></span>Calls handled</span>
+    <span class="legend-key"><span class="legend-swatch" style="background:#c1c1c1"></span>Calls abandoned</span>
+  </div>
+</div>
+
+<div class="footnote">
+  Source: Front Desk AI analytics, weeks beginning Feb 16, 2026 through Apr 20, 2026 (final full week). Abandonment defined as caller terminating before reaching a successful resolution or message capture. 10 weekly data points.
+</div>
+
+<script>
+const data = [
+  { week: "Feb 16", rate: 32.6, abandoned: 70,  total: 215  },
+  { week: "Feb 23", rate: 30.1, abandoned: 104, total: 345  },
+  { week: "Mar 2",  rate: 27.2, abandoned: 69,  total: 254  },
+  { week: "Mar 9",  rate: 32.8, abandoned: 128, total: 390  },
+  { week: "Mar 16", rate: 29.8, abandoned: 758, total: 2540 },
+  { week: "Mar 23", rate: 24.4, abandoned: 833, total: 3416 },
+  { week: "Mar 30", rate: 18.6, abandoned: 594, total: 3190 },
+  { week: "Apr 6",  rate: 11.8, abandoned: 606, total: 5135 },
+  { week: "Apr 13", rate: 10.5, abandoned: 524, total: 5007 },
+  { week: "Apr 20", rate: 10.6, abandoned: 610, total: 5746 }
+];
+
+// Rate line chart
+new Chart(document.getElementById('rateChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: data.map(d => d.week),
+    datasets: [{
+      label: 'Abandonment rate',
+      data: data.map(d => d.rate),
+      borderColor: '#0f0f10',
+      backgroundColor: 'rgba(15,15,16,0.05)',
+      borderWidth: 2.5,
+      fill: true,
+      tension: 0.32,
+      pointBackgroundColor: '#0f0f10',
+      pointBorderColor: '#ffffff',
+      pointBorderWidth: 2,
+      pointRadius: 5,
+      pointHoverRadius: 7
+    }]
+  },
+  options: {
+    maintainAspectRatio: false,
+    layout: { padding: { top: 8, right: 12, bottom: 4, left: 4 } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#0f0f10',
+        padding: 12,
+        titleFont: { size: 13, weight: 'bold' },
+        bodyFont: { size: 12 },
+        callbacks: {
+          label: (ctx) => {
+            const d = data[ctx.dataIndex];
+            return [
+              `Abandonment: ${d.rate}%`,
+              `Abandoned: ${d.abandoned.toLocaleString()}`,
+              `Total: ${d.total.toLocaleString()}`
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 40,
+        ticks: { callback: v => v + '%', font: { size: 11 }, color: '#888' },
+        grid: { color: '#f2f2f2' },
+        border: { display: false }
+      },
+      x: {
+        ticks: { font: { size: 11 }, color: '#888' },
+        grid: { display: false },
+        border: { display: false }
+      }
+    }
+  }
+});
+
+// Volume stacked bar chart
+new Chart(document.getElementById('volumeChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: data.map(d => d.week),
+    datasets: [
+      {
+        label: 'Calls handled',
+        data: data.map(d => d.total - d.abandoned),
+        backgroundColor: '#1f7a48',
+        borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 2, bottomRight: 2 },
+        stack: 'calls'
+      },
+      {
+        label: 'Calls abandoned',
+        data: data.map(d => d.abandoned),
+        backgroundColor: '#c1c1c1',
+        borderRadius: { topLeft: 2, topRight: 2 },
+        stack: 'calls'
+      }
+    ]
+  },
+  options: {
+    maintainAspectRatio: false,
+    layout: { padding: { top: 8, right: 12, bottom: 4, left: 4 } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#0f0f10',
+        padding: 12,
+        titleFont: { size: 13, weight: 'bold' },
+        bodyFont: { size: 12 },
+        callbacks: {
+          label: (ctx) => {
+            const d = data[ctx.dataIndex];
+            const which = ctx.datasetIndex === 0 ? 'Handled' : 'Abandoned';
+            const val = ctx.datasetIndex === 0 ? d.total - d.abandoned : d.abandoned;
+            return `${which}: ${val.toLocaleString()}`;
+          },
+          footer: (items) => {
+            const d = data[items[0].dataIndex];
+            return `Total: ${d.total.toLocaleString()} · ${d.rate}% abandoned`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: v => v.toLocaleString(),
+          font: { size: 11 },
+          color: '#888'
+        },
+        grid: { color: '#f2f2f2' },
+        border: { display: false },
+        stacked: true
+      },
+      x: {
+        ticks: { font: { size: 11 }, color: '#888' },
+        grid: { display: false },
+        border: { display: false },
+        stacked: true
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,65 +1,64 @@
-import Image from "next/image";
+import Link from "next/link";
+import { FooterNav } from "@/components/FooterNav";
+import { PageLoad } from "@/components/PageLoad";
+import { ProjectIndex } from "@/components/ProjectIndex";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <PageLoad>
+    <main className="text-body">
+      {/* Mobile layout (default, < 900px). 12px gutter on all sides at the
+          narrowest viewports; bumps to 16px from the sm: breakpoint up so
+          everything ≥ mobile keeps a 16px minimum gutter. Everything is
+          left-aligned. */}
+      <div className="landing-mobile md:hidden bg-cream min-h-screen w-full p-[12px] sm:p-[16px] flex flex-col">
+        <div className="flex flex-col">
+          <p className="text-header text-ink">Yishan Zhang</p>
+          <p className="text-ink opacity-90">Product designer</p>
+          <Link
+            href="/about"
+            className="text-ink opacity-90 hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
+          >
+            About
+          </Link>
+        </div>
+
+        <div className="flex-1 flex items-center">
+          <ProjectIndex variant="mobile" />
+        </div>
+
+        <FooterNav />
+      </div>
+
+      {/* Desktop layout (≥ 900px) — content centered horizontally in a
+          fixed-width grid. Outer 16px gutter guarantees a 16px minimum on
+          either side; the inner shrinks below 960px when the viewport is
+          tight (888–991px) so content never reaches the edge. */}
+      <div className="hidden md:block bg-cream w-full min-h-screen px-[16px]">
+        <div className="relative mx-auto h-screen w-full max-w-[960px] transition-layout">
+          <p className="absolute left-0 top-[40px] text-header text-ink transition-layout">
+            Yishan Zhang
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <p className="absolute left-[320px] top-[40px] text-ink opacity-90 transition-layout">
+            Product designer
+          </p>
+          <Link
+            href="/about"
+            className="absolute left-[640px] top-[40px] text-ink opacity-90 transition-layout hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            About
+          </Link>
+
+          <div className="absolute left-0 top-1/2 -translate-y-1/2">
+            <ProjectIndex variant="desktop" />
+          </div>
+
+          <div className="absolute left-0 bottom-[40px] transition-layout">
+            <FooterNav />
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
+    </PageLoad>
   );
 }
