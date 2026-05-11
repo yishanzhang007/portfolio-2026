@@ -1,50 +1,70 @@
+import type { ReactNode } from "react";
 import { CaseStudyHero } from "@/components/CaseStudyHero";
 import { CaseStudyLayout, SectionDivider } from "@/components/CaseStudyLayout";
 import { CaseStudySection } from "@/components/CaseStudySection";
 
-const ROWS: {
-  principle: string;
-  signal: string;
-  prompt: string;
-  behavior: React.ReactNode;
-}[] = [
-  {
-    principle: "Sound human.",
-    signal:
-      "“That was a dead giveaway — it read the numbers back really fast. No human reads numbers back that fast.” — Dr. Salas",
-    prompt:
-      "Speak times and phone numbers like a person. “Three-thirty Friday,” not “three-three-zero P-M.” If the patient asks for a number, group the digits: “415, 555, 1234.”",
-    behavior:
-      "The “dead giveaway” pattern stopped surfacing in test calls within one prompt revision.",
-  },
-  {
-    principle: "Never trap the patient.",
-    signal:
-      "“She repeats back like five times. Patients get frustrated and just hang up.” — Casey Cash",
-    prompt:
-      "If the patient hesitates twice on the same question, don't ask a third time. Offer to text them the details: “No problem — I can send this in a text, would that be easier?” Then transfer to the inbox.",
-    behavior: (
-      <>
-        Call abandonment rate fell{" "}
-        <span className="font-medium">32.6% → 10.6%</span> over four prompt
-        revisions.
-      </>
-    ),
-  },
-  {
-    principle: "Front desk, not doctor.",
-    signal:
-      "The most consistent worry across 40+ clinic interviews was an AI giving medical advice.",
-    prompt:
-      "Never answer clinical questions, ever — even ones that sound benign. Default response: “That's a great question for your provider — I'll make sure they follow up. Anything else I can help with?”",
-    behavior: (
-      <>
-        <span className="font-medium">Zero clinical-advice incidents</span>{" "}
-        flagged across 10K+ production calls.
-      </>
-    ),
-  },
-];
+/* ─── Block-level helpers used by the "Principles → prompt → behavior"
+   section. Inlined here rather than promoted to /components because they
+   only appear on this case study and have no reuse pressure yet. ─────── */
+
+function SmallLabel({ children }: { children: ReactNode }) {
+  return <p className="text-muted text-[14px] leading-[1.5]">{children}</p>;
+}
+
+/** A bg-panel quote card with the NType 82 serif quote and muted
+ *  attribution. Matches the existing clinic-AI testimonial cards. */
+function QuoteCard({
+  text,
+  attribution,
+}: {
+  text: string;
+  attribution: string;
+}) {
+  return (
+    <div className="bg-panel rounded-[6px] p-[12px]">
+      <p
+        className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]"
+        style={{ fontFamily: "var(--font-ntype), serif" }}
+      >
+        {text}
+      </p>
+      <p className="text-muted text-[14px] leading-[1.5] mt-[24px]">
+        {attribution}
+      </p>
+    </div>
+  );
+}
+
+/** A terminal-style card for displaying literal system-prompt snippets.
+ *  Same chrome (white card, traffic-light bar, optional filename) as the
+ *  clinic-AI TerminalCard, but accepts plain text instead of typed JSON. */
+function PromptBlock({
+  filename,
+  children,
+}: {
+  filename?: string;
+  children: string;
+}) {
+  return (
+    <div className="w-full bg-white border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_16px_0_rgba(0,0,0,0.04)] flex flex-col overflow-hidden">
+      <div className="bg-panel h-[40px] flex items-center pl-[12px] pr-[16px] shrink-0 gap-[16px]">
+        <div className="flex gap-[8px]">
+          <span className="size-[12px] rounded-full bg-[#e76764] border-[0.5px] border-[#df3733]" />
+          <span className="size-[12px] rounded-full bg-[#efc944] border-[0.5px] border-[#e9b809]" />
+          <span className="size-[12px] rounded-full bg-[#6bc466] border-[0.5px] border-[#3bb036]" />
+        </div>
+        {filename && (
+          <span className="font-mono text-[12px] font-semibold text-[#82807c]">
+            {filename}
+          </span>
+        )}
+      </div>
+      <pre className="bg-white p-[12px] m-0 font-mono text-[12px] xl:text-[14px] leading-[1.5] whitespace-pre-wrap text-ink">
+        {children}
+      </pre>
+    </div>
+  );
+}
 
 export function VoiceAgent() {
   return (
@@ -77,44 +97,113 @@ export function VoiceAgent() {
         labelClassName="text-[18px]"
       >
         <p>
-          A principle is a wish. A prompt is the rule that turns the wish
-          into a constraint on the model. The behavior is what proves the
-          constraint actually held. Here&apos;s how three of the voice
-          agent&apos;s principles ran through that loop.
+          I wrote nine behavioral principles for the voice agent. Three of them
+          are below — paired with the exact prompt rule each became, and the
+          production behavior that confirms the rule is doing its job.
         </p>
 
-        <div className="overflow-x-auto -mx-[12px] px-[12px] md:mx-0 md:px-0">
-          <div className="min-w-[600px]">
-            <div className="grid grid-cols-[1fr_1.5fr_1fr] gap-[16px] py-[12px] text-muted">
-              <span>Principle</span>
-              <span>Prompt language</span>
-              <span>Observable behavior</span>
-            </div>
-            {ROWS.map((row, i) => (
-              <div
-                key={row.principle}
-                className="grid grid-cols-[1fr_1.5fr_1fr] gap-[16px] py-[16px] border-t border-[#e9e8e6]"
-                style={{ borderTopWidth: i === 0 ? "1.5px" : "0.5px" }}
-              >
-                <div className="flex flex-col gap-[8px]">
-                  <span className="font-medium">{row.principle}</span>
-                  <span className="text-muted text-[14px] leading-[1.5] italic">
-                    {row.signal}
-                  </span>
-                </div>
-                <span className="italic">{row.prompt}</span>
-                <span>{row.behavior}</span>
-              </div>
-            ))}
+        {/* #1 — Sound human */}
+        <div className="flex flex-col gap-[24px] mt-[32px]">
+          <p className="text-body font-medium">
+            <span className="text-muted">#1 - </span>
+            <span>Sound human</span>
+          </p>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>User quote</SmallLabel>
+            <QuoteCard
+              text={`“I really don’t want a Walgreens robot for the patients.”`}
+              attribution="Dr. Salas, solo practitioner"
+            />
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>Prompt change</SmallLabel>
+            <PromptBlock filename="voice-agent-prompt.md">
+              {`### Personality and Tone
+Be the warm, efficient person at the front desk — genuinely helpful, not robotic.
+
+### Pronunciation
+- **Dates:** say naturally ("January first, nineteen ninety") not formatted
+- **Phone numbers:** group digits, skip +1 country code
+  - Example: \`+1 (505) 123-4567\` → "five zero five, one two three, four five six seven"`}
+            </PromptBlock>
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>Observable behavior</SmallLabel>
+            <p>
+              The “dead giveaway” pattern stopped surfacing in test calls within
+              one prompt revision.
+            </p>
           </div>
         </div>
 
-        <p className="text-muted italic">
-          A principle without a measurable behavior is a wish. The reason
-          the agent shipped to 102 clinics wasn&apos;t that we wrote good
-          principles — it&apos;s that every principle had a prompt that
-          enforced it and a number that proved it.
-        </p>
+        {/* #2 — Never trap the patient */}
+        <div className="flex flex-col gap-[24px] mt-[32px]">
+          <p className="text-body font-medium">
+            <span className="text-muted">#2 - </span>
+            <span>Never trap the patient.</span>
+          </p>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>User quote</SmallLabel>
+            <QuoteCard
+              text={`“She repeats back like five times. Patients get frustrated and just hang up.”`}
+              attribution="Casey Cash, owner of the Iris Center"
+            />
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>Prompt change</SmallLabel>
+            <PromptBlock>
+              {`- **Unclear input / noise** — if the caller's audio is unclear, garbled, or you cannot understand what they said, ask them to repeat using a short, unique phrase each time. After 3 failed attempts, apologize for the audio trouble, let them know someone from the clinic will call back, and call \`end_call\`. NEVER respond to unclear audio by repeating your previous message.`}
+            </PromptBlock>
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>Observable behavior</SmallLabel>
+            <p>
+              Call abandonment rate fell{" "}
+              <span className="font-medium">32.6% → 10.6%</span> over four
+              prompt revisions.
+            </p>
+          </div>
+        </div>
+
+        {/* #3 — Front desk, not doctor */}
+        <div className="flex flex-col gap-[24px] mt-[32px]">
+          <p className="text-body font-medium">
+            <span className="text-muted">#3 - </span>
+            <span>Front desk, not doctor.</span>
+          </p>
+
+          <p className="text-muted italic">
+            The most consistent worry across 20+ clinic interviews was an AI
+            giving medical advice.
+          </p>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>Prompt change</SmallLabel>
+            <PromptBlock>
+              {`**Symptoms and medical questions:**
+- Do NOT diagnose, assess, give medical advice, or ask clarifying medical questions
+- Do NOT proactively ask about emergency symptoms or screen for emergencies
+- ONLY mention 911 as an option if the patient EXPLICITLY describes a clear emergency unprompted — never instruct them to call
+- For everything else, simply take a message for the clinical team`}
+            </PromptBlock>
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <SmallLabel>Observable behavior</SmallLabel>
+            <p>
+              <span className="font-medium">
+                Zero clinical-advice incidents
+              </span>{" "}
+              flagged across 10K+ production calls.
+            </p>
+          </div>
+        </div>
       </CaseStudySection>
     </CaseStudyLayout>
   );
