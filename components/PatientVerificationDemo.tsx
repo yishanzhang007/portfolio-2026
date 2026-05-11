@@ -18,7 +18,7 @@ export function PatientVerificationDemo() {
     <div className="absolute inset-0 overflow-hidden font-sms text-[#21201d]">
       {/* Left (wide ≥ 488px): avatar + verified name, vertically centered.
          Narrow (<488px): top-left at (33, 30), per Figma 1153:52180. */}
-      <div className="absolute left-[46px] top-1/2 -translate-y-1/2 @max-[488px]:left-[33px] @max-[488px]:top-[30px] @max-[488px]:translate-y-0 flex items-center gap-[12px]">
+      <div className="absolute left-[58px] top-1/2 -translate-y-1/2 @max-[488px]:left-[45px] @max-[488px]:top-[30px] @max-[488px]:translate-y-0 flex items-center gap-[8px]">
         <div className="size-[24px] shrink-0 rounded-full bg-[#5b5bd6] flex items-center justify-center">
           <span className="text-[13px] leading-none font-medium text-[#fdfdfc]">S</span>
         </div>
@@ -41,7 +41,7 @@ export function PatientVerificationDemo() {
         className="absolute left-[280px] top-[60px] @max-[488px]:left-[33px] @max-[488px]:top-[140px] w-[400px] bg-white border border-[rgba(0,0,0,0.1)] rounded-[8px] shadow-[0_4px_28px_0_rgba(0,0,0,0.04)] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <div className="border-b border-[#e9e8e6] flex items-center justify-between h-[60px] shrink-0 px-[16px] py-[12px]">
+        <div className="border-b border-[#e9e8e6] flex items-center justify-between h-[52px] shrink-0 px-[16px] py-[12px]">
           <p className="text-[14px] leading-[18px] font-medium">Patient data</p>
           <span className="size-[28px] rounded-[8px] flex items-center justify-center p-[4px]">
             <XIcon size={16} />
@@ -61,7 +61,7 @@ export function PatientVerificationDemo() {
               <span className="text-[14px] leading-[20px] text-[#82807c] w-[120px] shrink-0">
                 Address
               </span>
-              <span className="text-[14px] leading-[24px] font-medium whitespace-nowrap">
+              <span className="text-[14px] leading-[24px] whitespace-nowrap">
                 742 Evergreen Terrace
                 <br />
                 Springfield, IL 62704
@@ -105,7 +105,7 @@ export function PatientVerificationDemo() {
                   Nov 12, 2025 at 3:03PM
                 </p>
                 <span className="bg-[#f1f0ef] h-[20px] flex items-center justify-center px-[6px] py-[4px] rounded-[4px]">
-                  <span className="text-[12px] leading-[16px] font-medium">
+                  <span className="text-[12px] leading-[16px]">
                     Closed
                   </span>
                 </span>
@@ -127,7 +127,7 @@ function Field({ label, value }: { label: string; value: string }) {
       <span className="text-[14px] leading-[20px] text-[#82807c] w-[120px] shrink-0">
         {label}
       </span>
-      <span className="text-[14px] leading-[20px] font-medium whitespace-nowrap">
+      <span className="text-[14px] leading-[20px] whitespace-nowrap">
         {value}
       </span>
     </div>
@@ -148,7 +148,7 @@ function Section({
       <div className="flex items-center justify-between h-[28px]">
         <div className="flex items-center gap-[8px]">
           {icon}
-          <span className="text-[14px] leading-[18px] font-medium">{label}</span>
+          <span className="text-[14px] leading-[18px]">{label}</span>
         </div>
         <span className="size-[28px] rounded-[8px] flex items-center justify-center p-[4px]">
           <CaretDownIcon size={14} />
