@@ -147,7 +147,7 @@ export function ClinicAIAssistant() {
         </p>
 
         {/* #1 — The taxonomy is the design */}
-        <div className="flex flex-col gap-[8px] mt-[32px]">
+        <div className="flex flex-col gap-[8px] mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#1 - </span>
             <span>The taxonomy is the design</span>
@@ -213,7 +213,7 @@ export function ClinicAIAssistant() {
         </div>
 
         {/* #2 — Label-only evals lie */}
-        <div className="flex flex-col gap-[16px] mt-[32px]">
+        <div className="flex flex-col gap-[16px] mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#2 - </span>
             <span>Label-only evals lie.</span>
@@ -265,7 +265,7 @@ export function ClinicAIAssistant() {
         </div>
 
         {/* #3 — Sometimes the eval is grading the wrong thing */}
-        <div className="flex flex-col gap-[16px] mt-[32px]">
+        <div className="flex flex-col gap-[16px] mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#3 - </span>
             <span>Sometimes the eval is grading the wrong thing.</span>
@@ -362,7 +362,7 @@ export function ClinicAIAssistant() {
           </div>
         </div>
 
-        <div className="mt-[32px]">
+        <div className="mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#2 - </span>
             <span>Iterating on the prompt</span>
@@ -401,7 +401,7 @@ export function ClinicAIAssistant() {
           <PromptCard />
         </div>
 
-        <div className="mt-[32px]">
+        <div className="mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#3 - </span>
             <span>Impact</span>

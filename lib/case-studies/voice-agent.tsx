@@ -103,7 +103,7 @@ export function VoiceAgent() {
         </p>
 
         {/* #1 — Sound human */}
-        <div className="flex flex-col gap-[24px] mt-[32px]">
+        <div className="flex flex-col gap-[24px] mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#1 - </span>
             <span>Sound human</span>
@@ -140,7 +140,7 @@ Be the warm, efficient person at the front desk — genuinely helpful, not robot
         </div>
 
         {/* #2 — Never trap the patient */}
-        <div className="flex flex-col gap-[24px] mt-[32px]">
+        <div className="flex flex-col gap-[24px] mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#2 - </span>
             <span>Never trap the patient.</span>
@@ -172,7 +172,7 @@ Be the warm, efficient person at the front desk — genuinely helpful, not robot
         </div>
 
         {/* #3 — Front desk, not doctor */}
-        <div className="flex flex-col gap-[24px] mt-[32px]">
+        <div className="flex flex-col gap-[24px] mt-[40px]">
           <p className="text-body font-medium">
             <span className="text-muted">#3 - </span>
             <span>Front desk, not doctor.</span>
