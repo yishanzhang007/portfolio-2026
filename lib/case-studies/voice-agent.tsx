@@ -8,7 +8,7 @@ import { CaseStudySection } from "@/components/CaseStudySection";
    only appear on this case study and have no reuse pressure yet. ─────── */
 
 function SmallLabel({ children }: { children: ReactNode }) {
-  return <p className="text-muted text-[14px] leading-[1.5]">{children}</p>;
+  return <p className="text-muted">{children}</p>;
 }
 
 /** A bg-panel quote card with the NType 82 serif quote and muted
@@ -46,7 +46,7 @@ function PromptBlock({
   children: string;
 }) {
   return (
-    <div className="w-full bg-white border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_16px_0_rgba(0,0,0,0.04)] flex flex-col overflow-hidden">
+    <div className="w-full bg-white border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_12px_0_rgba(0,0,0,0.04)] flex flex-col overflow-hidden">
       <div className="bg-panel h-[40px] flex items-center pl-[12px] pr-[16px] shrink-0 gap-[16px]">
         <div className="flex gap-[8px]">
           <span className="size-[12px] rounded-full bg-[#e76764] border-[0.5px] border-[#df3733]" />
@@ -119,7 +119,7 @@ export function VoiceAgent() {
 
           <div className="flex flex-col gap-[8px]">
             <SmallLabel>Prompt change</SmallLabel>
-            <PromptBlock filename="voice-agent-prompt.md">
+            <PromptBlock>
               {`### Personality and Tone
 Be the warm, efficient person at the front desk — genuinely helpful, not robotic.
 
@@ -130,13 +130,10 @@ Be the warm, efficient person at the front desk — genuinely helpful, not robot
             </PromptBlock>
           </div>
 
-          <div className="flex flex-col gap-[8px]">
-            <SmallLabel>Observable behavior</SmallLabel>
-            <p>
-              The “dead giveaway” pattern stopped surfacing in test calls within
-              one prompt revision.
-            </p>
-          </div>
+          <p>
+            <span className="text-muted">Observed:</span> “Dead giveaway”
+            moments disappeared within one revision.
+          </p>
         </div>
 
         {/* #2 — Never trap the patient */}
@@ -161,14 +158,11 @@ Be the warm, efficient person at the front desk — genuinely helpful, not robot
             </PromptBlock>
           </div>
 
-          <div className="flex flex-col gap-[8px]">
-            <SmallLabel>Observable behavior</SmallLabel>
-            <p>
-              Call abandonment rate fell{" "}
-              <span className="font-medium">32.6% → 10.6%</span> over four
-              prompt revisions.
-            </p>
-          </div>
+          <p>
+            <span className="text-muted">Observed:</span> Abandonment fell{" "}
+            <span className="font-medium">32.6% → 10.6%</span> over four
+            revisions.
+          </p>
         </div>
 
         {/* #3 — Front desk, not doctor */}
@@ -178,9 +172,9 @@ Be the warm, efficient person at the front desk — genuinely helpful, not robot
             <span>Front desk, not doctor.</span>
           </p>
 
-          <p className="text-muted italic">
-            The most consistent worry across 20+ clinic interviews was an AI
-            giving medical advice.
+          <p>
+            <span className="text-muted">User needs:</span> The most consistent
+            worry across 20+ clinic interviews was an AI giving medical advice.
           </p>
 
           <div className="flex flex-col gap-[8px]">
@@ -194,15 +188,10 @@ Be the warm, efficient person at the front desk — genuinely helpful, not robot
             </PromptBlock>
           </div>
 
-          <div className="flex flex-col gap-[8px]">
-            <SmallLabel>Observable behavior</SmallLabel>
-            <p>
-              <span className="font-medium">
-                Zero clinical-advice incidents
-              </span>{" "}
-              flagged across 10K+ production calls.
-            </p>
-          </div>
+          <p>
+            <span className="text-muted">Observed:</span> Zero
+            clinical-advice incidents in 10K+ calls.
+          </p>
         </div>
       </CaseStudySection>
     </CaseStudyLayout>

@@ -123,7 +123,7 @@ function renderArray(arr: Json[], indent: number): ReactNode {
 
 export function TerminalCard() {
   return (
-    <div className="w-full max-h-[518px] bg-white overflow-hidden border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_16px_0_rgba(0,0,0,0.04)] flex flex-col">
+    <div className="w-full max-h-[518px] bg-white overflow-hidden border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_12px_0_rgba(0,0,0,0.04)] flex flex-col">
       {/* chrome bar */}
       <div className="bg-panel h-[40px] flex items-center pl-[12px] pr-[16px] shrink-0 gap-[16px]">
         <div className="flex gap-[8px]">

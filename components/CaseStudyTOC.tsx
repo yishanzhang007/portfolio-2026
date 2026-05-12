@@ -83,7 +83,7 @@ export function CaseStudyTOC({ showSections = false }: { showSections?: boolean 
       >
         <a
           href="/"
-          className="flex items-center gap-[8px] text-body text-muted mb-[64px] hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
+          className="flex items-center gap-[8px] text-body text-muted mb-[56px] hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
         >
           <svg
             width="16"

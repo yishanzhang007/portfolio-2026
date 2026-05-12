@@ -132,11 +132,12 @@ export function ProjectIndex({ variant }: ProjectIndexProps) {
       <div className="relative" style={{ width: 0 }}>
         <HoverMarker visible={activeRowIndex !== null} rowIndex={activeRowIndex} />
         {(() => {
-          const clinicIndex = projects.findIndex((p) => p.slug === "clinic-ai-assistant");
-          if (clinicIndex < 0) return null;
+          const readableSlugs = new Set(["clinic-ai-assistant", "voice-agent"]);
+          const hasAny = projects.some((p) => readableSlugs.has(p.slug));
+          if (!hasAny) return null;
           const visible =
             activeRowIndex !== null &&
-            projects[activeRowIndex]?.slug === "clinic-ai-assistant";
+            readableSlugs.has(projects[activeRowIndex]?.slug ?? "");
           // The text's `top` tracks the cursor's current row while hovering
           // the list, and stays at the last-known row when off-list — same
           // pattern as HoverMarker. This gives the `top` transition something

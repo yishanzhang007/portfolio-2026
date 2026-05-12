@@ -35,13 +35,13 @@ export function ClinicAIAssistant() {
         noToc
       >
         <p>
-          The hardest design problem wasn&apos;t designing the interface — it
-          was naming the twenty ways the AI could fail before we shipped it,
-          and fine-tuning the conversational agent until patients wanted to
-          engage. Freed&apos;s Clinic AI Assistant is an always-on AI
-          receptionist for small-to-medium clinics. I led design and owned
-          the roadmap with 6 engineers —{" "}
+          Freed&apos;s Clinic AI Assistant is an always-on AI receptionist
+          for small-to-mid-size clinics. I led design and roadmap with 6
+          engineers —{" "}
           <span className="text-header">0 to $1M+ ARR in 6 months</span>.
+          The hard part wasn&apos;t the interface. It was naming the 20 ways
+          the agent could fail, and tuning the voice until patients wanted
+          to engage.
         </p>
       </CaseStudySection>
 
@@ -81,10 +81,10 @@ export function ClinicAIAssistant() {
 
       <CaseStudySection label="Pairing power with safety" labelClassName="text-[18px]">
         <p>
-          The hardest problem in healthcare wasn&apos;t what the AI could do. It was knowing
-          where it should stop. Every capability we shipped is a{" "}
-          <span className="text-header">Power × Safety</span> pair — a
-          powerful default, with a safety rail.
+          In healthcare the hard part isn&apos;t what the AI can do — it&apos;s
+          where it should stop. Every capability ships as a{" "}
+          <span className="text-header">Power × Safety</span> pair: a
+          powerful default with a safety rail.
         </p>
       </CaseStudySection>
 
@@ -110,7 +110,7 @@ export function ClinicAIAssistant() {
         </div>
       </CaseStudySection>
 
-      <div className="h-[32px]" />
+      <div className="h-[56px]" />
 
       <CaseStudySection label="" noDivider>
         <p className="text-body font-medium">
@@ -121,15 +121,15 @@ export function ClinicAIAssistant() {
           <PatientVerificationDemo />
         </CaseStudyImage>
         <p className="mt-[8px] md:mt-0">
-          <span className="text-muted">Power:</span> We can verify the patient on the call to
-          pull up their record and look up upcoming appointments or current medications.
+          <span className="text-muted">Power:</span> verify on the call, pull
+          up the chart, check upcoming appointments and current medications.
         </p>
         <div className="mt-[32px]">
           <TerminalCard />
         </div>
         <p>
-          <span className="text-muted">Safety:</span> I defined the taxonomy of different
-          cases and designed test cases and evals to ensure safety.
+          <span className="text-muted">Safety:</span> a hand-written eval
+          taxonomy of every way the agent could fail — see the next section.
         </p>
       </CaseStudySection>
 
@@ -141,9 +141,9 @@ export function ClinicAIAssistant() {
       >
         <p>
           You can&apos;t prove a thing is safe until you can name what
-          unsafe looks like. The first design move on Patient Verification
-          wasn&apos;t a screen — it was a list of 20 ways the agent could
-          fail. Building the eval taught me three things.
+          unsafe looks like. The first design move wasn&apos;t a screen —
+          it was a list of 20 ways the agent could fail. Building the eval
+          taught me three things.
         </p>
 
         {/* #1 — The taxonomy is the design */}
@@ -219,10 +219,9 @@ export function ClinicAIAssistant() {
             <span>Label-only evals lie.</span>
           </p>
           <p>
-            First scorer asked: right label? 20 of 20. Looked great. I added
-            a second scorer for the reasoning. 15 of 20 — the agent was
-            getting Family-on-behalf cases right by saying &ldquo;no record
-            exists,&rdquo; missing the recovery entirely.
+            Label scorer: 20 of 20. Looked great. Reasoning scorer: 15 of
+            20 — the agent got Family-on-behalf cases right by saying
+            &ldquo;no record exists,&rdquo; missing the recovery entirely.
           </p>
 
           <div className="overflow-x-auto -mx-[12px] px-[12px] md:mx-0 md:px-0">
@@ -271,10 +270,9 @@ export function ClinicAIAssistant() {
             <span>Sometimes the eval is grading the wrong thing.</span>
           </p>
           <p>
-            Two of my scenarios were indistinguishable at the input layer.
-            Both cases caller said their own name and DOB, and got zero
-            results. But one is because of misheard ASR, the other is family
-            calling on behalf.
+            Two scenarios were indistinguishable at the input. Both: caller
+            said their own name and DOB, zero results. One was misheard
+            ASR. The other was family-on-behalf.
           </p>
           <p>
             Same input. Different recoveries. No prompt could separate them
@@ -297,12 +295,11 @@ export function ClinicAIAssistant() {
           <p>
             We started on{" "}
             <span className="text-header">ElevenLabs Turbo</span> for the
-            ease of use and warm preset voices, but under HIPAA-routed
-            production traffic the latency was bad enough that callers were
-            hanging up. After three months we switched to{" "}
-            <span className="text-header">OpenAI Realtime</span> — ~3× the
-            per-minute cost, fewer voices, none as warm — and traded
-            warmth for presence.
+            warm preset voices, but under production traffic the latency
+            was bad enough that callers hung up. Switched to{" "}
+            <span className="text-header">OpenAI Realtime</span> — 3× the
+            cost, fewer voices, none as warm — and traded warmth for
+            presence.
           </p>
 
           <div className="mt-[8px] overflow-x-auto -mx-[12px] px-[12px] md:mx-0 md:px-0">
@@ -370,19 +367,18 @@ export function ClinicAIAssistant() {
         </div>
 
         <p>
-          Once the substrate worked, the agent still didn&apos;t. It repeated,
-          over-confirmed, and patients hung up. I worked from one principle:{" "}
+          The substrate worked. The agent didn&apos;t. It repeated,
+          over-confirmed, and patients hung up. One principle:{" "}
           <span className="text-header">
-            a friendly agent is one that trusts what it heard.
+            a friendly agent trusts what it heard.
           </span>{" "}
-          Every iteration removed a redundant confirm, a re-ask, or a fallback
-          that fired too eagerly. I ran each version against a bench of
-          recorded calls and tracked repetition rate and abandonment as the
-          two metrics that mattered.
+          Every iteration removed a redundant confirm, a re-ask, or a
+          fallback that fired too eagerly. I tracked repetition rate and
+          abandonment against a bench of recorded calls.
         </p>
 
-        <p className="text-muted text-[14px] leading-[1.5] mt-[16px]">
-          Quote from a user interview
+        <p className="text-muted mt-[16px]">
+          User quote
         </p>
         <div className="bg-panel rounded-[6px] p-[12px] -mt-[8px]">
           <p className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
@@ -394,7 +390,7 @@ export function ClinicAIAssistant() {
           </p>
         </div>
 
-        <p className="text-muted text-[14px] leading-[1.5] mt-[16px]">
+        <p className="text-muted mt-[16px]">
           Prompt iteration to reduce repetition
         </p>
         <div className="-mt-[8px]">
@@ -429,32 +425,22 @@ export function ClinicAIAssistant() {
       <CaseStudySection label="Shipping the product" labelClassName="text-[18px]">
         <div className="flex flex-col gap-[16px]">
           <p>
-            <span className="font-medium">Where it landed.</span> 102 clinics,
-            $1M+ ARR. Abandonment{" "}
-            <span className="text-header">32.6% → 10.6%</span>.
+            <span className="text-muted">Where it landed.</span> 102 clinics,
+            $1M+ ARR.
           </p>
           <p>
-            <span className="font-medium">What I&apos;d take back.</span> We
-            traded voice warmth for latency and never revisited it. The next
-            version should test a custom voice clone or a hybrid route for
+            <span className="text-muted">What I&apos;d take back.</span> We
+            traded voice warmth for latency and never revisited. Next
+            version: a custom voice clone, or a hybrid route for
             high-stakes calls.
           </p>
           <p>
-            <span className="font-medium">What&apos;s next.</span> Scheduling
+            <span className="text-muted">What&apos;s next.</span> Scheduling
             has ~3× the failure modes of verification and no eval taxonomy
-            yet. That&apos;s the next thing I&apos;d design.
+            yet. That&apos;s what I&apos;d design next.
           </p>
         </div>
 
-        <div className="bg-panel rounded-[6px] p-[12px] mt-[16px]">
-          <p className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
-            “I&apos;ve been very impressed with everything. This is obviously
-            the right way to go — AI automation for the front desk for sure.”
-          </p>
-          <p className="text-muted text-[14px] leading-[1.5] mt-[24px]">
-            Manoj Doss, owner at Institute for Integrative Therapies
-          </p>
-        </div>
       </CaseStudySection>
     </CaseStudyLayout>
   );

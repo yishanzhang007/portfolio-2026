@@ -47,7 +47,7 @@ export function CaseStudySection({
       className="flex flex-col scroll-mt-[120px]"
     >
       {showTitle && (
-        <div className="mb-[32px]">
+        <div className="mb-[24px]">
           <p className={`text-section-header ${labelClassName}`}>{label}</p>
           {subtitle && <p className="text-muted">{subtitle}</p>}
         </div>

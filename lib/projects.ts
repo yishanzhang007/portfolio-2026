@@ -23,7 +23,7 @@ export interface Project {
 }
 
 export const projects: Project[] = [
-  { slug: "clinic-ai-assistant",        title: "Clinic AI assistant",        roles: ["Design", "PM", "Development"] },
+  { slug: "clinic-ai-assistant",        title: "Clinic AI assistant",        roles: ["Eval", "Prompt Engineering"] },
   { slug: "agent-playground",           title: "Agent playground",           roles: ["PM", "Design"] },
   { slug: "voice-agent",                title: "Conversational agent",                roles: ["Eval", "Prompt Engineering"] },
   { slug: "pulse-ui",                   title: "Pulse UI",                   roles: ["Design System", "Development"] },

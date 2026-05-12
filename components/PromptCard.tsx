@@ -55,7 +55,7 @@ function renderInline(line: string): ReactNode {
 export function PromptCard() {
   const lines = SOURCE.split("\n");
   return (
-    <div className="w-full bg-white overflow-hidden border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_16px_0_rgba(0,0,0,0.04)] flex flex-col">
+    <div className="w-full bg-white overflow-hidden border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_12px_0_rgba(0,0,0,0.04)] flex flex-col">
       {/* chrome bar with filename tab */}
       <div className="bg-panel h-[40px] flex items-center pl-[12px] pr-[16px] shrink-0 gap-[16px]">
         <div className="flex gap-[8px]">
