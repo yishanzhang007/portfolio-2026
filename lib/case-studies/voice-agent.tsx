@@ -80,14 +80,90 @@ export function VoiceAgent() {
           centered
         />
       }
+      showTocSections
     >
-      <CaseStudySection label="Conversational agent">
+      <CaseStudySection
+        label="Conversational agent"
+        subtitle="Nov 2025 - present • Freed"
+        noToc
+      >
         <p>
           One of the most important parts of the project is to design a
           human-like and a genuinely helpful conversational agent to collect
           patient information. I designed the user flow and defined principles
           to help define the agent behavior.
         </p>
+      </CaseStudySection>
+
+      <SectionDivider />
+
+      <CaseStudySection label="Picking the substrate" labelClassName="text-[18px]">
+        <p>
+          Before any prompt could work, I had to pick the substrate that made
+          real-time conversation possible. We started on{" "}
+          <span className="text-header">ElevenLabs Turbo</span> for ease of use
+          and its catalog of warm preset voices. Under HIPAA-routed production
+          traffic the latency was bad enough that callers were hanging up.
+          After three months we switched to{" "}
+          <span className="text-header">OpenAI Realtime</span> — ~3× the
+          per-minute cost, fewer voices, none as warm — and traded warmth for
+          presence.
+        </p>
+
+        <div className="mt-[8px]">
+          {/* Header row — hidden on mobile (data rows stack there) */}
+          <div className="hidden md:grid md:grid-cols-[116px_1fr_1fr] gap-[16px] py-[12px] text-muted">
+            <span />
+            <span>ElevenLabs Turbo</span>
+            <span>OpenAI Realtime</span>
+          </div>
+          {[
+            {
+              label: "Latency",
+              a: "High — call hangs up",
+              b: "Low — feels present",
+            },
+            {
+              label: "Architecture",
+              a: "ASR → LLM → TTS",
+              b: "Speech-to-speech",
+            },
+            {
+              label: "Voice quality",
+              a: "Great (3000+ voices)",
+              b: "Limited (6–7 preset)",
+            },
+            {
+              label: "Price",
+              a: "~ $0.10/min",
+              b: "~ $0.30/min",
+            },
+            {
+              label: "Verdict",
+              a: "Easy to start, wrong substrate",
+              b: "3× cost, but the product",
+              emphasis: true,
+            },
+          ].map((row, i) => (
+            <div
+              key={row.label}
+              className="grid grid-cols-1 md:grid-cols-[116px_1fr_1fr] gap-[4px] md:gap-[16px] py-[12px] border-t border-[#e9e8e6]"
+              style={{ borderTopWidth: i === 0 ? "1.5px" : "0.5px" }}
+            >
+              <span
+                className={`text-muted ${row.emphasis ? "font-medium" : ""}`}
+              >
+                {row.label}
+              </span>
+              <span className={row.emphasis ? "font-medium" : ""}>
+                {row.a}
+              </span>
+              <span className={row.emphasis ? "font-medium" : ""}>
+                {row.b}
+              </span>
+            </div>
+          ))}
+        </div>
       </CaseStudySection>
 
       <SectionDivider />
