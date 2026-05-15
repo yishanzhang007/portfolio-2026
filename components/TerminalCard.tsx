@@ -131,13 +131,13 @@ export function TerminalCard() {
           <span className="size-[12px] rounded-full bg-[#efc944] border-[0.5px] border-[#e9b809]" />
           <span className="size-[12px] rounded-full bg-[#6bc466] border-[0.5px] border-[#3bb036]" />
         </div>
-        <span className="font-mono text-[12px] font-semibold text-[#82807c]">
+        <span className="font-mono text-[10px] font-semibold text-[#82807c]">
           patient_match.json
         </span>
       </div>
 
       {/* code body */}
-      <pre className="bg-white p-[12px] m-0 font-mono text-[12px] xl:text-[14px] leading-[1.5] whitespace-pre-wrap text-ink">
+      <pre className="bg-white p-[12px] m-0 font-mono text-[10px] xl:text-[12px] leading-[1.5] whitespace-pre-wrap text-ink">
         {renderValue(data, 0)}
       </pre>
     </div>

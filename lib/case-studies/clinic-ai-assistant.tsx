@@ -47,7 +47,7 @@ export function ClinicAIAssistant() {
 
       <SectionDivider />
 
-      <CaseStudySection label="Framing the problem" labelClassName="text-[18px]">
+      <CaseStudySection label="Framing the problem" labelClassName="text-[16px]">
         <p>
           40+ clinic conversations surfaced four pains. Three were
           uncomfortable. One was the reason they&apos;d buy.
@@ -79,7 +79,7 @@ export function ClinicAIAssistant() {
 
       <SectionDivider />
 
-      <CaseStudySection label="Pairing power with safety" labelClassName="text-[18px]">
+      <CaseStudySection label="Pairing power with safety" labelClassName="text-[16px]">
         <p>
           In healthcare the hard part isn&apos;t what the AI can do — it&apos;s
           where it should stop. Every capability ships as a{" "}
@@ -137,7 +137,7 @@ export function ClinicAIAssistant() {
 
       <CaseStudySection
         label="Designing the eval"
-        labelClassName="text-[18px]"
+        labelClassName="text-[16px]"
       >
         <p>
           You can&apos;t prove a thing is safe until you can name what
@@ -192,7 +192,7 @@ export function ClinicAIAssistant() {
                   style={{ borderTopWidth: i === 0 ? "1.5px" : "0.5px" }}
                 >
                   <div className="flex gap-[8px] items-center flex-wrap">
-                    <span className="font-mono text-[14px] bg-panel rounded-[4px] px-[4px] py-[2px] inline-block">
+                    <span className="font-mono text-[12px] bg-panel rounded-[4px] px-[4px] py-[2px] inline-block">
                       {row.label}
                     </span>
                     {row.desc && (
@@ -205,7 +205,7 @@ export function ClinicAIAssistant() {
             </div>
           </div>
 
-          <p className="text-muted text-[14px] leading-[1.5]">
+          <p className="text-muted text-[12px] leading-[1.5]">
             *No match has 4 different categories with different recoveries.
             Generic fallback, Family-on-behalf, Name change, and Clinic data
             error.
@@ -240,7 +240,7 @@ export function ClinicAIAssistant() {
                   className="grid grid-cols-2 gap-[16px] py-[12px] border-t border-[#e9e8e6]"
                   style={{ borderTopWidth: i === 0 ? "1.5px" : "0.5px" }}
                 >
-                  <span className="font-mono text-[14px] bg-panel rounded-[4px] px-[4px] py-[2px] inline-block w-fit">
+                  <span className="font-mono text-[12px] bg-panel rounded-[4px] px-[4px] py-[2px] inline-block w-fit">
                     {row.label}
                   </span>
                   <span className="relative inline-block w-fit">
@@ -285,7 +285,7 @@ export function ClinicAIAssistant() {
 
       <SectionDivider />
 
-      <CaseStudySection label="Tuning the voice agent" labelClassName="text-[18px]">
+      <CaseStudySection label="Tuning the voice agent" labelClassName="text-[16px]">
         {/* #1 — Picking the model */}
         <div className="flex flex-col gap-[16px]">
           <p className="text-body font-medium">
@@ -381,11 +381,11 @@ export function ClinicAIAssistant() {
           User quote
         </p>
         <div className="bg-panel rounded-[6px] p-[12px] -mt-[8px]">
-          <p className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
+          <p className="text-[12px] md:text-[16px] xl:text-[18px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
             “She repeats back like five times. And patients get frustrated that she keeps
             repeating the same thing and they just hang up.”
           </p>
-          <p className="text-muted text-[14px] leading-[1.5] mt-[24px]">
+          <p className="text-muted text-[12px] leading-[1.5] mt-[24px]">
             Casey Cash, owner at The Iris Center
           </p>
         </div>
@@ -415,14 +415,14 @@ export function ClinicAIAssistant() {
           className="w-full block border-0 -mt-[8px]"
           style={{ height: 320 }}
         />
-        <p className="text-muted text-[14px] leading-[1.5] -mt-[8px]">
+        <p className="text-muted text-[12px] leading-[1.5] -mt-[8px]">
           % of calls where the patient hung up
         </p>
       </CaseStudySection>
 
       <SectionDivider />
 
-      <CaseStudySection label="Shipping the product" labelClassName="text-[18px]">
+      <CaseStudySection label="Shipping the product" labelClassName="text-[16px]">
         <div className="flex flex-col gap-[16px]">
           <p>
             <span className="text-muted">Where it landed.</span> 102 clinics,

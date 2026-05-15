@@ -44,3 +44,11 @@ next-env.d.ts
 /Yishan Zhang.pdf
 *.resume.pdf
 
+# Claude Code worktree state (local-only)
+/.claude/
+
+# loose source SVGs / dev scripts at repo root (drop into /public when used)
+/FlagPennant.svg
+/Smiley.svg
+/scripts/scroll-test.mjs
+

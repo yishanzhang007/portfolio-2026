@@ -69,7 +69,7 @@ export function PromptCard() {
       </div>
 
       {/* body */}
-      <pre className="bg-white p-[12px] m-0 font-mono text-[12px] xl:text-[14px] leading-[1.6] whitespace-pre-wrap text-ink">
+      <pre className="bg-white p-[12px] m-0 font-mono text-[10px] xl:text-[12px] leading-[1.6] whitespace-pre-wrap text-ink">
         {lines.map((line, idx) => (
           <Fragment key={idx}>
             {renderInline(line)}

@@ -286,3 +286,222 @@ body {
     transition: none;
   }
 }
+
+/* Clinic AI hero — waveform track scrolls right→left like Apple Voice Memo
+   recording. The whole strip translates as a unit; bars don't pulse
+   individually. The "orange center bar" effect is achieved by stacking an
+   identical orange-coloured copy of the track behind a narrow vertical clip
+   at the visible centre, so whichever bar is currently passing through
+   centre reads as orange. Gray + orange tracks share this animation so they
+   stay in lock-step. Duplicating the 43-bar set inside each track makes the
+   loop seamless — at the end of the cycle, position == start. */
+@keyframes clinic-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-193.5px);
+  }
+}
+
+.animate-clinic-scroll {
+  animation: clinic-scroll 8.57s linear infinite;
+  will-change: transform;
+}
+
+/* Pulsing concentric rings under the timer — read as "recording / live". */
+@keyframes clinic-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.25;
+  }
+  100% {
+    transform: scale(1.54);
+    opacity: 0;
+  }
+}
+
+.animate-clinic-ping {
+  animation: clinic-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-clinic-scroll,
+  .animate-clinic-ping {
+    animation: none;
+  }
+}
+
+/* Voice agent hero — highlight on "genuinely helpful" sweeps left → right
+   like a marker stroke. Element only mounts when the hero is hovered, so
+   the animation re-plays on every hover. */
+@keyframes voice-highlight-sweep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-voice-highlight {
+  animation: voice-highlight-sweep 0.55s cubic-bezier(0.4, 0, 0.2, 1) 0.18s both;
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-voice-highlight {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
+/* Agent Playground hero — sequential entrance:
+   left card fades in → connector draws left-to-right → right card fades in.
+   Re-triggers each hover via key change on the inner elements. */
+@keyframes agent-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes agent-line-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-agent-card-left {
+  opacity: 0;
+  transform-origin: center;
+  animation: agent-card-in 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+.animate-agent-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: agent-line-draw 0.45s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+}
+
+@keyframes agent-card-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-agent-card-right {
+  opacity: 0;
+  animation: agent-card-slide-in 0.35s cubic-bezier(0.215, 0.61, 0.355, 1) 0.45s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-agent-card-left,
+  .animate-agent-card-right {
+    animation: none;
+    opacity: 1;
+  }
+  .animate-agent-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* DevRev Analytics hero — chart loads in sequence: line strokes left→right,
+   gradient fill fades in behind it, then data points drop in. Re-triggers on
+   every hover via the animKey pattern (key change remounts the SVG). */
+@keyframes analytics-draw-line {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-analytics-line {
+  animation: analytics-draw-line 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+
+@keyframes analytics-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-analytics-fill {
+  animation: analytics-fade-in 0.7s ease-out 0.7s both;
+}
+
+/* Each data-point circle drops in as the line passes over it. The delay is
+   computed inline per-circle to match the ease-out timing of the line draw. */
+@keyframes analytics-point-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-analytics-point {
+  animation: analytics-point-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-analytics-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .animate-analytics-fill {
+    animation: none;
+    opacity: 1;
+  }
+  .animate-analytics-point {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Case-study type scale — applied at every viewport.
+   - .text-body / .text-header: 14px (was 16 desktop, 14 mobile)
+   - .text-section-header: 16px (was 18 desktop, 16 mobile)
+   Wrapper is added at the page route in app/work/[slug]/page.tsx so
+   the case-study file itself stays untouched. Hardcoded text-[Npx]
+   in the case-study file are edited directly. */
+.case-study-shrunk .text-body,
+.case-study-shrunk .text-header {
+  font-size: 14px;
+}
+.case-study-shrunk .text-section-header {
+  font-size: 16px;
+}
+
+/* Pull section header closer to its content (24px → 12px). Targets the
+   header wrapper inside CaseStudySection via attribute selector — the
+   escaped-bracket class selector `.mb-\[24px\]` was being stripped by
+   the v4 build, but attribute selectors survive. */
+.case-study-shrunk section > [class~="mb-[24px]"] {
+  margin-bottom: 12px;
+}

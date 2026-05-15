@@ -17,6 +17,21 @@ export function generateStaticParams() {
   return projects.filter((p) => !p.inactive).map((p) => ({ slug: p.slug }));
 }
 
+function renderCaseStudy(slug: string, project: ReturnType<typeof projects.find>) {
+  if (slug === "clinic-ai-assistant") return <ClinicAIAssistant />;
+  if (slug === "pulse-ui") return <PulseUI />;
+  if (slug === "agent-playground") return <AgentPlayground />;
+  if (slug === "voice-agent") return <VoiceAgent />;
+  if (slug === "shopify-tax") return <ShopifyTax />;
+  if (slug === "joy") return <Joy />;
+  if (slug === "orchid") return <Orchid />;
+  if (slug === "onboarding") return <Onboarding />;
+  if (slug === "analytics") return <Analytics />;
+  if (slug === "southeast-community-center") return <SoutheastCommunityCenter />;
+  if (slug === "trading-vault") return <TradingVault />;
+  return project ? <CaseStudyPlaceholder project={project} /> : null;
+}
+
 export default async function ProjectPage({
   params,
 }: {
@@ -26,49 +41,7 @@ export default async function ProjectPage({
   const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
 
-  if (slug === "clinic-ai-assistant") {
-    return <ClinicAIAssistant />;
-  }
-
-  if (slug === "pulse-ui") {
-    return <PulseUI />;
-  }
-
-  if (slug === "agent-playground") {
-    return <AgentPlayground />;
-  }
-
-  if (slug === "voice-agent") {
-    return <VoiceAgent />;
-  }
-
-  if (slug === "shopify-tax") {
-    return <ShopifyTax />;
-  }
-
-  if (slug === "joy") {
-    return <Joy />;
-  }
-
-  if (slug === "orchid") {
-    return <Orchid />;
-  }
-
-  if (slug === "onboarding") {
-    return <Onboarding />;
-  }
-
-  if (slug === "analytics") {
-    return <Analytics />;
-  }
-
-  if (slug === "southeast-community-center") {
-    return <SoutheastCommunityCenter />;
-  }
-
-  if (slug === "trading-vault") {
-    return <TradingVault />;
-  }
-
-  return <CaseStudyPlaceholder project={project} />;
+  return (
+    <div className="case-study-shrunk">{renderCaseStudy(slug, project)}</div>
+  );
 }

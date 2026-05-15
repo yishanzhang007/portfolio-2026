@@ -37,6 +37,13 @@ const ntype = localFont({
   weight: "400",
 });
 
+const inProgress = localFont({
+  src: "../public/fonts/In_progress-Medium.otf",
+  variable: "--font-in-progress",
+  display: "swap",
+  weight: "500",
+});
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -57,7 +64,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${ntype.variable} ${inter.variable} h-full antialiased`}
+      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${ntype.variable} ${inProgress.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>
