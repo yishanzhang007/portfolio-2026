@@ -6,6 +6,12 @@ const POINTS = 128;
 const TWO_PI = Math.PI * 2;
 const SIZE = 200;
 
+/* Idle palette — blue↔purple lerp at 0.5 (the "no audio" midpoint
+   from the source comms AudioOrb). Precomputed at module scope so
+   the draw loop only does the rgba template builds. */
+const CORE_RGB = "125, 115, 255";
+const MID_RGB = "138, 110, 255";
+
 export function OnboardingHero({ visible = false }: { visible?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
@@ -38,24 +44,6 @@ export function OnboardingHero({ visible = false }: { visible?: boolean }) {
     timeRef.current += 0.032;
     const t = timeRef.current;
 
-    const lerpColor = (
-      r1: number,
-      g1: number,
-      b1: number,
-      r2: number,
-      g2: number,
-      b2: number,
-      tt: number,
-    ) => [
-      Math.round(r1 + (r2 - r1) * tt),
-      Math.round(g1 + (g2 - g1) * tt),
-      Math.round(b1 + (b2 - b1) * tt),
-    ];
-
-    // Idle palette — blue↔purple lerp at 0.5 = bluish-purple.
-    const [cr, cg, cb] = lerpColor(80, 160, 255, 170, 70, 255, 0.5);
-    const [mr, mg, mb] = lerpColor(90, 140, 255, 185, 80, 255, 0.5);
-
     const breathe = 1 + Math.sin(t * 1.2) * 0.06;
     const baseRadius = maxRadius * breathe;
 
@@ -72,9 +60,9 @@ export function OnboardingHero({ visible = false }: { visible?: boolean }) {
         cy,
         glowRadius,
       );
-      glowGrad.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, ${glowAlpha})`);
-      glowGrad.addColorStop(0.5, `rgba(${mr}, ${mg}, ${mb}, ${glowAlpha * 0.5})`);
-      glowGrad.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
+      glowGrad.addColorStop(0, `rgba(${CORE_RGB}, ${glowAlpha})`);
+      glowGrad.addColorStop(0.5, `rgba(${MID_RGB}, ${glowAlpha * 0.5})`);
+      glowGrad.addColorStop(1, `rgba(${CORE_RGB}, 0)`);
 
       ctx.beginPath();
       ctx.arc(cx, cy, glowRadius, 0, TWO_PI);
@@ -127,9 +115,9 @@ export function OnboardingHero({ visible = false }: { visible?: boolean }) {
       baseRadius * 1.2,
     );
     fillGrad.addColorStop(0, "rgba(190, 215, 255, 0.95)");
-    fillGrad.addColorStop(0.3, `rgba(${cr}, ${cg}, ${cb}, 0.9)`);
-    fillGrad.addColorStop(0.7, `rgba(${mr}, ${mg}, ${mb}, 0.6)`);
-    fillGrad.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
+    fillGrad.addColorStop(0.3, `rgba(${CORE_RGB}, 0.9)`);
+    fillGrad.addColorStop(0.7, `rgba(${MID_RGB}, 0.6)`);
+    fillGrad.addColorStop(1, `rgba(${CORE_RGB}, 0)`);
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
@@ -149,7 +137,7 @@ export function OnboardingHero({ visible = false }: { visible?: boolean }) {
     ctx.fill();
 
     // Subtle edge stroke.
-    ctx.strokeStyle = `rgba(${mr}, ${mg}, ${mb}, 0.08)`;
+    ctx.strokeStyle = `rgba(${MID_RGB}, 0.08)`;
     ctx.lineWidth = 1.5;
     ctx.stroke();
 

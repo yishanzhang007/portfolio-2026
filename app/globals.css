@@ -358,8 +358,7 @@ body {
 }
 
 /* Agent Playground hero — sequential entrance:
-   left card fades in → connector draws left-to-right → right card fades in.
-   Re-triggers each hover via key change on the inner elements. */
+   left card fades in → connector draws left-to-right → right card slides in. */
 @keyframes agent-card-in {
   from {
     opacity: 0;
@@ -420,20 +419,11 @@ body {
   }
 }
 
-/* DevRev Analytics hero — chart loads in sequence: line strokes left→right,
-   gradient fill fades in behind it, then data points drop in. Re-triggers on
-   every hover via the animKey pattern (key change remounts the SVG). */
-@keyframes analytics-draw-line {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
+/* DevRev Analytics hero — line strokes left→right via the shared
+   `agent-line-draw` keyframe, gradient fill fades in behind it,
+   then data points drop in. */
 .animate-analytics-line {
-  animation: analytics-draw-line 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation: agent-line-draw 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 
 @keyframes analytics-fade-in {
@@ -484,12 +474,8 @@ body {
   }
 }
 
-/* Case-study type scale — applied at every viewport.
-   - .text-body / .text-header: 14px (was 16 desktop, 14 mobile)
-   - .text-section-header: 16px (was 18 desktop, 16 mobile)
-   Wrapper is added at the page route in app/work/[slug]/page.tsx so
-   the case-study file itself stays untouched. Hardcoded text-[Npx]
-   in the case-study file are edited directly. */
+/* Case-study type scale — applied at every viewport via the
+   `.case-study-shrunk` wrapper added at app/work/[slug]/page.tsx. */
 .case-study-shrunk .text-body,
 .case-study-shrunk .text-header {
   font-size: 14px;
@@ -498,10 +484,8 @@ body {
   font-size: 16px;
 }
 
-/* Pull section header closer to its content (24px → 12px). Targets the
-   header wrapper inside CaseStudySection via attribute selector — the
-   escaped-bracket class selector `.mb-\[24px\]` was being stripped by
-   the v4 build, but attribute selectors survive. */
+/* Attribute selector — the escaped-bracket class selector
+   `.mb-\[24px\]` was stripped by the Tailwind v4 build. */
 .case-study-shrunk section > [class~="mb-[24px]"] {
   margin-bottom: 12px;
 }

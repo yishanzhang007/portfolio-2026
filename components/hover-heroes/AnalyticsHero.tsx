@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useReplayKey } from "@/lib/useReplayKey";
 
 const LINE_PATH =
   "M5 70 L15 60 L25 75 L35 50 L45 65 L55 45 L65 70 L75 35 L85 55 L95 25 L105 50 L115 30 L125 75 L135 40 L145 60 L155 30 L165 65 L175 35 L185 55 L195 20 L205 40 L215 25 L225 65 L235 30 L245 50 L255 35 L265 60";
@@ -19,14 +19,7 @@ const LINE_COLOR = "#5d4ee8";
 const LINE_DURATION = 1.4;
 
 export function AnalyticsHero({ visible = false }: { visible?: boolean }) {
-  const [animKey, setAnimKey] = useState(0);
-  const wasVisible = useRef(visible);
-  useEffect(() => {
-    if (visible && !wasVisible.current) {
-      setAnimKey((k) => k + 1);
-    }
-    wasVisible.current = visible;
-  }, [visible]);
+  const animKey = useReplayKey(visible);
 
   return (
     <div className="relative" style={{ width: 270, height: 122 }}>

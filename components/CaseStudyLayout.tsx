@@ -56,7 +56,7 @@ export function CaseStudyLayout({
           {showMobileIndex && (
             <a
               href="/"
-              className="md:hidden inline-flex items-center gap-[8px] text-body text-muted mt-[48px] mb-[48px] hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
+              className="md:hidden inline-flex items-center gap-[8px] text-body text-muted mt-[48px] mb-[32px] hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
             >
               <svg
                 width="16"

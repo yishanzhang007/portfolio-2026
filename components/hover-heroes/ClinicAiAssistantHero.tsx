@@ -22,7 +22,7 @@ const WAVE_TOP = (FRAME_H - WAVE_H) / 2;
 const CLIP_W = SLOT;
 const CLIP_LEFT = (FRAME_W - CLIP_W) / 2;
 
-const GRAY = "#94918B";
+const GRAY = "var(--color-muted)";
 const ORANGE = "#c95c19";
 
 function ScrollingTrack({ color }: { color: string }) {
@@ -46,12 +46,8 @@ function ScrollingTrack({ color }: { color: string }) {
   );
 }
 
-export function ClinicAiAssistantHero({
-  visible = false,
-}: {
-  visible?: boolean;
-}) {
-  void visible;
+export function ClinicAiAssistantHero(_props: { visible?: boolean } = {}) {
+  void _props;
   const [seconds, setSeconds] = useState(23);
   useEffect(() => {
     const t = setInterval(() => setSeconds((s) => s + 1), 1000);

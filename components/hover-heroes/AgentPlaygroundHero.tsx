@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useReplayKey } from "@/lib/useReplayKey";
 
 function SmileyIcon() {
   return (
@@ -67,14 +67,7 @@ function EnvelopeIcon() {
 }
 
 export function AgentPlaygroundHero({ visible = false }: { visible?: boolean }) {
-  const [animKey, setAnimKey] = useState(0);
-  const wasVisible = useRef(visible);
-  useEffect(() => {
-    if (visible && !wasVisible.current) {
-      setAnimKey((k) => k + 1);
-    }
-    wasVisible.current = visible;
-  }, [visible]);
+  const animKey = useReplayKey(visible);
 
   const W = 305;
   const H = 100;
