@@ -23,9 +23,9 @@ export function HoverHero({ rowIndex, slug }: HoverHeroProps) {
       aria-hidden
       className="absolute hidden md:block transition-marker pointer-events-none"
       style={{
-        right: 0,
+        left: "50%",
         top: `calc(var(--row-stride) * ${displayRowIndex} + var(--row-stride) / 2)`,
-        transform: "translateY(-50%)",
+        transform: "translate(-50%, -50%)",
         opacity: visible ? 1 : 0,
       }}
     >

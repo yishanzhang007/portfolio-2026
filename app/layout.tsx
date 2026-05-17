@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -51,6 +51,13 @@ const inter = Inter({
   display: "swap",
 });
 
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-roboto-mono",
+  weight: ["300", "400", "500"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Yishan Zhang — Product designer",
   description: "Selected work, 2026.",
@@ -64,7 +71,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${ntype.variable} ${inProgress.variable} ${inter.variable} h-full antialiased`}
+      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${ntype.variable} ${inProgress.variable} ${inter.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>

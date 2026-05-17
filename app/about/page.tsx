@@ -60,7 +60,7 @@ function RecentWorkList() {
 export default function AboutPage() {
   return (
     <PageLoad>
-      <main className="text-body">
+      <main className="text-body md:text-[14px]">
         {/* Mobile (< md) */}
         <div className="landing-mobile md:hidden bg-cream min-h-screen w-full p-[12px] sm:p-[16px] flex flex-col">
           <Link

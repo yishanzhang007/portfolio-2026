@@ -24,7 +24,7 @@
   /* Font families (resolve to next/font/local variables) */
   --font-denim: var(--font-pp-denim), serif;
   --font-ink: var(--font-pp-denim-ink), serif;
-  --font-tag: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
+  --font-tag: var(--font-roboto-mono), ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
   --font-sms: var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* Tag pill type — fixed at 12px / 16px lh at every viewport.
@@ -77,6 +77,13 @@ body {
   /* Single project-row scale across all viewports (xl no longer scales up). */
   --row-stride: 26px;
   --row-marker-offset: 11px;
+
+  /* Re-assert the tag font chain at runtime. Tailwind v4's @theme block
+     resolves `var()` references at build-time, where next/font's
+     --font-roboto-mono isn't defined yet, so the var ref gets stripped
+     from --font-tag in the compiled CSS. Overriding here restores it. */
+  --font-tag: var(--font-roboto-mono), ui-monospace, "SF Mono",
+    "SFMono-Regular", Menlo, monospace;
 }
 
 /* Each row in the index spans the full row stride so hover hit areas

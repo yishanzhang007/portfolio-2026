@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { FooterNav } from "@/components/FooterNav";
 import { PageLoad } from "@/components/PageLoad";
 import { ProjectIndex } from "@/components/ProjectIndex";
@@ -13,14 +12,8 @@ export default function Home() {
           left-aligned. */}
       <div className="landing-mobile md:hidden bg-cream min-h-screen w-full p-[12px] sm:p-[16px] flex flex-col">
         <div className="flex flex-col">
-          <p className="text-header text-ink font-medium">Yishan Zhang</p>
-          <p className="text-ink opacity-90">Product designer</p>
-          <Link
-            href="/about"
-            className="text-ink opacity-90 hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
-          >
-            About
-          </Link>
+          <p className="text-header text-ink font-medium m-0">Yishan Zhang</p>
+          <p className="text-ink opacity-90 m-0 text-[14px]">Product designer</p>
         </div>
 
         <div className="flex-1 flex items-center">
@@ -36,18 +29,10 @@ export default function Home() {
           tight (888–991px) so content never reaches the edge. */}
       <div className="hidden md:block bg-cream w-full min-h-screen px-[16px]">
         <div className="relative mx-auto h-screen w-full max-w-[960px] transition-layout">
-          <p className="absolute left-0 top-[40px] text-header text-ink font-medium transition-layout">
-            Yishan Zhang
-          </p>
-          <p className="absolute left-[320px] top-[40px] text-ink opacity-90 transition-layout">
-            Product designer
-          </p>
-          <Link
-            href="/about"
-            className="absolute left-[640px] top-[40px] text-ink opacity-90 transition-layout hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
-          >
-            About
-          </Link>
+          <div className="absolute left-0 top-[40px] transition-layout">
+            <p className="text-header text-ink font-medium m-0">Yishan Zhang</p>
+            <p className="text-ink opacity-90 m-0 text-[14px]">Product designer</p>
+          </div>
 
           <div className="absolute left-0 top-1/2 -translate-y-1/2">
             <ProjectIndex variant="desktop" />

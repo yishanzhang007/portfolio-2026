@@ -69,7 +69,7 @@ function EnvelopeIcon() {
 export function AgentPlaygroundHero({ visible = false }: { visible?: boolean }) {
   const animKey = useReplayKey(visible);
 
-  const W = 305;
+  const W = 282; // shrunk by 23px to reduce the connector width by ~30% (76px → 53px)
   const H = 100;
   const leftCardX = 0;
   const leftCardW = 34;
@@ -81,10 +81,11 @@ export function AgentPlaygroundHero({ visible = false }: { visible?: boolean }) 
   const rightCardX = W - rightTextW - 8 - rightCardW; // right-aligned: 177
   const rightCardCenterY = H / 2 + 16;
 
-  const CURVE_PADDING = 6;
-  const lineStartX = leftLabelX + leftLabelW + CURVE_PADDING; // 103
+  const CURVE_LEFT_PADDING = -2; // gap from "Greeting" label to line start
+  const CURVE_RIGHT_PADDING = 6; // gap from line end to Scheduling card
+  const lineStartX = leftLabelX + leftLabelW + CURVE_LEFT_PADDING;
   const lineStartY = leftCardCenterY;
-  const lineEndX = rightCardX - CURVE_PADDING; // 171
+  const lineEndX = rightCardX - CURVE_RIGHT_PADDING;
   const lineEndY = rightCardCenterY;
   const midX = (lineStartX + lineEndX) / 2;
   const linePath = `M ${lineStartX} ${lineStartY} C ${midX} ${lineStartY}, ${midX} ${lineEndY}, ${lineEndX} ${lineEndY}`;

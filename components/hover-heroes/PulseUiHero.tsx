@@ -68,16 +68,6 @@ export function PulseUiHero() {
           </span>
         </div>
       </div>
-      <div
-        className="absolute border border-dashed rounded-[2px]"
-        style={{
-          left: 0,
-          top: 34,
-          width: 62,
-          height: 28,
-          borderColor: "#f42500",
-        }}
-      />
       <svg
         className="absolute"
         style={{ left: 66, top: 34, width: 6, height: 28 }}
