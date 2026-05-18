@@ -1,5 +1,10 @@
 interface CaseStudyHeroProps {
   src: string;
+  /** Optional mobile-only source. When set, the desktop `src` renders only
+   *  at md+ (via `hidden md:block`) and `srcMobile` renders below md
+   *  (via `md:hidden`). Used for cases where a flat PNG ships sharper than
+   *  the original SVG on mobile Safari. */
+  srcMobile?: string;
   alt: string;
   width: number;
   height: number;
@@ -37,6 +42,7 @@ interface CaseStudyHeroProps {
 
 export function CaseStudyHero({
   src,
+  srcMobile,
   alt,
   width,
   height,
@@ -98,18 +104,8 @@ export function CaseStudyHero({
           bordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""
         }`}
       >
-        {/* Plain <img> for all hero sources. Next/Image was tried but its
-            optimizer added perceptible first-paint latency on cold cache;
-            heroes are large and crisp matters more than transcoding here.
-            For mobile-Safari SVG-bitmap-cache blur, the fix is to point
-            `src` at a high-DPR raster export instead of the SVG. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          style={{
+        {(() => {
+          const imgStyle: React.CSSProperties = {
             ...(imageBordered ? { boxShadow: "0 5px 40px rgba(0, 0, 0, 0.15)" } : {}),
             ...(centered || pinBottom
               ? {}
@@ -119,11 +115,38 @@ export function CaseStudyHero({
             // the iOS "blurry SVG" bug where large/complex SVGs get
             // cached as a low-res bitmap. Harmless on rasters.
             imageRendering: "-webkit-optimize-contrast",
-          }}
-          className={`max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
+          };
+          const baseClass = `max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
             centered || pinBottom ? "" : "mb-[var(--bottom-clip)]"
-          } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`}
-        />
+          } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`;
+          // When a mobile-only source is provided, swap at the md breakpoint
+          // (888px). Both <img>s share the same style/class so layout is
+          // identical — only one is visible at a time.
+          return (
+            <>
+              {srcMobile && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={srcMobile}
+                  alt={alt}
+                  width={width}
+                  height={height}
+                  style={imgStyle}
+                  className={`md:hidden ${baseClass}`}
+                />
+              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={alt}
+                width={width}
+                height={height}
+                style={imgStyle}
+                className={`${srcMobile ? "hidden md:block" : ""} ${baseClass}`}
+              />
+            </>
+          );
+        })()}
       </div>
     </section>
   );

@@ -8,6 +8,7 @@ export function AgentPlayground() {
       hero={
         <CaseStudyHero
           src="/work/clinic-ai-assistant/Agent%20playground.svg"
+          srcMobile="/work/clinic-ai-assistant/Agent%20playground.png"
           alt="Agent playground — interface for configuring, testing, and deploying conversational agents."
           width={1168}
           height={1042}

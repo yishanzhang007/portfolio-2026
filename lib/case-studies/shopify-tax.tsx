@@ -9,21 +9,37 @@ export function ShopifyTax() {
         <>
           <CaseStudyHero
             src="/work/clinic-ai-assistant/EU.svg"
+            srcMobile="/work/clinic-ai-assistant/EU.png"
             alt="Shopify Tax EU/UK — VAT settings surface."
             width={1102}
             height={883}
             centered
           />
-          {/* Second hero: three rasters composed in a 1000×743 reference
-              canvas. Tile structure mirrors CaseStudyHero (same padding,
-              colour, 5% bottom-bleed clip) without taking a single src. */}
+          {/* Second hero. Desktop renders three rasters composed in a
+              1000×743 reference canvas (mirrors CaseStudyHero's tile
+              structure — same padding, colour, 5% bottom-bleed clip).
+              Mobile renders a single flat PNG that bakes the same
+              composition (sharper on iOS than the layered SVGs). */}
           <section className="-mt-[4px] md:-mt-[32px] w-full pt-[12px] md:pt-[48px] px-[12px] md:px-[16px] overflow-hidden">
             <div
               style={{ backgroundColor: "#464644", maxWidth: 1320 }}
               className="w-full mx-auto rounded-[6px] md:rounded-[8px] flex justify-center overflow-hidden"
             >
+              {/* Mobile: single combined PNG. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/work/clinic-ai-assistant/Shopify%20tax%202.png"
+                alt="Shopify Tax EU/UK — invoice doc, order timeline, and VAT card together."
+                className="md:hidden block w-[calc(100%-48px)] h-auto"
+                style={{
+                  maxWidth: 1000,
+                  marginTop: "clamp(24px, 5.33vw, 64px)",
+                  marginBottom: "clamp(-37px, -3.72vw, 0px)",
+                }}
+              />
+              {/* Desktop: composed 1000×743 canvas. */}
               <div
-                className="relative w-[calc(100%-48px)]"
+                className="hidden md:block relative w-[calc(100%-48px)]"
                 style={{
                   maxWidth: 1000,
                   aspectRatio: "1000 / 743",
