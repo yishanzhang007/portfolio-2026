@@ -117,6 +117,10 @@ export function CaseStudyHero({
               ? {}
               : ({ "--bottom-clip": bottomClipExpr } as React.CSSProperties)),
             maxWidth: `calc(100% - ${imageInsetX * 2}px)`,
+            // Hint to Safari to use a sharper rasterization path for SVGs
+            // displayed via <img>. Mitigates the iOS "blurry SVG" bug where
+            // large/complex SVGs get cached as a low-res bitmap.
+            imageRendering: "-webkit-optimize-contrast",
           }}
           className={`max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
             centered || pinBottom ? "" : "mb-[var(--bottom-clip)]"

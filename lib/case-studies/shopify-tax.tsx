@@ -37,7 +37,7 @@ export function ShopifyTax() {
                   loading="lazy"
                   decoding="async"
                   className="absolute right-0 top-0 h-auto"
-                  style={{ width: "60.3%" }}
+                  style={{ width: "60.3%", imageRendering: "-webkit-optimize-contrast" }}
                 />
                 <img
                   src="/work/clinic-ai-assistant/Timeline.svg"
@@ -45,7 +45,7 @@ export function ShopifyTax() {
                   loading="lazy"
                   decoding="async"
                   className="absolute h-auto"
-                  style={{ left: "12%", top: "37%", width: "60.5%" }}
+                  style={{ left: "12%", top: "37%", width: "60.5%", imageRendering: "-webkit-optimize-contrast" }}
                 />
                 {/* Wrapper carries the backdrop-filter so anything behind the
                     card (timeline / tile) is blurred where the card sits. */}
@@ -67,6 +67,7 @@ export function ShopifyTax() {
                     loading="lazy"
                     decoding="async"
                     className="block h-auto w-full"
+                    style={{ imageRendering: "-webkit-optimize-contrast" }}
                   />
                 </div>
               </div>
