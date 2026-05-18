@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CaseStudyHero } from "@/components/CaseStudyHero";
 import { CaseStudyLayout } from "@/components/CaseStudyLayout";
 import { CaseStudySection } from "@/components/CaseStudySection";
@@ -8,13 +9,13 @@ export function ShopifyTax() {
       hero={
         <>
           <CaseStudyHero
-            src="/work/clinic-ai-assistant/EU.svg"
+            src="/work/clinic-ai-assistant/EU@3x.png"
             alt="Shopify Tax EU/UK — VAT settings surface."
             width={1102}
             height={883}
             centered
           />
-          {/* Second hero: three SVGs composed in a 1000×743 reference
+          {/* Second hero: three rasters composed in a 1000×743 reference
               canvas. Tile structure mirrors CaseStudyHero (same padding,
               colour, 5% bottom-bleed clip) without taking a single src. */}
           <section className="-mt-[4px] md:-mt-[32px] w-full pt-[12px] md:pt-[48px] px-[12px] md:px-[16px] overflow-hidden">
@@ -31,21 +32,23 @@ export function ShopifyTax() {
                   marginBottom: "clamp(-37px, -3.72vw, 0px)",
                 }}
               >
-                <img
-                  src="/work/clinic-ai-assistant/Amount%20off%20products.svg"
+                <Image
+                  src="/work/clinic-ai-assistant/Amount%20off%20products@3x.png"
                   alt="Shopify Tax EU/UK — generated VAT invoice document."
-                  loading="lazy"
-                  decoding="async"
+                  width={1809}
+                  height={2229}
+                  sizes="(min-width: 1280px) 750px, 60vw"
                   className="absolute right-0 top-0 h-auto"
-                  style={{ width: "60.3%", imageRendering: "-webkit-optimize-contrast" }}
+                  style={{ width: "60.3%" }}
                 />
-                <img
-                  src="/work/clinic-ai-assistant/Timeline.svg"
+                <Image
+                  src="/work/clinic-ai-assistant/Timeline@3x.png"
                   alt="Shopify Tax EU/UK — order timeline with VAT events."
-                  loading="lazy"
-                  decoding="async"
+                  width={1980}
+                  height={1455}
+                  sizes="(min-width: 1280px) 750px, 60vw"
                   className="absolute h-auto"
-                  style={{ left: "12%", top: "37%", width: "60.5%", imageRendering: "-webkit-optimize-contrast" }}
+                  style={{ left: "12%", top: "37%", width: "60.5%" }}
                 />
                 {/* Wrapper carries the backdrop-filter so anything behind the
                     card (timeline / tile) is blurred where the card sits. */}
@@ -61,13 +64,13 @@ export function ShopifyTax() {
                     boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
                   }}
                 >
-                  <img
-                    src="/work/clinic-ai-assistant/VAT%20Invoices.svg"
+                  <Image
+                    src="/work/clinic-ai-assistant/VAT%20Invoices@3x.png"
                     alt="Shopify Tax EU/UK — VAT invoice summary card."
-                    loading="lazy"
-                    decoding="async"
+                    width={870}
+                    height={309}
+                    sizes="(min-width: 1280px) 384px, 30vw"
                     className="block h-auto w-full"
-                    style={{ imageRendering: "-webkit-optimize-contrast" }}
                   />
                 </div>
               </div>
