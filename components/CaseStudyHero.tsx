@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { blurDataURLs } from "@/lib/blur-data";
 
 interface CaseStudyHeroProps {
   src: string;
@@ -121,6 +122,7 @@ export function CaseStudyHero({
             centered || pinBottom ? "" : "mb-[var(--bottom-clip)]"
           } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`;
           if (isRaster) {
+            const blurDataURL = blurDataURLs[decodeURIComponent(src)];
             return (
               <Image
                 src={src}
@@ -131,6 +133,7 @@ export function CaseStudyHero({
                 // the right entry from Next's auto-generated srcset.
                 sizes={`(min-width: ${tileMaxWidth}px) ${tileMaxWidth}px, 100vw`}
                 priority
+                {...(blurDataURL ? { placeholder: "blur" as const, blurDataURL } : {})}
                 style={imgStyle}
                 className={imgClass}
               />

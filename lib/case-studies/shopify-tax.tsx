@@ -2,6 +2,7 @@ import Image from "next/image";
 import { CaseStudyHero } from "@/components/CaseStudyHero";
 import { CaseStudyLayout } from "@/components/CaseStudyLayout";
 import { CaseStudySection } from "@/components/CaseStudySection";
+import { blurDataURLs } from "@/lib/blur-data";
 
 export function ShopifyTax() {
   return (
@@ -38,6 +39,8 @@ export function ShopifyTax() {
                   width={1809}
                   height={2229}
                   sizes="(min-width: 1280px) 750px, 60vw"
+                  placeholder="blur"
+                  blurDataURL={blurDataURLs["/work/clinic-ai-assistant/Amount off products@3x.png"]}
                   className="absolute right-0 top-0 h-auto"
                   style={{ width: "60.3%" }}
                 />
@@ -47,6 +50,8 @@ export function ShopifyTax() {
                   width={1980}
                   height={1455}
                   sizes="(min-width: 1280px) 750px, 60vw"
+                  placeholder="blur"
+                  blurDataURL={blurDataURLs["/work/clinic-ai-assistant/Timeline@3x.png"]}
                   className="absolute h-auto"
                   style={{ left: "12%", top: "37%", width: "60.5%" }}
                 />
@@ -70,6 +75,8 @@ export function ShopifyTax() {
                     width={870}
                     height={309}
                     sizes="(min-width: 1280px) 384px, 30vw"
+                    placeholder="blur"
+                    blurDataURL={blurDataURLs["/work/clinic-ai-assistant/VAT Invoices@3x.png"]}
                     className="block h-auto w-full"
                   />
                 </div>
