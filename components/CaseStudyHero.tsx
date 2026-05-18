@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface CaseStudyHeroProps {
   src: string;
   alt: string;
@@ -98,34 +100,54 @@ export function CaseStudyHero({
           bordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""
         }`}
       >
-        {/* Plain <img> — Next/Image disallows SVGs by default for security.
-            Image renders at its declared width, but `max-w-[calc(100%-32px)]`
-            shrinks it to fit the tile when the tile is narrower than the
-            image, leaving a 16px gutter on each side. h-auto keeps aspect
-            ratio. In the default (non-centered) layout, the negative bottom
-            margin clips the bottom of the image so it bleeds into the tile
-            edge; the centered variant drops it. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          style={{
+        {(() => {
+          // Raster sources (.png/.jpg/.jpeg/.webp) go through `next/image` —
+          // gets srcset for DPR / viewport, auto-transcoded to WebP / AVIF
+          // by Next on demand. SVG keeps the plain <img> path because
+          // next/image disallows SVG inputs by default (security).
+          const isRaster = /\.(png|jpe?g|webp|avif)$/i.test(src);
+          const imgStyle: React.CSSProperties = {
             ...(imageBordered ? { boxShadow: "0 5px 40px rgba(0, 0, 0, 0.15)" } : {}),
             ...(centered || pinBottom
               ? {}
               : ({ "--bottom-clip": bottomClipExpr } as React.CSSProperties)),
             maxWidth: `calc(100% - ${imageInsetX * 2}px)`,
-            // Hint to Safari to use a sharper rasterization path for SVGs
-            // displayed via <img>. Mitigates the iOS "blurry SVG" bug where
-            // large/complex SVGs get cached as a low-res bitmap.
-            imageRendering: "-webkit-optimize-contrast",
-          }}
-          className={`max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
+            // SVG-only: hint Safari to use a sharper rasterization path.
+            // Mitigates the iOS "blurry SVG" bug where large/complex SVGs
+            // get cached as a low-res bitmap.
+            ...(isRaster ? {} : { imageRendering: "-webkit-optimize-contrast" as const }),
+          };
+          const imgClass = `max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
             centered || pinBottom ? "" : "mb-[var(--bottom-clip)]"
-          } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`}
-        />
+          } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`;
+          if (isRaster) {
+            return (
+              <Image
+                src={src}
+                alt={alt}
+                width={width}
+                height={height}
+                // Hint the browser at the rendered footprint so it picks
+                // the right entry from Next's auto-generated srcset.
+                sizes={`(min-width: ${tileMaxWidth}px) ${tileMaxWidth}px, 100vw`}
+                priority
+                style={imgStyle}
+                className={imgClass}
+              />
+            );
+          }
+          // eslint-disable-next-line @next/next/no-img-element
+          return (
+            <img
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              style={imgStyle}
+              className={imgClass}
+            />
+          );
+        })()}
       </div>
     </section>
   );

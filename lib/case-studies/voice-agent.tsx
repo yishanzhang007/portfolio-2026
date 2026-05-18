@@ -71,7 +71,7 @@ export function VoiceAgent() {
     <CaseStudyLayout
       hero={
         <CaseStudyHero
-          src="/work/clinic-ai-assistant/Voice%20agent.svg"
+          src="/work/clinic-ai-assistant/Voice%20agent@3x.png"
           alt="Conversational agent — conversational flow and design principles."
           width={1229}
           height={634}

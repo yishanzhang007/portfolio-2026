@@ -24,7 +24,7 @@ function PulseHero() {
       <div className="w-full max-w-[1320px] mx-auto rounded-[6px] md:rounded-[8px] border-[0.5px] border-[rgba(76,76,59,0.3)] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/work/clinic-ai-assistant/Pulse.svg"
+          src="/work/clinic-ai-assistant/Pulse@3x.png"
           alt="Pulse UI — design system overview."
           className="block w-full h-auto"
         />

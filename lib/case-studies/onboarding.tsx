@@ -12,7 +12,7 @@ function OnboardingHero() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/work/clinic-ai-assistant/Onboarding1.svg"
+          src="/work/clinic-ai-assistant/Onboarding1@3x.png"
           alt="Onboarding — step 1."
           width={448}
           height={215}
@@ -20,7 +20,7 @@ function OnboardingHero() {
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/work/clinic-ai-assistant/Onboarding2.svg"
+          src="/work/clinic-ai-assistant/Onboarding2@3x.png"
           alt="Onboarding — step 2."
           width={432}
           height={417}
