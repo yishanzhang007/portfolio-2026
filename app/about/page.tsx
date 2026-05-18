@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FooterNav } from "@/components/FooterNav";
 import { PageLoad } from "@/components/PageLoad";
 
 function ArrowLeft() {
@@ -83,8 +82,6 @@ export default function AboutPage() {
               </div>
             </div>
           </div>
-
-          <FooterNav />
         </div>
 
         {/* Desktop (≥ md) */}
@@ -107,10 +104,6 @@ export default function AboutPage() {
                   <RecentWorkList />
                 </div>
               </div>
-            </div>
-
-            <div className="absolute left-0 bottom-[40px] transition-layout">
-              <FooterNav />
             </div>
           </div>
         </div>
