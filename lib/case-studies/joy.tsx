@@ -8,7 +8,7 @@ export function Joy() {
       hero={
         <div className="-mt-[4px] md:mt-0">
           <CaseStudyImageHero
-            src="/work/clinic-ai-assistant/Joy@3x.png"
+            src="/work/clinic-ai-assistant/Joy.svg"
             alt="Joy — typography exploration."
             width={1303}
             height={936}

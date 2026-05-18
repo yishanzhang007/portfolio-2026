@@ -8,7 +8,7 @@ export function Analytics() {
       hero={
         <>
           <CaseStudyImageHero
-            src="/work/clinic-ai-assistant/Analytics%201@3x.png"
+            src="/work/clinic-ai-assistant/Analytics%201.svg"
             alt="Analytics — chart 1."
             width={1293}
             height={828}
@@ -16,7 +16,7 @@ export function Analytics() {
           />
           <div className="-mt-[4px] md:mt-0">
             <CaseStudyImageHero
-              src="/work/clinic-ai-assistant/Analytics%202@3x.png"
+              src="/work/clinic-ai-assistant/Analytics%202.svg"
               alt="Analytics — chart 2."
               width={1293}
               height={880}

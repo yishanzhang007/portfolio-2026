@@ -1,8 +1,6 @@
-import Image from "next/image";
 import { CaseStudyHero } from "@/components/CaseStudyHero";
 import { CaseStudyLayout } from "@/components/CaseStudyLayout";
 import { CaseStudySection } from "@/components/CaseStudySection";
-import { blurDataURLs } from "@/lib/blur-data";
 
 export function ShopifyTax() {
   return (
@@ -10,7 +8,7 @@ export function ShopifyTax() {
       hero={
         <>
           <CaseStudyHero
-            src="/work/clinic-ai-assistant/EU@3x.png"
+            src="/work/clinic-ai-assistant/EU.svg"
             alt="Shopify Tax EU/UK — VAT settings surface."
             width={1102}
             height={883}
@@ -33,27 +31,23 @@ export function ShopifyTax() {
                   marginBottom: "clamp(-37px, -3.72vw, 0px)",
                 }}
               >
-                <Image
-                  src="/work/clinic-ai-assistant/Amount%20off%20products@3x.png"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/work/clinic-ai-assistant/Amount%20off%20products.svg"
                   alt="Shopify Tax EU/UK — generated VAT invoice document."
-                  width={1809}
-                  height={2229}
-                  sizes="(min-width: 1280px) 750px, 60vw"
-                  placeholder="blur"
-                  blurDataURL={blurDataURLs["/work/clinic-ai-assistant/Amount off products@3x.png"]}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute right-0 top-0 h-auto"
-                  style={{ width: "60.3%" }}
+                  style={{ width: "60.3%", imageRendering: "-webkit-optimize-contrast" }}
                 />
-                <Image
-                  src="/work/clinic-ai-assistant/Timeline@3x.png"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/work/clinic-ai-assistant/Timeline.svg"
                   alt="Shopify Tax EU/UK — order timeline with VAT events."
-                  width={1980}
-                  height={1455}
-                  sizes="(min-width: 1280px) 750px, 60vw"
-                  placeholder="blur"
-                  blurDataURL={blurDataURLs["/work/clinic-ai-assistant/Timeline@3x.png"]}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute h-auto"
-                  style={{ left: "12%", top: "37%", width: "60.5%" }}
+                  style={{ left: "12%", top: "37%", width: "60.5%", imageRendering: "-webkit-optimize-contrast" }}
                 />
                 {/* Wrapper carries the backdrop-filter so anything behind the
                     card (timeline / tile) is blurred where the card sits. */}
@@ -69,15 +63,14 @@ export function ShopifyTax() {
                     boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
                   }}
                 >
-                  <Image
-                    src="/work/clinic-ai-assistant/VAT%20Invoices@3x.png"
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/work/clinic-ai-assistant/VAT%20Invoices.svg"
                     alt="Shopify Tax EU/UK — VAT invoice summary card."
-                    width={870}
-                    height={309}
-                    sizes="(min-width: 1280px) 384px, 30vw"
-                    placeholder="blur"
-                    blurDataURL={blurDataURLs["/work/clinic-ai-assistant/VAT Invoices@3x.png"]}
+                    loading="lazy"
+                    decoding="async"
                     className="block h-auto w-full"
+                    style={{ imageRendering: "-webkit-optimize-contrast" }}
                   />
                 </div>
               </div>

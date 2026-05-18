@@ -8,7 +8,7 @@ export function SoutheastCommunityCenter() {
       hero={
         <>
           <CaseStudyImageHero
-            src="/work/clinic-ai-assistant/Southeast%202@3x.png"
+            src="/work/clinic-ai-assistant/Southeast%202.svg"
             alt="Southeast Community Center — architectural drawing 2."
             width={1293}
             height={828}
@@ -16,7 +16,7 @@ export function SoutheastCommunityCenter() {
           />
           <div className="-mt-[4px] md:mt-0">
             <CaseStudyImageHero
-              src="/work/clinic-ai-assistant/Southeast%201@3x.png"
+              src="/work/clinic-ai-assistant/Southeast%201.svg"
               alt="Southeast Community Center — architectural drawing 1."
               width={1293}
               height={781}

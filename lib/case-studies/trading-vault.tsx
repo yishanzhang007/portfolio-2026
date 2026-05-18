@@ -7,7 +7,7 @@ export function TradingVault() {
     <CaseStudyLayout
       hero={
         <CaseStudyHero
-          src="/work/clinic-ai-assistant/Trading%20vault@3x.png"
+          src="/work/clinic-ai-assistant/Trading%20vault.svg"
           alt="Trading vault — interface."
           width={1235}
           height={786}

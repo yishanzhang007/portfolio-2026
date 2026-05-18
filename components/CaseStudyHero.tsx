@@ -1,6 +1,3 @@
-import Image from "next/image";
-import { blurDataURLs } from "@/lib/blur-data";
-
 interface CaseStudyHeroProps {
   src: string;
   alt: string;
@@ -101,56 +98,32 @@ export function CaseStudyHero({
           bordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""
         }`}
       >
-        {(() => {
-          // Raster sources (.png/.jpg/.jpeg/.webp) go through `next/image` —
-          // gets srcset for DPR / viewport, auto-transcoded to WebP / AVIF
-          // by Next on demand. SVG keeps the plain <img> path because
-          // next/image disallows SVG inputs by default (security).
-          const isRaster = /\.(png|jpe?g|webp|avif)$/i.test(src);
-          const imgStyle: React.CSSProperties = {
+        {/* Plain <img> for all hero sources. Next/Image was tried but its
+            optimizer added perceptible first-paint latency on cold cache;
+            heroes are large and crisp matters more than transcoding here.
+            For mobile-Safari SVG-bitmap-cache blur, the fix is to point
+            `src` at a high-DPR raster export instead of the SVG. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          style={{
             ...(imageBordered ? { boxShadow: "0 5px 40px rgba(0, 0, 0, 0.15)" } : {}),
             ...(centered || pinBottom
               ? {}
               : ({ "--bottom-clip": bottomClipExpr } as React.CSSProperties)),
             maxWidth: `calc(100% - ${imageInsetX * 2}px)`,
-            // SVG-only: hint Safari to use a sharper rasterization path.
-            // Mitigates the iOS "blurry SVG" bug where large/complex SVGs
-            // get cached as a low-res bitmap.
-            ...(isRaster ? {} : { imageRendering: "-webkit-optimize-contrast" as const }),
-          };
-          const imgClass = `max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
+            // Hint Safari to use a sharper rasterization path. Mitigates
+            // the iOS "blurry SVG" bug where large/complex SVGs get
+            // cached as a low-res bitmap. Harmless on rasters.
+            imageRendering: "-webkit-optimize-contrast",
+          }}
+          className={`max-w-[calc(100%-24px)] h-auto rounded-[8px] ${
             centered || pinBottom ? "" : "mb-[var(--bottom-clip)]"
-          } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`;
-          if (isRaster) {
-            const blurDataURL = blurDataURLs[decodeURIComponent(src)];
-            return (
-              <Image
-                src={src}
-                alt={alt}
-                width={width}
-                height={height}
-                // Hint the browser at the rendered footprint so it picks
-                // the right entry from Next's auto-generated srcset.
-                sizes={`(min-width: ${tileMaxWidth}px) ${tileMaxWidth}px, 100vw`}
-                priority
-                {...(blurDataURL ? { placeholder: "blur" as const, blurDataURL } : {})}
-                style={imgStyle}
-                className={imgClass}
-              />
-            );
-          }
-          // eslint-disable-next-line @next/next/no-img-element
-          return (
-            <img
-              src={src}
-              alt={alt}
-              width={width}
-              height={height}
-              style={imgStyle}
-              className={imgClass}
-            />
-          );
-        })()}
+          } ${imageBordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""}`}
+        />
       </div>
     </section>
   );
