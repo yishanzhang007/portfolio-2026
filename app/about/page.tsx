@@ -62,7 +62,7 @@ export default function AboutPage() {
     <PageLoad>
       <main className="text-body md:text-[14px]">
         {/* Mobile (< md) */}
-        <div className="landing-mobile md:hidden bg-cream min-h-screen w-full p-[12px] sm:p-[16px] flex flex-col">
+        <div className="landing-mobile md:hidden bg-cream min-h-dvh w-full p-[12px] sm:p-[16px] flex flex-col">
           <Link
             href="/"
             className="flex items-center gap-[9px] text-muted hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"

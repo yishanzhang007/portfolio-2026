@@ -10,7 +10,7 @@ export default function Home() {
           narrowest viewports; bumps to 16px from the sm: breakpoint up so
           everything ≥ mobile keeps a 16px minimum gutter. Everything is
           left-aligned. */}
-      <div className="landing-mobile md:hidden bg-cream min-h-screen w-full p-[12px] sm:p-[16px] flex flex-col">
+      <div className="landing-mobile md:hidden bg-cream min-h-dvh w-full p-[12px] sm:p-[16px] flex flex-col">
         <div className="flex flex-col">
           <p className="text-header text-ink font-medium m-0">Yishan Zhang</p>
           <p className="text-ink opacity-90 m-0 text-[14px]">Product designer</p>
