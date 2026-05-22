@@ -40,10 +40,10 @@ export default async function OpengraphImage() {
           color: "#000000",
         }}
       >
-        <div style={{ fontSize: 96, fontWeight: 700, lineHeight: 1.1 }}>
+        <div style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.1 }}>
           Yishan Zhang
         </div>
-        <div style={{ fontSize: 48, fontWeight: 400, marginTop: 8 }}>
+        <div style={{ fontSize: 24, fontWeight: 400, marginTop: 4 }}>
           Product designer
         </div>
       </div>
