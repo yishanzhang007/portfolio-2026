@@ -500,9 +500,9 @@ function Canvas({
             </span>
           </div>
           <div className="flex-1 min-w-0 flex flex-col gap-[8px]">
-            <div className="bg-[#f9f9f8] rounded-[8px] p-[16px] flex flex-col gap-[16px]">
+            <div className="bg-[#f9f9f8] rounded-[12px] p-[12px] flex flex-col gap-[16px]">
               <div className="flex flex-col gap-[4px]">
-                <p className="flex gap-[4px] text-[14px] leading-[18px] font-medium text-[#21201d]">
+                <p className="flex gap-[4px] text-[14px] leading-[20px] font-medium text-[#21201d]">
                   <span>
                     {isSam
                       ? "Cancel an existing patient"
@@ -521,7 +521,7 @@ function Canvas({
                   : "Jessica Davis requested a refill for Lisinopril 10mg taken once daily. The AI confirmed the request was sent to her provider for processing within 24-48 hours."}
               </p>
             </div>
-            <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
+            <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-left">
               {isSam ? "2 min" : "24 min"}
             </p>
           </div>
@@ -534,8 +534,8 @@ function Canvas({
         <div className="px-[16px] flex gap-[8px] items-start justify-end">
           <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
           <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-            <div className="bg-[#f6f5ff] rounded-[8px] p-[12px] w-full">
-              <p className="text-[14px] leading-[24px] text-[#21201d]">
+            <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-full">
+              <p className="text-[14px] leading-[20px] text-[#21201d]">
                 Spring Clinic: We&apos;ve received your request and our team
                 will follow up within 1-2 business days.
               </p>
@@ -552,8 +552,8 @@ function Canvas({
           <div className="px-[16px] flex gap-[8px] items-start justify-end">
             <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
             <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-              <div className="bg-[#f6f5ff] rounded-[8px] p-[16px] w-fit max-w-full">
-                <p className="text-[14px] leading-[18px] text-[#21201d]">
+              <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-fit max-w-full">
+                <p className="text-[14px] leading-[20px] text-[#21201d]">
                   Hi Jessica, we have sent your refill request to your pharmacy
                 </p>
               </div>
@@ -572,7 +572,7 @@ function Canvas({
           <div className="px-[16px] flex gap-[8px] items-start justify-end">
             <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
             <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-              <div className="bg-[#f6f5ff] rounded-[8px] p-[12px] w-full">
+              <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-full">
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
                   Hi Sam — your appointment with Dr. Alex Brown tomorrow at
                   4 PM is cancelled. Want to reschedule? Reply with a date/time
@@ -600,7 +600,7 @@ function Canvas({
 
       {/* Reply composer */}
       <div className="px-[16px] pb-[16px]">
-        <div className="bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[12px] h-[120px] flex flex-col justify-between px-[16px] pt-[16px] pb-[12px] shadow-[0_4px_14px_0_rgba(0,0,0,0.03)]">
+        <div className="bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[12px] h-[120px] flex flex-col justify-between p-[12px] shadow-[0_4px_14px_0_rgba(0,0,0,0.03)]">
           <p className="text-[14px] leading-[18px] text-[#b2b2b2]">
             Reply to {isSam ? "Sam" : "Jessica"}…
           </p>
@@ -633,7 +633,7 @@ function CancellationCard({
       className="border-x-[0.5px] border-t-[0.5px] border-[rgba(76,76,59,0.2)] rounded-t-[12px] overflow-hidden"
       data-cancellation-card
     >
-      <div className="bg-[#f9f9f8] flex items-center justify-between h-[44px] px-[16px]">
+      <div className="bg-[#f9f9f8] flex items-center justify-between h-[44px] px-[12px]">
         <div className="flex items-center gap-[8px] min-w-0">
           {collapsed && (
             <CheckCircleIcon size={16} className="text-[#2a6b2c] shrink-0" />
@@ -671,7 +671,7 @@ function CancellationCard({
       >
         <div className="overflow-hidden">
           <div
-            className="bg-white flex items-center justify-between px-[16px] py-[12px]"
+            className="bg-white flex items-center justify-between p-[12px]"
             style={{
               opacity: collapsed ? 0 : 1,
               transform: collapsed ? "translateY(-4px)" : "translateY(0)",
