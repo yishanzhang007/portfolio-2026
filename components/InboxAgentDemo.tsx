@@ -316,10 +316,10 @@ function InboxList({
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             Front desk inbox
           </p>
-          <CaretDownIcon size={12} className="text-[#82807c]" />
+          <CaretDownIcon size={12} className="text-[#A1A09D]" />
         </div>
         <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
-          <SlidersHorizontalIcon size={18} className="text-[#82807c]" />
+          <SlidersHorizontalIcon size={18} className="text-[#A1A09D]" />
         </span>
       </div>
       {/* "13 Open" filter row — count bumps with Sam's arrival */}
@@ -328,10 +328,10 @@ function InboxList({
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             {samArrived ? "13 Open" : "12 Open"}
           </p>
-          <CaretDownIcon size={12} className="text-[#82807c]" />
+          <CaretDownIcon size={12} className="text-[#A1A09D]" />
         </div>
         <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
-          <ArrowDownIcon size={16} className="text-[#82807c]" />
+          <ArrowDownIcon size={16} className="text-[#A1A09D]" />
         </span>
       </div>
       {/* List */}
@@ -397,22 +397,22 @@ function InboxRow({
   return (
     <div
       data-row-name={row.name}
-      className={`flex gap-[12px] items-start px-[8px] py-[12px] rounded-[4px] ${
+      className={`flex gap-[12px] items-start px-[8px] py-[12px] rounded-[12px] ${
         active ? "bg-[#f9f9f8]" : ""
       }`}
     >
       {row.avatar.kind === "letter" ? (
         <div
-          className="size-[24px] shrink-0 rounded-full flex items-center justify-center"
+          className="size-[20px] shrink-0 rounded-full flex items-center justify-center"
           style={{ backgroundColor: row.avatar.bg }}
         >
-          <span className="text-[14px] leading-[18px] font-medium text-[#fdfdfc]">
+          <span className="text-[12px] leading-[16px] font-semibold text-[#fdfdfc]">
             {row.avatar.letter}
           </span>
         </div>
       ) : (
-        <div className="size-[24px] shrink-0 rounded-full bg-[#f0f0ee] flex items-center justify-center">
-          <ArrowBendUpLeftIcon size={14} className="text-[#82807c]" />
+        <div className="size-[20px] shrink-0 rounded-full bg-[#f0f0ee] flex items-center justify-center">
+          <ArrowBendUpLeftIcon size={14} className="text-[#A1A09D]" />
         </div>
       )}
       <div className="flex-1 min-w-0 flex flex-col gap-[4px]">
@@ -432,7 +432,7 @@ function InboxRow({
               />
             )}
           </div>
-          <p className="text-[14px] leading-[18px] text-[#A1A09D] shrink-0">
+          <p className="text-[12px] leading-[16px] text-[#A1A09D] shrink-0">
             {row.time}
           </p>
         </div>
@@ -470,17 +470,16 @@ function Canvas({
       <div className="flex items-center gap-[12px] h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
         <div className="flex items-center gap-[8px] flex-1 min-w-0">
           <span className="size-[28px] flex items-center justify-center rounded-[8px] p-[3px]">
-            <PanelLeftIcon size={18} className="text-[#82807c]" />
+            <PanelLeftIcon size={18} className="text-[#A1A09D]" />
           </span>
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d] truncate">
             {isSam ? "Sam Smith" : "Jessica Davis"}
           </p>
         </div>
         <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
-          <MoreIcon size={18} className="text-[#21201d]" />
+          <MoreIcon size={18} className="text-[#A1A09D]" />
         </span>
-        <div className="h-[32px] min-w-[68px] -ml-[8px] flex items-center justify-center px-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[8px] gap-[6px]">
-          <CheckIcon size={16} className="text-[#21201d]" />
+        <div className="h-[32px] min-w-[68px] -ml-[8px] flex items-center justify-center pl-[14px] pr-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[8px]">
           <span className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             Resolve
           </span>
@@ -492,10 +491,10 @@ function Canvas({
         {/* First patient message — request summary */}
         <div className="px-[16px] flex gap-[8px] items-start justify-end">
           <div
-            className="size-[24px] shrink-0 rounded-full flex items-center justify-center"
+            className="size-[20px] shrink-0 rounded-full flex items-center justify-center"
             style={{ backgroundColor: isSam ? "#8e4ec6" : "#5b5bd6" }}
           >
-            <span className="text-[14px] leading-[18px] font-medium text-[#fdfdfc]">
+            <span className="text-[12px] leading-[16px] font-semibold text-[#fdfdfc]">
               {isSam ? "S" : "J"}
             </span>
           </div>
@@ -521,18 +520,18 @@ function Canvas({
                   : "Jessica Davis requested a refill for Lisinopril 10mg taken once daily. The AI confirmed the request was sent to her provider for processing within 24-48 hours."}
               </p>
             </div>
-            <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-left">
+            <p className="text-[12px] leading-[16px] text-[#A1A09D] text-left">
               {isSam ? "2 min" : "24 min"}
             </p>
           </div>
-          <span className="size-[28px] opacity-0 shrink-0" />
+          <span className="size-[24px] opacity-0 shrink-0" />
         </div>
 
         {/* Second message — clinic acknowledgment (lavender). Single avatar
             on the RIGHT. Hidden 24px spacer on the left mirrors the grey
             bubble's avatar gutter, so both bubbles render the same width. */}
         <div className="px-[16px] flex gap-[8px] items-start justify-end">
-          <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
+          <span className="size-[20px] opacity-0 shrink-0" aria-hidden />
           <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
             <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-full">
               <p className="text-[14px] leading-[20px] text-[#21201d]">
@@ -540,7 +539,7 @@ function Canvas({
                 will follow up within 1-2 business days.
               </p>
             </div>
-            <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
+            <p className="text-[12px] leading-[16px] text-[#A1A09D] text-right">
               {isSam ? "1 min" : "12 min"}
             </p>
           </div>
@@ -550,14 +549,14 @@ function Canvas({
         {/* Third message — Jessica's pharmacy update (only in state 1) */}
         {!isSam && (
           <div className="px-[16px] flex gap-[8px] items-start justify-end">
-            <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
+            <span className="size-[20px] opacity-0 shrink-0" aria-hidden />
             <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
               <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-fit max-w-full">
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
                   Hi Jessica, we have sent your refill request to your pharmacy
                 </p>
               </div>
-              <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
+              <p className="text-[12px] leading-[16px] text-[#A1A09D] text-right">
                 12 min
               </p>
             </div>
@@ -569,8 +568,8 @@ function Canvas({
             after the post-cancel pause). Timestamp reads "just now" because
             the SMS literally just went out. */}
         {showConfirmedMessage && (
-          <div className="px-[16px] flex gap-[8px] items-start justify-end">
-            <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
+          <div className="px-[16px] flex gap-[8px] items-start justify-end animate-clinic-message-send-in">
+            <span className="size-[20px] opacity-0 shrink-0" aria-hidden />
             <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
               <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-full">
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
@@ -579,7 +578,7 @@ function Canvas({
                   that works.
                 </p>
               </div>
-              <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
+              <p className="text-[12px] leading-[16px] text-[#A1A09D] text-right">
                 Just now
               </p>
             </div>
@@ -605,12 +604,12 @@ function Canvas({
             Reply to {isSam ? "Sam" : "Jessica"}…
           </p>
           <div className="flex items-center justify-between">
-            <span className="h-[28px] -ml-[8px] flex items-center justify-center px-[8px] py-[2px] gap-[4px] rounded-[8px]">
+            <span className="h-[28px] -ml-[4px] flex items-center justify-center px-[8px] py-[2px] gap-[4px] rounded-[8px]">
               <ChatsCircleIcon size={14} className="text-[#21201d]" />
               <span className="text-[14px] leading-[18px] text-[#21201d]">
                 SMS
               </span>
-              <CaretDownIcon size={12} className="text-[#82807c]" />
+              <CaretDownIcon size={12} className="text-[#A1A09D]" />
             </span>
             <span className="size-[28px] flex items-center justify-center bg-[#f1f0ef] text-[#bcbbb7] rounded-[8px] p-[6px]">
               <ArrowUpIcon size={14} />
@@ -649,7 +648,7 @@ function CancellationCard({
             row rather than something to expand. */}
         <CaretDownIcon
           size={12}
-          className={`text-[#82807c] shrink-0 transition-transform duration-200 ease-out ${
+          className={`text-[#A1A09D] shrink-0 transition-transform duration-200 ease-out ${
             collapsed ? "-rotate-90" : ""
           }`}
         />
@@ -680,7 +679,7 @@ function CancellationCard({
             }}
           >
             <div className="flex flex-col gap-[2px]">
-              <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
+              <p className="text-[14px] leading-[18px] text-[#21201d]">
                 Feb 12, 2026 3:30 PM
               </p>
               <p className="text-[14px] leading-[18px] text-[#A1A09D]">
@@ -715,9 +714,9 @@ function ClinicAvatar() {
     <img
       src="/work/clinic-ai-assistant/Logo.svg"
       alt=""
-      width={28}
-      height={28}
-      className="size-[28px] shrink-0 rounded-full"
+      width={24}
+      height={24}
+      className="size-[24px] shrink-0 rounded-full"
     />
   );
 }
@@ -815,7 +814,7 @@ function RightPanel({ patient }: { patient: "jessica" | "sam" }) {
           Detail
         </p>
         <span className="size-[28px] flex items-center justify-center rounded-[8px] p-[4px]">
-          <XIcon size={16} className="text-[#82807c]" />
+          <XIcon size={16} className="text-[#A1A09D]" />
         </span>
       </div>
 

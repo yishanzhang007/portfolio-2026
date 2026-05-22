@@ -333,9 +333,28 @@ body {
   transform-origin: center;
 }
 
+/* Clinic AI hero — sent SMS rises softly into the thread, borrowing the
+   animate-text mask-reveal-up easing but applying it to the whole row. */
+@keyframes clinic-message-send-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-clinic-message-send-in {
+  animation: clinic-message-send-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-clinic-scroll,
-  .animate-clinic-ping {
+  .animate-clinic-ping,
+  .animate-clinic-message-send-in {
     animation: none;
   }
 }
