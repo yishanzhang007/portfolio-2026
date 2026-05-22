@@ -154,12 +154,12 @@ export function InboxAgentDemo() {
   return (
     <div
       ref={wrapperRef}
-      className="relative w-full max-w-[1207px] h-[888px] md:h-[928px] overflow-hidden bg-[#f3f3f1] rounded-[6px] md:rounded-[8px] border-[0.5px] border-[rgba(76,76,59,0.25)]"
+      className="relative w-full max-w-[1207px] h-[888px] md:h-[928px] overflow-hidden bg-[#f3f3f1] rounded-[14px] border-[0.5px] border-[rgba(76,76,59,0.2)]"
       data-phase={phase}
     >
       <BrowserChrome />
       <div
-        className="absolute left-[8px] right-[8px] top-[36px] bottom-[8px] rounded-[6px] border-[0.5px] border-[rgba(76,76,59,0.25)] bg-white overflow-hidden flex"
+        className="absolute left-[4px] right-[4px] top-[36px] bottom-[4px] rounded-[12px] border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white overflow-hidden flex"
       >
         <InboxList
           samArrived={showsSam}
@@ -183,12 +183,12 @@ export function InboxAgentDemo() {
 /* ─── Browser chrome (top bar with traffic lights + URL) ──────────────────── */
 function BrowserChrome() {
   return (
-    <div className="absolute left-0 right-0 top-0 h-[36px] flex items-center px-[12px] gap-[8px] bg-[#f3f3f1] rounded-t-[8px]">
+    <div className="absolute left-0 right-0 top-0 h-[36px] flex items-center px-[12px] gap-[8px] bg-[#f3f3f1] rounded-t-[14px]">
       <span className="size-[12px] rounded-full bg-[#ed6a5e]" />
       <span className="size-[12px] rounded-full bg-[#f5bf4f]" />
       <span className="size-[12px] rounded-full bg-[#62c554]" />
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-[626px] border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[6px] h-[24px] px-[12px] flex items-center justify-center text-[12px] text-[#82807c] font-sms">
+        <div className="w-full max-w-[626px] border-[0.5px] border-[rgba(76,76,59,0.15)] rounded-[6px] h-[24px] px-[12px] flex items-center justify-center text-[12px] text-[#A1A09D] font-sms">
           frontdesk.getfreed.ai/inbox
         </div>
       </div>
@@ -311,14 +311,14 @@ function InboxList({
     <div className="h-full w-0 min-[1072px]:w-[280px] shrink-0 overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none">
     <div className="flex flex-col h-full w-[280px] shrink-0 font-sms">
       {/* Header: Front desk inbox */}
-      <div className="flex items-center justify-between h-[52px] pl-[16px] pr-[12px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.25)]">
+      <div className="flex items-center justify-between h-[52px] pl-[16px] pr-[12px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
         <div className="flex items-center gap-[8px]">
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             Front desk inbox
           </p>
           <CaretDownIcon size={12} className="text-[#82807c]" />
         </div>
-        <span className="size-[36px] flex items-center justify-center rounded-[6px] p-[8px]">
+        <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
           <SlidersHorizontalIcon size={18} className="text-[#82807c]" />
         </span>
       </div>
@@ -330,7 +330,7 @@ function InboxList({
           </p>
           <CaretDownIcon size={12} className="text-[#82807c]" />
         </div>
-        <span className="size-[36px] flex items-center justify-center rounded-[6px] p-[8px]">
+        <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
           <ArrowDownIcon size={16} className="text-[#82807c]" />
         </span>
       </div>
@@ -420,7 +420,7 @@ function InboxRow({
           <div className="flex items-center gap-[6px] min-w-0">
             <p
               className={`text-[14px] leading-[18px] font-medium truncate ${
-                unread ? "text-[#21201d]" : "text-[#82807c]"
+                unread ? "text-[#21201d]" : "text-[#A1A09D]"
               }`}
             >
               {row.name}
@@ -432,13 +432,13 @@ function InboxRow({
               />
             )}
           </div>
-          <p className="text-[14px] leading-[18px] text-[#82807c] shrink-0">
+          <p className="text-[14px] leading-[18px] text-[#A1A09D] shrink-0">
             {row.time}
           </p>
         </div>
         <p
           className={`text-[14px] leading-[18px] truncate ${
-            unread ? "text-[#21201d]" : "text-[#82807c]"
+            unread ? "text-[#21201d]" : "text-[#A1A09D]"
           }`}
         >
           {row.subject}
@@ -465,21 +465,21 @@ function Canvas({
 }: CanvasProps) {
   const isSam = patient === "sam";
   return (
-    <div className="flex-1 min-w-0 h-full flex flex-col border-l-0 min-[1072px]:border-l-[0.5px] border-r-0 min-[680px]:border-r-[0.5px] border-[rgba(76,76,59,0.25)] overflow-hidden font-sms">
+    <div className="flex-1 min-w-0 h-full flex flex-col border-l-0 min-[1072px]:border-l-[0.5px] border-r-0 min-[680px]:border-r-[0.5px] border-[rgba(76,76,59,0.2)] overflow-hidden font-sms">
       {/* Canvas header: avatar + name + Resolve button */}
-      <div className="flex items-center gap-[12px] h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.25)]">
+      <div className="flex items-center gap-[12px] h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
         <div className="flex items-center gap-[8px] flex-1 min-w-0">
-          <span className="size-[28px] flex items-center justify-center rounded-[6px] p-[3px]">
+          <span className="size-[28px] flex items-center justify-center rounded-[8px] p-[3px]">
             <PanelLeftIcon size={18} className="text-[#82807c]" />
           </span>
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d] truncate">
             {isSam ? "Sam Smith" : "Jessica Davis"}
           </p>
         </div>
-        <span className="size-[36px] flex items-center justify-center rounded-[6px] p-[8px]">
+        <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
           <MoreIcon size={18} className="text-[#21201d]" />
         </span>
-        <div className="h-[32px] min-w-[68px] -ml-[8px] flex items-center justify-center px-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.25)] rounded-[6px] gap-[6px]">
+        <div className="h-[32px] min-w-[68px] -ml-[8px] flex items-center justify-center px-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[8px] gap-[6px]">
           <CheckIcon size={16} className="text-[#21201d]" />
           <span className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             Resolve
@@ -500,7 +500,7 @@ function Canvas({
             </span>
           </div>
           <div className="flex-1 min-w-0 flex flex-col gap-[8px]">
-            <div className="bg-[#f9f9f8] rounded-[6px] p-[16px] flex flex-col gap-[16px]">
+            <div className="bg-[#f9f9f8] rounded-[8px] p-[16px] flex flex-col gap-[16px]">
               <div className="flex flex-col gap-[4px]">
                 <p className="flex gap-[4px] text-[14px] leading-[18px] font-medium text-[#21201d]">
                   <span>
@@ -521,7 +521,7 @@ function Canvas({
                   : "Jessica Davis requested a refill for Lisinopril 10mg taken once daily. The AI confirmed the request was sent to her provider for processing within 24-48 hours."}
               </p>
             </div>
-            <p className="text-[12px] leading-[16px] font-medium text-[#82807c] text-right">
+            <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
               {isSam ? "2 min" : "24 min"}
             </p>
           </div>
@@ -534,13 +534,13 @@ function Canvas({
         <div className="px-[16px] flex gap-[8px] items-start justify-end">
           <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
           <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-            <div className="bg-[#f6f5ff] rounded-[6px] p-[12px] w-full">
+            <div className="bg-[#f6f5ff] rounded-[8px] p-[12px] w-full">
               <p className="text-[14px] leading-[24px] text-[#21201d]">
                 Spring Clinic: We&apos;ve received your request and our team
                 will follow up within 1-2 business days.
               </p>
             </div>
-            <p className="text-[12px] leading-[16px] font-medium text-[#82807c] text-right">
+            <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
               {isSam ? "1 min" : "12 min"}
             </p>
           </div>
@@ -552,12 +552,12 @@ function Canvas({
           <div className="px-[16px] flex gap-[8px] items-start justify-end">
             <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
             <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-              <div className="bg-[#f6f5ff] rounded-[6px] p-[16px] w-fit max-w-full">
+              <div className="bg-[#f6f5ff] rounded-[8px] p-[16px] w-fit max-w-full">
                 <p className="text-[14px] leading-[18px] text-[#21201d]">
                   Hi Jessica, we have sent your refill request to your pharmacy
                 </p>
               </div>
-              <p className="text-[12px] leading-[16px] font-medium text-[#82807c] text-right">
+              <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
                 12 min
               </p>
             </div>
@@ -572,14 +572,14 @@ function Canvas({
           <div className="px-[16px] flex gap-[8px] items-start justify-end">
             <span className="size-[24px] opacity-0 shrink-0" aria-hidden />
             <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-              <div className="bg-[#f6f5ff] rounded-[6px] p-[12px] w-full">
+              <div className="bg-[#f6f5ff] rounded-[8px] p-[12px] w-full">
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
                   Hi Sam — your appointment with Dr. Alex Brown tomorrow at
                   4 PM is cancelled. Want to reschedule? Reply with a date/time
                   that works.
                 </p>
               </div>
-              <p className="text-[12px] leading-[16px] font-medium text-[#82807c] text-right">
+              <p className="text-[12px] leading-[16px] font-medium text-[#A1A09D] text-right">
                 Just now
               </p>
             </div>
@@ -600,19 +600,19 @@ function Canvas({
 
       {/* Reply composer */}
       <div className="px-[16px] pb-[16px]">
-        <div className="bg-white border-[0.5px] border-[rgba(76,76,59,0.25)] rounded-[8px] h-[120px] flex flex-col justify-between px-[16px] pt-[16px] pb-[12px]">
+        <div className="bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[12px] h-[120px] flex flex-col justify-between px-[16px] pt-[16px] pb-[12px] shadow-[0_4px_14px_0_rgba(0,0,0,0.03)]">
           <p className="text-[14px] leading-[18px] text-[#b2b2b2]">
             Reply to {isSam ? "Sam" : "Jessica"}…
           </p>
           <div className="flex items-center justify-between">
-            <span className="h-[28px] -ml-[8px] flex items-center justify-center px-[8px] py-[2px] gap-[4px] rounded-[6px]">
+            <span className="h-[28px] -ml-[8px] flex items-center justify-center px-[8px] py-[2px] gap-[4px] rounded-[8px]">
               <ChatsCircleIcon size={14} className="text-[#21201d]" />
               <span className="text-[14px] leading-[18px] text-[#21201d]">
                 SMS
               </span>
               <CaretDownIcon size={12} className="text-[#82807c]" />
             </span>
-            <span className="size-[28px] flex items-center justify-center bg-[#f1f0ef] text-[#bcbbb7] rounded-[6px] p-[6px]">
+            <span className="size-[28px] flex items-center justify-center bg-[#f1f0ef] text-[#bcbbb7] rounded-[8px] p-[6px]">
               <ArrowUpIcon size={14} />
             </span>
           </div>
@@ -630,7 +630,7 @@ function CancellationCard({
   const collapsed = state === "done";
   return (
     <div
-      className="border-x-[0.5px] border-t-[0.5px] border-[rgba(76,76,59,0.25)] rounded-t-[8px] overflow-hidden"
+      className="border-x-[0.5px] border-t-[0.5px] border-[rgba(76,76,59,0.2)] rounded-t-[12px] overflow-hidden"
       data-cancellation-card
     >
       <div className="bg-[#f9f9f8] flex items-center justify-between h-[44px] px-[16px]">
@@ -683,14 +683,14 @@ function CancellationCard({
               <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
                 Feb 12, 2026 3:30 PM
               </p>
-              <p className="text-[14px] leading-[18px] text-[#82807c]">
+              <p className="text-[14px] leading-[18px] text-[#A1A09D]">
                 Follow up visit with Dr. Alex Brown
               </p>
             </div>
             <button
               type="button"
               data-cancel-button
-              className="h-[32px] min-w-[68px] flex items-center justify-center px-[12px] rounded-[6px] bg-[#32302c]"
+              className="h-[32px] min-w-[68px] flex items-center justify-center px-[12px] rounded-[8px] bg-[#32302c]"
             >
               {state === "loading" ? (
                 <Spinner size={16} />
@@ -810,7 +810,7 @@ function RightPanel({ patient }: { patient: "jessica" | "sam" }) {
     <div className="h-full w-0 min-[680px]:w-[360px] shrink-0 overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none">
     <div className="flex flex-col h-full w-[360px] shrink-0 font-sms">
       {/* Header */}
-      <div className="flex items-center justify-between h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.25)]">
+      <div className="flex items-center justify-between h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
         <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
           Detail
         </p>
@@ -822,14 +822,14 @@ function RightPanel({ patient }: { patient: "jessica" | "sam" }) {
       {/* Body */}
       <div className="flex-1 overflow-hidden flex flex-col gap-[16px] px-[16px] py-[16px]">
         {/* Segmented toggle */}
-        <div className="bg-[#f9f9f8] rounded-[6px] p-[2px] flex">
-          <button className="flex-1 h-[28px] flex items-center justify-center rounded-[4px] bg-white border-[0.5px] border-[rgba(76,76,59,0.25)] text-[14px] leading-[18px] text-[#21201d]">
+        <div className="bg-[#f9f9f8] rounded-[10px] p-px flex">
+          <button className="flex-1 h-[32px] flex items-center justify-center rounded-[8px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] text-[14px] leading-[18px] font-medium text-[#21201d]">
             Transcript
           </button>
-          <span className="flex-1 h-[28px] flex items-center justify-center text-[14px] leading-[18px] text-[#82807c]">
+          <span className="flex-1 h-[32px] flex items-center justify-center text-[14px] leading-[18px] font-medium text-[#A1A09D]">
             Patient
           </span>
-          <span className="flex-1 h-[28px] flex items-center justify-center text-[14px] leading-[18px] text-[#82807c]">
+          <span className="flex-1 h-[32px] flex items-center justify-center text-[14px] leading-[18px] font-medium text-[#A1A09D]">
             History
           </span>
         </div>
@@ -840,27 +840,28 @@ function RightPanel({ patient }: { patient: "jessica" | "sam" }) {
         {/* Player controls row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-[4px]">
-            <span className="size-[28px] flex items-center justify-center rounded-[6px] bg-white border-[0.5px] border-[rgba(76,76,59,0.25)]">
+            <span className="size-[28px] flex items-center justify-center rounded-[8px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)]">
               <PlayIcon size={12} className="text-[#21201d]" />
             </span>
             <span className="h-[28px] flex items-center px-[8px] text-[14px] leading-[18px] text-[#21201d]">
               1.0x
             </span>
           </div>
-          <p className="text-[14px] leading-[18px] text-[#21201d]">
-            00:00 / {duration}
+          <p className="text-[14px] leading-[18px]">
+            <span className="text-[#21201d]">00:00</span>{" "}
+            <span className="text-[#A1A09D]">/ {duration}</span>
           </p>
         </div>
 
         <div className="h-px bg-[rgba(76,76,59,0.15)]" />
 
         {/* Transcript text — always rendered fully, no per-character animation. */}
-        <div className="flex-1 overflow-hidden flex flex-col gap-[12px]">
+        <div className="flex-1 overflow-hidden flex flex-col gap-[16px]">
           {transcript.map((line, i) => (
             <p
               key={i}
               className="text-[14px] leading-[1.5]"
-              style={{ color: line.speaker === "ai" ? "#82807c" : "#21201d" }}
+              style={{ color: line.speaker === "ai" ? "#A1A09D" : "#21201d" }}
             >
               {line.text}
             </p>
@@ -884,14 +885,15 @@ const WAVEFORM_SAM = [
   13, 17,
 ];
 
-/* Heights doubled vs. the original pattern so Jessica's waveform reads more
-   dynamic (peaks ~2× taller, troughs unchanged). All values stay under the
-   49px max bar height. */
+/* Jessica's waveform mirrors the approved Figma reference rhythm. The
+   Waveform component keeps the existing color, 2px bar width, and section
+   width unchanged. */
 const WAVEFORM_JESSICA = [
-  6, 10, 4, 14, 22, 8, 4, 18, 26, 10, 6, 22, 14, 18, 10, 6, 14, 22, 10, 18, 34,
-  46, 38, 30, 26, 22, 18, 14, 22, 26, 18, 10, 6, 14, 22, 18, 10, 6, 22, 34, 26,
-  14, 18, 22, 38, 30, 22, 18, 14, 10, 6, 18, 26, 22, 14, 10, 18, 26, 34, 22,
-  14, 18, 22, 10, 6, 18, 14, 22, 10, 14, 22, 10, 6,
+  2, 2, 2, 2, 2, 11, 23, 13, 21, 13, 19, 23, 17, 19, 17, 5, 9, 2, 15,
+  37, 27, 45, 13, 17, 15, 2, 4, 11, 3, 2, 7, 3, 11, 4, 4, 4, 4, 33, 29,
+  33, 23, 27, 15, 19, 17, 11, 3, 2, 7, 3, 11, 21, 5, 3, 9, 19, 15, 17, 5,
+  2, 2, 2, 2, 11, 2, 13, 2, 4, 4, 4, 4, 11, 3, 2, 7, 3, 2, 2, 2, 2, 11,
+  5, 2, 2, 7, 2, 2, 9, 13, 23, 11, 5, 13, 17,
 ];
 
 const DURATION_SAM = "00:42";
