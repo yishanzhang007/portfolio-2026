@@ -33,18 +33,16 @@ export default async function OpengraphImage() {
           height: "100%",
           background: "#ffffff",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           fontFamily: "Inter",
           color: "#000000",
+          fontSize: 48,
         }}
       >
-        <div style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.1 }}>
-          Yishan Zhang
-        </div>
-        <div style={{ fontSize: 24, fontWeight: 400, marginTop: 4 }}>
-          Product designer
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <span style={{ fontWeight: 700 }}>Yishan Zhang</span>
+          <span style={{ fontWeight: 400 }}>Product designer</span>
         </div>
       </div>
     ),
