@@ -1,28 +1,15 @@
-import { CaseStudyHero } from "@/components/CaseStudyHero";
+import { AgentPlaygroundFinalUi } from "@/components/AgentPlaygroundFinalUi";
 import { CaseStudyLayout } from "@/components/CaseStudyLayout";
 import { CaseStudySection } from "@/components/CaseStudySection";
 
 export function AgentPlayground() {
   return (
     <CaseStudyLayout
-      hero={
-        <CaseStudyHero
-          src="/work/clinic-ai-assistant/Agent%20playground.svg"
-          srcMobile="/work/clinic-ai-assistant/Agent%20playground.png"
-          alt="Agent playground — interface for configuring, testing, and deploying conversational agents."
-          width={1168}
-          height={1042}
-          tileColor="#F1F1EE"
-          imageInsetTop={80}
-          imageInsetBottom={40}
-          imageBordered
-        />
-      }
+      hero={<AgentPlaygroundFinalUi />}
     >
-      <CaseStudySection label="Agent playground">
+      <CaseStudySection label="Agent customization">
         <p>
-          Clinic staff run mock calls against the AI agent, tune how it
-          responds, and ship updates to patients — all from one playground.
+          Freed built a one-size-fits all voice agent, but clinics aren't one size fit all. We want to build the toolkit to allow clinics to customize their own voice agent.
         </p>
         <p className="text-muted">Case study coming soon.</p>
       </CaseStudySection>
