@@ -7549,6 +7549,7 @@
 
     const cursor = document.createElement('div');
     cursor.id = 'autoplay-cursor';
+    cursor.style.visibility = 'hidden';   // hidden until placed on the canvas (no top-left flash)
     cursor.innerHTML =
       '<span class="autoplay-ping"></span>' +
       '<span class="autoplay-cursor-inner"><img src="/work/clinic-ai-assistant/Cursor.svg" alt="" draggable="false"></span>';
@@ -7574,6 +7575,14 @@
         cursor.style.left = x + 'px';
         cursor.style.top = y + 'px';
       }
+    }
+
+    async function moveCursorBy(dx, dy) {
+      const left = parseFloat(cursor.style.left) || 0;
+      const top = parseFloat(cursor.style.top) || 0;
+      cursor.style.left = (left + dx) + 'px';
+      cursor.style.top = (top + dy) + 'px';
+      await sleep(MOVE + t(80));
     }
 
     async function moveTo(el, dx = 0, dy = 0) {
@@ -7696,6 +7705,8 @@
       await tap(await waitFor('#preview-close', 20));
       await sleep(t(620));
       await tap(await waitFor('#panel-close', 20));
+      // Nudge the cursor down a touch after the panel closes, then restart.
+      await moveCursorBy(0, 40);
       // Let the finished state settle: Publish stays in its active state for 2s
       // before the canvas reverts to pristine (Publish back to disabled).
       await sleep(2000);
@@ -7704,7 +7715,6 @@
     }
 
     async function loop() {
-      placeCursorAtCenter();
       await sleep(t(400));
       while (true) {
         await whileVisible();
@@ -7717,9 +7727,12 @@
     function start() {
       document.body.appendChild(shield);
       document.body.appendChild(cursor);
-      // Place the cursor inside the canvas right away so it never flashes at the
-      // clipped top-left corner while the prototype's deferred init settles.
-      placeCursorAtCenter(true);
+      // Place the cursor inside the canvas before revealing it, so it appears
+      // directly on the canvas (no top-left flash, no intermediate hop).
+      requestAnimationFrame(() => {
+        placeCursorAtCenter(true);
+        cursor.style.visibility = 'visible';
+      });
       setTimeout(loop, 600);
     }
 
