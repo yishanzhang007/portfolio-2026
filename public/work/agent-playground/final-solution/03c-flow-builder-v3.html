@@ -7549,6 +7549,7 @@
 
     const cursor = document.createElement('div');
     cursor.id = 'autoplay-cursor';
+    cursor.style.visibility = 'hidden';   // hidden until placed on the canvas (no top-left flash)
     cursor.innerHTML =
       '<span class="autoplay-ping"></span>' +
       '<span class="autoplay-cursor-inner"><img src="/work/clinic-ai-assistant/Cursor.svg" alt="" draggable="false"></span>';
@@ -7556,9 +7557,32 @@
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const $ = (sel) => document.querySelector(sel);
 
-    function placeCursorAtCenter() {
-      cursor.style.left = (window.innerWidth / 2) + 'px';
-      cursor.style.top = (window.innerHeight / 2) + 'px';
+    function placeCursorAtCenter(instant = false) {
+      // Rest inside the flow canvas (not the window's top-left corner, where the
+      // cursor would otherwise be clipped on first paint).
+      const vp = document.getElementById('canvas-viewport');
+      const r = vp && vp.getBoundingClientRect();
+      const x = r && r.width ? r.left + r.width / 2 : window.innerWidth / 2;
+      const y = r && r.height ? r.top + r.height / 2 : window.innerHeight / 2;
+      if (instant) {
+        const prev = cursor.style.transition;
+        cursor.style.transition = 'none';
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+        void cursor.offsetWidth;          // flush so the jump isn't animated
+        cursor.style.transition = prev;
+      } else {
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+      }
+    }
+
+    async function moveCursorBy(dx, dy) {
+      const left = parseFloat(cursor.style.left) || 0;
+      const top = parseFloat(cursor.style.top) || 0;
+      cursor.style.left = (left + dx) + 'px';
+      cursor.style.top = (top + dy) + 'px';
+      await sleep(MOVE + t(80));
     }
 
     async function moveTo(el, dx = 0, dy = 0) {
@@ -7681,12 +7705,16 @@
       await tap(await waitFor('#preview-close', 20));
       await sleep(t(620));
       await tap(await waitFor('#panel-close', 20));
-      resetState();   // rest on a pristine canvas between loops
+      // Nudge the cursor down a touch after the panel closes, then restart.
+      await moveCursorBy(0, 40);
+      // Let the finished state settle: Publish stays in its active state for 2s
+      // before the canvas reverts to pristine (Publish back to disabled).
+      await sleep(2000);
+      resetState();
       await sleep(t(1100));
     }
 
     async function loop() {
-      placeCursorAtCenter();
       await sleep(t(400));
       while (true) {
         await whileVisible();
@@ -7699,7 +7727,12 @@
     function start() {
       document.body.appendChild(shield);
       document.body.appendChild(cursor);
-      // Let the prototype's own deferred init settle first.
+      // Place the cursor inside the canvas before revealing it, so it appears
+      // directly on the canvas (no top-left flash, no intermediate hop).
+      requestAnimationFrame(() => {
+        placeCursorAtCenter(true);
+        cursor.style.visibility = 'visible';
+      });
       setTimeout(loop, 600);
     }
 
