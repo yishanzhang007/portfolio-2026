@@ -8,7 +8,6 @@ export function AgentPlaygroundFinalUi() {
         >
           <BrowserChrome />
           <div className="absolute bottom-[4px] left-[4px] right-[4px] top-[36px] flex overflow-hidden rounded-[12px] border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white">
-            <LeftNavigation />
             <div className="min-w-0 flex-1 bg-white">
               <iframe
                 data-testid="agent-playground-final-ui"
@@ -22,63 +21,6 @@ export function AgentPlaygroundFinalUi() {
         </div>
       </div>
     </section>
-  );
-}
-
-const NAV_ICON_BASE = "/work/agent-playground/sandbox-icons";
-const TOP_NAV_ITEMS = [
-  {id: "inbox", label: "Inbox", icon: `${NAV_ICON_BASE}/inbox.svg`},
-  {id: "agent", label: "Agent customization", icon: `${NAV_ICON_BASE}/agent.svg`, active: true},
-  {id: "patients", label: "Patients", icon: `${NAV_ICON_BASE}/patient.svg`},
-];
-const BOTTOM_NAV_ITEMS = [{id: "settings", label: "Settings", icon: `${NAV_ICON_BASE}/settings.svg`}];
-
-function LeftNavigation() {
-  return (
-    <aside
-      aria-label="Primary app navigation"
-      className="flex w-[46px] shrink-0 flex-col items-center border-r border-[#e9e8e6] bg-[#f8f8f7] pb-0 pt-3"
-      data-testid="agent-playground-left-nav"
-    >
-      <nav className="flex flex-1 flex-col items-center gap-2">
-        {TOP_NAV_ITEMS.map((item) => (
-          <NavigationItem key={item.id} item={item} />
-        ))}
-      </nav>
-
-      <nav className="mt-auto flex flex-col items-center gap-1 pb-3">
-        {BOTTOM_NAV_ITEMS.map((item) => (
-          <NavigationItem key={item.id} item={item} />
-        ))}
-      </nav>
-    </aside>
-  );
-}
-
-function NavigationItem({
-  item,
-}: {
-  item: {id: string; label: string; icon: string; active?: boolean};
-}) {
-  return (
-    <button
-      type="button"
-      aria-current={item.active ? "page" : undefined}
-      aria-label={item.label}
-      title={item.label}
-      className={`flex size-8 items-center justify-center rounded-lg transition-colors duration-150 ease ${
-        item.active ? "bg-[#e5e5e4] text-[#262521]" : "text-[#aaa8a4] hover:bg-[#ececeb] hover:text-[#262521]"
-      }`}
-    >
-      <span
-        aria-hidden="true"
-        className="block size-[22px] bg-current [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] [-webkit-mask-position:center] [-webkit-mask-repeat:no-repeat] [-webkit-mask-size:contain]"
-        style={{
-          maskImage: `url("${item.icon}")`,
-          WebkitMaskImage: `url("${item.icon}")`,
-        }}
-      />
-    </button>
   );
 }
 
