@@ -7582,7 +7582,10 @@
       try { document.getElementById('preview-panel')?.classList.add('hidden'); } catch (e) {}
       try { document.getElementById('side-panel')?.classList.add('hidden'); } catch (e) {}
       const intent = clinicalIntent();
-      if (intent && intent.action) intent.action.prompt = '';
+      if (intent && intent.action) {
+        intent.action.prompt = '';
+        try { resetIntentEditBaseline(intent); } catch (e) {}
+      }
       try { dismissedHashes.delete(CLINICAL_ID); } catch (e) {}
       try { selectedNodeId = null; } catch (e) {}
       try { render(); } catch (e) {}
