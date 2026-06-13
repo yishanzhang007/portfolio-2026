@@ -7666,7 +7666,16 @@
       // 4. Hover the Preview button, then click it.
       if (!(await hoverTap(await waitFor('#panel-preview-btn'), t(900)))) return;
       await waitFor('#preview-panel:not(.hidden)', 20);
-      await sleep(t(1700));
+      await sleep(t(900));
+
+      // 4b. Start a test call: tap the mic, stay on the call ~3s, then hang up.
+      const mic = await waitFor('#preview-mic', 20);
+      if (mic) {
+        await tap(mic);          // start recording (mic turns red, timer runs)
+        await sleep(3000);       // stay on the call for 3 seconds
+        await tap(mic);          // hang up (stop recording)
+        await sleep(t(700));
+      }
 
       // 5. Close preview pane, then the editor panel.
       await tap(await waitFor('#preview-close', 20));
