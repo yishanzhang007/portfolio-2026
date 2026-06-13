@@ -7628,6 +7628,7 @@
       }
       try { dismissedHashes.delete(CLINICAL_ID); } catch (e) {}
       try { selectedNodeId = null; } catch (e) {}
+      try { markPublished(); } catch (e) {}   // clear the dirty/Publish state typing leaves behind
       try { render(); } catch (e) {}
     }
 
