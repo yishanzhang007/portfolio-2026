@@ -7672,6 +7672,7 @@
       await tap(await waitFor('#preview-close', 20));
       await sleep(t(620));
       await tap(await waitFor('#panel-close', 20));
+      resetState();   // rest on a pristine canvas between loops
       await sleep(t(1100));
     }
 
