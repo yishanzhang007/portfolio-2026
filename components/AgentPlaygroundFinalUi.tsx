@@ -13,7 +13,7 @@ export function AgentPlaygroundFinalUi() {
               <iframe
                 data-testid="agent-playground-final-ui"
                 title="Agent customization final solution"
-                src="/work/agent-playground/final-solution/03c-flow-builder-v3.html"
+                src="/work/agent-playground/final-solution/03c-flow-builder-v3.html?autoplay=1"
                 className="block h-full w-full border-0 bg-transparent"
                 loading="eager"
               />
