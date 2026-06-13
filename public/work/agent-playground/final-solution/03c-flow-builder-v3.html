@@ -7696,7 +7696,10 @@
       await tap(await waitFor('#preview-close', 20));
       await sleep(t(620));
       await tap(await waitFor('#panel-close', 20));
-      resetState();   // rest on a pristine canvas between loops
+      // Let the finished state settle: Publish stays in its active state for 2s
+      // before the canvas reverts to pristine (Publish back to disabled).
+      await sleep(2000);
+      resetState();
       await sleep(t(1100));
     }
 
