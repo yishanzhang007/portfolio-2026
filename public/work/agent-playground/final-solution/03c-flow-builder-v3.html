@@ -2225,7 +2225,7 @@
       },
       {
         id: 'lookup_records',
-        match: /\b(look ?up|lookup|pull ?up|check|read|access|find).{0,100}\b(records?|chart|ehr|prescriptions?|history|lab results?|labs?)\b/i,
+        match: /\b(look ?up|lookup|pull ?up|check|read|access|find).{0,100}\b(records?|chart|ehr|prescriptions?|history|lab results?|labs?|profiles?)\b/i,
         issue: "Can't access records, prescriptions, or lab results.",
         fallback: "It'll collect what the caller is asking about and pass it along as a message.",
       },
@@ -7483,6 +7483,229 @@
 		        openInstructionConcept(PROTOTYPE_NAV.instructions.initial);
 	      }
 	    }, 0);
+  </script>
+
+  <!-- ============================================================
+       Hero autoplay driver. Enabled only when the page is loaded
+       with ?autoplay=1 (the case-study hero iframe does this). It
+       runs a looping, hands-free walkthrough with a synthetic
+       cursor: open Medical → AI call, add a custom instruction,
+       dismiss the capability banner, preview, then close panels.
+       The real prototype is untouched when autoplay is absent.
+       ============================================================ -->
+  <script>
+  (function () {
+    if (new URLSearchParams(location.search).get('autoplay') !== '1') return;
+
+    const CLINICAL_ID = 'clinical';
+    const INSTRUCTION = 'Look up patient profile';
+    const SPEED = 1.2;              // playback rate (1.2x)
+    const t = (n) => Math.round(n / SPEED);
+    const MOVE = t(600);           // cursor travel duration
+    // Cursor.svg has its pointing tip at ~(10, 5) within the 24×24 viewBox.
+    const TIP_X = 10, TIP_Y = 5;
+
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      #autoplay-shield { position: fixed; inset: 0; z-index: 9998; cursor: default; }
+      #autoplay-cursor {
+        position: fixed; top: 0; left: 0; width: 24px; height: 24px;
+        z-index: 9999; pointer-events: none; transform: translate(-${TIP_X}px, -${TIP_Y}px);
+        transition: top ${MOVE}ms cubic-bezier(.4,.1,.2,1), left ${MOVE}ms cubic-bezier(.4,.1,.2,1);
+      }
+      #autoplay-cursor .autoplay-cursor-inner { position: relative; display: block; width: 24px; height: 24px; }
+      #autoplay-cursor img { display: block; width: 24px; height: 24px; }
+      #autoplay-cursor.is-clicking .autoplay-cursor-inner { animation: autoplayTap 200ms cubic-bezier(0.215,0.61,0.355,1); }
+      @keyframes autoplayTap { 0%,100% { transform: scale(1); } 50% { transform: scale(0.92); } }
+      .autoplay-ping {
+        position: absolute; left: ${TIP_X}px; top: ${TIP_Y}px; width: 24px; height: 24px;
+        border-radius: 999px; background: rgba(91,91,214,0.30);
+        transform: translate(-50%,-50%) scale(.4); opacity: 0;
+      }
+      #autoplay-cursor.is-clicking .autoplay-ping { animation: autoplayPing 300ms cubic-bezier(0.215,0.61,0.355,1); }
+      @keyframes autoplayPing { 0% { opacity:.7; transform: translate(-50%,-50%) scale(.4);} 100% { opacity:0; transform: translate(-50%,-50%) scale(1.4);} }
+
+      /* Synthetic hover states (CSS :hover can't be forced from a fake cursor). */
+      .flow-node.autoplay-hover .card-shell {
+        background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        transform: translateX(0) scale(1); border-color: var(--node-border-hover-color);
+      }
+      .flow-node.autoplay-hover .card-icon {
+        transform: translateY(0) rotate(-4deg); border-width: .5px;
+        border-color: var(--icon-border-hover, color-mix(in srgb, currentColor 30%, transparent)) !important;
+        box-shadow: 0 2px 8px color-mix(in srgb, currentColor 10%, transparent);
+      }
+      #panel-preview-btn.autoplay-hover .preview-icon path { animation: previewWavePulse 840ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+      #panel-preview-btn.autoplay-hover .preview-icon path:nth-child(1) { animation-delay: 0ms; }
+      #panel-preview-btn.autoplay-hover .preview-icon path:nth-child(2) { animation-delay: 42ms; }
+      #panel-preview-btn.autoplay-hover .preview-icon path:nth-child(3) { animation-delay: 84ms; }
+      #panel-preview-btn.autoplay-hover .preview-icon path:nth-child(4) { animation-delay: 126ms; }
+      #panel-preview-btn.autoplay-hover .preview-icon path:nth-child(5) { animation-delay: 168ms; }
+    `;
+    document.head.appendChild(styleEl);
+
+    const shield = document.createElement('div');
+    shield.id = 'autoplay-shield';
+
+    const cursor = document.createElement('div');
+    cursor.id = 'autoplay-cursor';
+    cursor.innerHTML =
+      '<span class="autoplay-ping"></span>' +
+      '<span class="autoplay-cursor-inner"><img src="/work/clinic-ai-assistant/Cursor.svg" alt="" draggable="false"></span>';
+
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const $ = (sel) => document.querySelector(sel);
+
+    function placeCursorAtCenter() {
+      cursor.style.left = (window.innerWidth / 2) + 'px';
+      cursor.style.top = (window.innerHeight / 2) + 'px';
+    }
+
+    async function moveTo(el, dx = 0, dy = 0) {
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      if (r.width === 0 && r.height === 0) return false;
+      cursor.style.left = (r.left + r.width / 2 + dx) + 'px';
+      cursor.style.top = (r.top + r.height / 2 + dy) + 'px';
+      await sleep(MOVE + t(80));
+      return true;
+    }
+
+    function setHover(el, on) {
+      if (el) el.classList.toggle('autoplay-hover', on);
+    }
+
+    async function doClick(el) {
+      cursor.classList.remove('is-clicking');
+      void cursor.offsetWidth;
+      cursor.classList.add('is-clicking');
+      await sleep(t(150));
+      try { el.click(); } catch (e) { return false; }
+      await sleep(t(340));
+      return true;
+    }
+
+    async function tap(el, dx = 0, dy = 0) {
+      if (!el || !(await moveTo(el, dx, dy))) return false;
+      return doClick(el);
+    }
+
+    // Move onto the element, let its hover animation play, then click.
+    async function hoverTap(el, hoverMs, dx = 0, dy = 0) {
+      if (!el || !(await moveTo(el, dx, dy))) return false;
+      setHover(el, true);
+      await sleep(hoverMs);
+      const ok = await doClick(el);
+      setHover(el, false);
+      return ok;
+    }
+
+    async function typeInto(el, text) {
+      if (!el) return;
+      el.focus();
+      el.value = '';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      for (let i = 0; i < text.length; i++) {
+        el.value += text[i];
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        await sleep(t(52));
+      }
+    }
+
+    function clinicalIntent() {
+      try { return FLOWS[activeMode].intents.find((i) => i.id === CLINICAL_ID); }
+      catch (e) { return null; }
+    }
+
+    function resetState() {
+      try { document.querySelectorAll('.autoplay-hover').forEach((e) => e.classList.remove('autoplay-hover')); } catch (e) {}
+      try { document.getElementById('preview-panel')?.classList.add('hidden'); } catch (e) {}
+      try { document.getElementById('side-panel')?.classList.add('hidden'); } catch (e) {}
+      const intent = clinicalIntent();
+      if (intent && intent.action) {
+        intent.action.prompt = '';
+        try { resetIntentEditBaseline(intent); } catch (e) {}
+      }
+      try { dismissedHashes.delete(CLINICAL_ID); } catch (e) {}
+      try { selectedNodeId = null; } catch (e) {}
+      try { markPublished(); } catch (e) {}   // clear the dirty/Publish state typing leaves behind
+      try { render(); } catch (e) {}
+    }
+
+    async function waitFor(sel, tries = 40) {
+      for (let i = 0; i < tries; i++) {
+        const el = $(sel);
+        if (el && el.getBoundingClientRect().width > 0) return el;
+        await sleep(50);
+      }
+      return null;
+    }
+
+    async function whileVisible() {
+      while (document.hidden) await sleep(300);
+    }
+
+    async function runOnce() {
+      resetState();
+      await sleep(t(1300));
+
+      // 2. Hover the "Medical → AI call" node, then click it.
+      const node = $('.flow-node[data-node-id="intent-' + CLINICAL_ID + '"]');
+      if (!(await hoverTap(node, t(650)))) return;
+
+      // 3. Editor opens — add custom instructions, then dismiss the banner.
+      const ta = await waitFor('#prompt-textarea');
+      if (!ta) return;
+      await moveTo(ta);
+      await sleep(t(180));
+      await typeInto(ta, INSTRUCTION);
+      await sleep(t(1300));
+      const dismiss = await waitFor('.prose-warning-dismiss', 20);
+      if (dismiss) { await tap(dismiss); await sleep(t(700)); }
+
+      // 4. Hover the Preview button, then click it.
+      if (!(await hoverTap(await waitFor('#panel-preview-btn'), t(900)))) return;
+      await waitFor('#preview-panel:not(.hidden)', 20);
+      await sleep(t(900));
+
+      // 4b. Start a test call: tap the mic, stay on the call ~3s, then hang up.
+      const mic = await waitFor('#preview-mic', 20);
+      if (mic) {
+        await tap(mic);          // start recording (mic turns red, timer runs)
+        await sleep(3000);       // stay on the call for 3 seconds
+        await tap(mic);          // hang up (stop recording)
+        await sleep(t(700));
+      }
+
+      // 5. Close preview pane, then the editor panel.
+      await tap(await waitFor('#preview-close', 20));
+      await sleep(t(620));
+      await tap(await waitFor('#panel-close', 20));
+      resetState();   // rest on a pristine canvas between loops
+      await sleep(t(1100));
+    }
+
+    async function loop() {
+      placeCursorAtCenter();
+      await sleep(t(400));
+      while (true) {
+        await whileVisible();
+        try { await runOnce(); }
+        catch (e) { /* keep the hero alive on any hiccup */ }
+        await sleep(t(500));
+      }
+    }
+
+    function start() {
+      document.body.appendChild(shield);
+      document.body.appendChild(cursor);
+      // Let the prototype's own deferred init settle first.
+      setTimeout(loop, 600);
+    }
+
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+  })();
   </script>
 
 </body>
