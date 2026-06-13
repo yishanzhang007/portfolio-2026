@@ -7556,9 +7556,24 @@
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const $ = (sel) => document.querySelector(sel);
 
-    function placeCursorAtCenter() {
-      cursor.style.left = (window.innerWidth / 2) + 'px';
-      cursor.style.top = (window.innerHeight / 2) + 'px';
+    function placeCursorAtCenter(instant = false) {
+      // Rest inside the flow canvas (not the window's top-left corner, where the
+      // cursor would otherwise be clipped on first paint).
+      const vp = document.getElementById('canvas-viewport');
+      const r = vp && vp.getBoundingClientRect();
+      const x = r && r.width ? r.left + r.width / 2 : window.innerWidth / 2;
+      const y = r && r.height ? r.top + r.height / 2 : window.innerHeight / 2;
+      if (instant) {
+        const prev = cursor.style.transition;
+        cursor.style.transition = 'none';
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+        void cursor.offsetWidth;          // flush so the jump isn't animated
+        cursor.style.transition = prev;
+      } else {
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+      }
     }
 
     async function moveTo(el, dx = 0, dy = 0) {
@@ -7699,7 +7714,9 @@
     function start() {
       document.body.appendChild(shield);
       document.body.appendChild(cursor);
-      // Let the prototype's own deferred init settle first.
+      // Place the cursor inside the canvas right away so it never flashes at the
+      // clipped top-left corner while the prototype's deferred init settles.
+      placeCursorAtCenter(true);
       setTimeout(loop, 600);
     }
 
