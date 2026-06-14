@@ -7669,9 +7669,9 @@
       while (document.hidden) await sleep(300);
     }
 
-    async function runOnce() {
+    async function runOnce(first = false) {
       resetState();
-      await sleep(t(1300));
+      await sleep(first ? t(150) : t(600));
 
       // 2. Hover the "Medical → AI call" node, then click it.
       const node = $('.flow-node[data-node-id="intent-' + CLINICAL_ID + '"]');
@@ -7683,20 +7683,20 @@
       await moveTo(ta);
       await sleep(t(180));
       await typeInto(ta, INSTRUCTION);
-      await sleep(t(1300));
+      await sleep(t(700));
       const dismiss = await waitFor('.prose-warning-dismiss', 20);
       if (dismiss) { await tap(dismiss); await sleep(t(700)); }
 
       // 4. Hover the Preview button, then click it.
       if (!(await hoverTap(await waitFor('#panel-preview-btn'), t(900)))) return;
       await waitFor('#preview-panel:not(.hidden)', 20);
-      await sleep(t(900));
+      await sleep(t(550));
 
-      // 4b. Start a test call: tap the mic, stay on the call ~3s, then hang up.
+      // 4b. Start a test call: tap the mic, stay on the call briefly, then hang up.
       const mic = await waitFor('#preview-mic', 20);
       if (mic) {
         await tap(mic);          // start recording (mic turns red, timer runs)
-        await sleep(3000);       // stay on the call for 3 seconds
+        await sleep(1600);       // stay on the call briefly
         await tap(mic);          // hang up (stop recording)
         await sleep(t(700));
       }
@@ -7707,19 +7707,21 @@
       await tap(await waitFor('#panel-close', 20));
       // Nudge the cursor down a touch after the panel closes, then restart.
       await moveCursorBy(0, 40);
-      // Let the finished state settle: Publish stays in its active state for 2s
+      // Let the finished state settle: Publish stays in its active state briefly
       // before the canvas reverts to pristine (Publish back to disabled).
-      await sleep(2000);
+      await sleep(1100);
       resetState();
-      await sleep(t(1100));
+      await sleep(t(600));
     }
 
     async function loop() {
-      await sleep(t(400));
+      await sleep(t(120));
+      let first = true;
       while (true) {
         await whileVisible();
-        try { await runOnce(); }
+        try { await runOnce(first); }
         catch (e) { /* keep the hero alive on any hiccup */ }
+        first = false;
         await sleep(t(500));
       }
     }
@@ -7733,7 +7735,7 @@
         placeCursorAtCenter(true);
         cursor.style.visibility = 'visible';
       });
-      setTimeout(loop, 600);
+      setTimeout(loop, 150);
     }
 
     if (document.readyState === 'complete') start();
