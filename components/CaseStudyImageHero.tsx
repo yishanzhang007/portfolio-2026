@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 interface CaseStudyImageHeroProps {
   src: string;
   alt: string;
@@ -26,6 +30,10 @@ export function CaseStudyImageHero({
   bordered = false,
   stacked = false,
 }: CaseStudyImageHeroProps) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) return null;
+
   return (
     <section
       className={`w-full pt-[16px] px-[12px] md:px-[16px] ${
@@ -39,6 +47,7 @@ export function CaseStudyImageHero({
           alt={alt}
           width={width}
           height={height}
+          onError={() => setFailed(true)}
           className={`block w-full h-auto ${rounded ? "rounded-[8px]" : ""} ${
             bordered ? "border-[0.5px] border-[rgba(76,76,59,0.3)]" : ""
           }`}

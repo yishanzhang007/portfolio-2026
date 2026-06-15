@@ -1,4 +1,9 @@
+"use client";
+
+import { useState } from "react";
+
 export function AgentPlaygroundFinalUi() {
+  const [iframeFailed, setIframeFailed] = useState(false);
   return (
     <section className="w-full px-[12px] pt-[16px] md:px-[16px] md:pt-[48px]">
       <div className="mx-auto w-full max-w-[1200px]">
@@ -9,13 +14,20 @@ export function AgentPlaygroundFinalUi() {
           <BrowserChrome />
           <div className="absolute bottom-[4px] left-[4px] right-[4px] top-[36px] flex overflow-hidden rounded-[12px] border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white">
             <div className="min-w-0 flex-1 bg-white">
-              <iframe
-                data-testid="agent-playground-final-ui"
-                title="Agent customization final solution"
-                src="/work/agent-playground/final-solution/03c-flow-builder-v3.html?autoplay=1"
-                className="block h-full w-full border-0 bg-transparent"
-                loading="eager"
-              />
+              {iframeFailed ? (
+                <div className="flex h-full w-full items-center justify-center text-muted text-body">
+                  Failed to load interactive demo.
+                </div>
+              ) : (
+                <iframe
+                  data-testid="agent-playground-final-ui"
+                  title="Agent customization final solution"
+                  src="/work/agent-playground/final-solution/03c-flow-builder-v3.html?autoplay=1"
+                  className="block h-full w-full border-0 bg-transparent"
+                  loading="eager"
+                  onError={() => setIframeFailed(true)}
+                />
+              )}
             </div>
           </div>
         </div>
