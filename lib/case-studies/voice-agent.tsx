@@ -2,42 +2,14 @@ import type { ReactNode } from "react";
 import { CaseStudyHero } from "@/components/CaseStudyHero";
 import { CaseStudyLayout, SectionDivider } from "@/components/CaseStudyLayout";
 import { CaseStudySection } from "@/components/CaseStudySection";
-
-/* ─── Block-level helpers used by the "Principles → prompt → behavior"
-   section. Inlined here rather than promoted to /components because they
-   only appear on this case study and have no reuse pressure yet. ─────── */
+import { CodeCardChrome } from "@/components/CodeCardChrome";
+import { QuoteCard } from "@/components/QuoteCard";
+import { SubstrateComparisonTable } from "@/components/SubstrateComparisonTable";
 
 function SmallLabel({ children }: { children: ReactNode }) {
   return <p className="text-muted">{children}</p>;
 }
 
-/** A bg-panel quote card with the NType 82 serif quote and muted
- *  attribution. Matches the existing clinic-AI testimonial cards. */
-function QuoteCard({
-  text,
-  attribution,
-}: {
-  text: string;
-  attribution: string;
-}) {
-  return (
-    <div className="bg-panel rounded-[6px] p-[12px]">
-      <p
-        className="text-[14px] md:text-[18px] xl:text-[20px] leading-[1.3]"
-        style={{ fontFamily: "var(--font-ntype), serif" }}
-      >
-        {text}
-      </p>
-      <p className="text-muted text-[14px] leading-[1.5] mt-[24px]">
-        {attribution}
-      </p>
-    </div>
-  );
-}
-
-/** A terminal-style card for displaying literal system-prompt snippets.
- *  Same chrome (white card, traffic-light bar, optional filename) as the
- *  clinic-AI TerminalCard, but accepts plain text instead of typed JSON. */
 function PromptBlock({
   filename,
   children,
@@ -46,23 +18,11 @@ function PromptBlock({
   children: string;
 }) {
   return (
-    <div className="w-full bg-white border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_12px_0_rgba(0,0,0,0.04)] flex flex-col overflow-hidden">
-      <div className="bg-panel h-[40px] flex items-center pl-[12px] pr-[16px] shrink-0 gap-[16px]">
-        <div className="flex gap-[8px]">
-          <span className="size-[12px] rounded-full bg-[#e76764] border-[0.5px] border-[#df3733]" />
-          <span className="size-[12px] rounded-full bg-[#efc944] border-[0.5px] border-[#e9b809]" />
-          <span className="size-[12px] rounded-full bg-[#6bc466] border-[0.5px] border-[#3bb036]" />
-        </div>
-        {filename && (
-          <span className="font-mono text-[12px] font-semibold text-[#82807c]">
-            {filename}
-          </span>
-        )}
-      </div>
+    <CodeCardChrome filename={filename}>
       <pre className="bg-white p-[12px] m-0 font-mono text-[12px] xl:text-[14px] leading-[1.5] whitespace-pre-wrap text-ink">
         {children}
       </pre>
-    </div>
+    </CodeCardChrome>
   );
 }
 
@@ -111,58 +71,7 @@ export function VoiceAgent() {
         </p>
 
         <div className="mt-[8px]">
-          {/* Header row — hidden on mobile (data rows stack there) */}
-          <div className="hidden md:grid md:grid-cols-[116px_1fr_1fr] gap-[16px] py-[12px] text-muted">
-            <span />
-            <span>ElevenLabs Turbo</span>
-            <span>OpenAI Realtime</span>
-          </div>
-          {[
-            {
-              label: "Latency",
-              a: "High — call hangs up",
-              b: "Low — feels present",
-            },
-            {
-              label: "Architecture",
-              a: "ASR → LLM → TTS",
-              b: "Speech-to-speech",
-            },
-            {
-              label: "Voice quality",
-              a: "Great (3000+ voices)",
-              b: "Limited (6–7 preset)",
-            },
-            {
-              label: "Price",
-              a: "~ $0.10/min",
-              b: "~ $0.30/min",
-            },
-            {
-              label: "Verdict",
-              a: "Easy to start, wrong substrate",
-              b: "3× cost, but the product",
-              emphasis: true,
-            },
-          ].map((row, i) => (
-            <div
-              key={row.label}
-              className="grid grid-cols-1 md:grid-cols-[116px_1fr_1fr] gap-[4px] md:gap-[16px] py-[12px] border-t border-[#e9e8e6]"
-              style={{ borderTopWidth: i === 0 ? "1.5px" : "0.5px" }}
-            >
-              <span
-                className={`text-muted ${row.emphasis ? "font-medium" : ""}`}
-              >
-                {row.label}
-              </span>
-              <span className={row.emphasis ? "font-medium" : ""}>
-                {row.a}
-              </span>
-              <span className={row.emphasis ? "font-medium" : ""}>
-                {row.b}
-              </span>
-            </div>
-          ))}
+          <SubstrateComparisonTable variant="responsive" />
         </div>
       </CaseStudySection>
 

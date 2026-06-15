@@ -1,3 +1,5 @@
+import { hoverUnderline } from "@/lib/style";
+
 const links = [
   { label: "About",   href: "/about",                                              external: false },
   { label: "Email",   href: "mailto:yishan.zhang007@gmail.com",                   external: false },
@@ -13,7 +15,7 @@ export function FooterNav() {
           <a
             href={l.href}
             {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            className="hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
+            className={hoverUnderline}
           >
             {l.label}
           </a>
