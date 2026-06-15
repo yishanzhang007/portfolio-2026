@@ -2,8 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
-
-const easeOutCubic = [0.215, 0.61, 0.355, 1] as const;
+import { easeOutCubic } from "@/lib/motion";
 
 /* Fires once on initial route render — paired with `Reveal`, which uses
    whileInView for scroll-triggered reveals. Use this at the top of a page

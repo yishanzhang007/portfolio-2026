@@ -5,7 +5,9 @@ import { CaseStudySection } from "@/components/CaseStudySection";
 import { InboxAgentDemo } from "@/components/InboxAgentDemo";
 import { PatientVerificationDemo } from "@/components/PatientVerificationDemo";
 import { PromptCard } from "@/components/PromptCard";
+import { QuoteCard } from "@/components/QuoteCard";
 import { SmsComposerDemo } from "@/components/SmsComposerDemo";
+import { SubstrateComparisonTable } from "@/components/SubstrateComparisonTable";
 import { TerminalCard } from "@/components/TerminalCard";
 
 export function ClinicAIAssistant() {
@@ -302,60 +304,8 @@ export function ClinicAIAssistant() {
             presence.
           </p>
 
-          <div className="mt-[8px] overflow-x-auto -mx-[12px] px-[12px] md:mx-0 md:px-0">
-            <div className="min-w-[540px]">
-              <div className="grid grid-cols-[116px_1fr_1fr] gap-[16px] py-[12px] text-muted">
-                <span />
-                <span>ElevenLabs Turbo</span>
-                <span>OpenAI Realtime</span>
-              </div>
-              {[
-                {
-                  label: "Latency",
-                  a: "High — call hangs up",
-                  b: "Low — feels present",
-                },
-                {
-                  label: "Architecture",
-                  a: "ASR → LLM → TTS",
-                  b: "Speech-to-speech",
-                },
-                {
-                  label: "Voice quality",
-                  a: "Great (3000+ voices)",
-                  b: "Limited (6–7 preset)",
-                },
-                {
-                  label: "Price",
-                  a: "~ $0.10/min",
-                  b: "~ $0.30/min",
-                },
-                {
-                  label: "Verdict",
-                  a: "Easy to start, wrong substrate",
-                  b: "3× cost, but the product",
-                  emphasis: true,
-                },
-              ].map((row, i) => (
-                <div
-                  key={row.label}
-                  className="grid grid-cols-[116px_1fr_1fr] gap-[16px] py-[12px] border-t border-[#e9e8e6]"
-                  style={{ borderTopWidth: i === 0 ? "1.5px" : "0.5px" }}
-                >
-                  <span
-                    className={`text-muted ${row.emphasis ? "font-medium" : ""}`}
-                  >
-                    {row.label}
-                  </span>
-                  <span className={row.emphasis ? "font-medium" : ""}>
-                    {row.a}
-                  </span>
-                  <span className={row.emphasis ? "font-medium" : ""}>
-                    {row.b}
-                  </span>
-                </div>
-              ))}
-            </div>
+          <div className="mt-[8px]">
+            <SubstrateComparisonTable variant="scroll" />
           </div>
         </div>
 
@@ -380,14 +330,13 @@ export function ClinicAIAssistant() {
         <p className="text-muted mt-[16px]">
           User quote
         </p>
-        <div className="bg-panel rounded-[6px] p-[12px] -mt-[8px]">
-          <p className="text-[12px] md:text-[16px] xl:text-[18px] leading-[1.3]" style={{ fontFamily: "var(--font-ntype), serif" }}>
-            “She repeats back like five times. And patients get frustrated that she keeps
-            repeating the same thing and they just hang up.”
-          </p>
-          <p className="text-muted text-[12px] leading-[1.5] mt-[24px]">
-            Casey Cash, owner at The Iris Center
-          </p>
+        <div className="-mt-[8px]">
+          <QuoteCard
+            text={`“She repeats back like five times. And patients get frustrated that she keeps repeating the same thing and they just hang up.”`}
+            attribution="Casey Cash, owner at The Iris Center"
+            textClassName="text-[12px] md:text-[16px] xl:text-[18px] leading-[1.3]"
+            attributionClassName="text-muted text-[12px] leading-[1.5] mt-[24px]"
+          />
         </div>
 
         <p className="text-muted mt-[16px]">

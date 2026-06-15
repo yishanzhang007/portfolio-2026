@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { hoverUnderline } from "@/lib/style";
+import { BackArrowIcon } from "./BackArrowIcon";
 
 type Item = { id: string; label: string };
 
@@ -83,32 +85,9 @@ export function CaseStudyTOC({ showSections = false }: { showSections?: boolean 
       >
         <a
           href="/"
-          className="flex items-center gap-[8px] text-body text-muted mb-[40px] hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
+          className={`flex items-center gap-[8px] text-body text-muted mb-[40px] ${hoverUnderline}`}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden
-            className="shrink-0"
-          >
-            <path
-              d="M9 14L4 9L9 4"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M20 20v-7a4 4 0 0 0-4-4H4"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <BackArrowIcon />
           <span>Index</span>
         </a>
         {showSections && items.length > 0 && (

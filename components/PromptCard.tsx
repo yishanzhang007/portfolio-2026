@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { CodeCardChrome } from "./CodeCardChrome";
 
 /* Same VS Code Light+ palette used by TerminalCard. */
 const BOLD = "text-[#0451a5] font-semibold";
@@ -55,20 +56,7 @@ function renderInline(line: string): ReactNode {
 export function PromptCard() {
   const lines = SOURCE.split("\n");
   return (
-    <div className="w-full bg-white overflow-hidden border-[0.5px] border-[rgba(76,76,59,0.3)] rounded-[6px] shadow-[0_4px_12px_0_rgba(0,0,0,0.04)] flex flex-col">
-      {/* chrome bar with filename tab */}
-      <div className="bg-panel h-[40px] flex items-center pl-[12px] pr-[16px] shrink-0 gap-[16px]">
-        <div className="flex gap-[8px]">
-          <span className="size-[12px] rounded-full bg-[#e76764] border-[0.5px] border-[#df3733]" />
-          <span className="size-[12px] rounded-full bg-[#efc944] border-[0.5px] border-[#e9b809]" />
-          <span className="size-[12px] rounded-full bg-[#6bc466] border-[0.5px] border-[#3bb036]" />
-        </div>
-        <span className="font-mono text-[12px] font-semibold text-[#82807c]">
-          freed-agent-prompt.md
-        </span>
-      </div>
-
-      {/* body */}
+    <CodeCardChrome filename="freed-agent-prompt.md">
       <pre className="bg-white p-[12px] m-0 font-mono text-[10px] xl:text-[12px] leading-[1.6] whitespace-pre-wrap text-ink">
         {lines.map((line, idx) => (
           <Fragment key={idx}>
@@ -77,6 +65,6 @@ export function PromptCard() {
           </Fragment>
         ))}
       </pre>
-    </div>
+    </CodeCardChrome>
   );
 }
