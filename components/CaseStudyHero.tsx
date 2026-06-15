@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 interface CaseStudyHeroProps {
   src: string;
   /** Optional mobile-only source. When set, the desktop `src` renders only
@@ -123,31 +127,67 @@ export function CaseStudyHero({
           // (888px). Both <img>s share the same style/class so layout is
           // identical — only one is visible at a time.
           return (
-            <>
-              {srcMobile && (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={srcMobile}
-                  alt={alt}
-                  width={width}
-                  height={height}
-                  style={imgStyle}
-                  className={`md:hidden ${baseClass}`}
-                />
-              )}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={src}
-                alt={alt}
-                width={width}
-                height={height}
-                style={imgStyle}
-                className={`${srcMobile ? "hidden md:block" : ""} ${baseClass}`}
-              />
-            </>
+            <HeroImg
+              src={src}
+              srcMobile={srcMobile}
+              alt={alt}
+              width={width}
+              height={height}
+              imgStyle={imgStyle}
+              baseClass={baseClass}
+            />
           );
         })()}
       </div>
     </section>
+  );
+}
+
+function HeroImg({
+  src,
+  srcMobile,
+  alt,
+  width,
+  height,
+  imgStyle,
+  baseClass,
+}: {
+  src: string;
+  srcMobile?: string;
+  alt: string;
+  width: number;
+  height: number;
+  imgStyle: React.CSSProperties;
+  baseClass: string;
+}) {
+  const [desktopFailed, setDesktopFailed] = useState(false);
+  const [mobileFailed, setMobileFailed] = useState(false);
+  return (
+    <>
+      {srcMobile && !mobileFailed && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={srcMobile}
+          alt={alt}
+          width={width}
+          height={height}
+          style={imgStyle}
+          onError={() => setMobileFailed(true)}
+          className={`md:hidden ${baseClass}`}
+        />
+      )}
+      {!desktopFailed && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          style={imgStyle}
+          onError={() => setDesktopFailed(true)}
+          className={`${srcMobile ? "hidden md:block" : ""} ${baseClass}`}
+        />
+      )}
+    </>
   );
 }
