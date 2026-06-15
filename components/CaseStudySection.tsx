@@ -20,7 +20,7 @@ interface CaseStudySectionProps {
   labelClassName?: string;
 }
 
-function slugify(label: ReactNode): string | undefined {
+export function slugify(label: ReactNode): string | undefined {
   if (typeof label !== "string") return undefined;
   const trimmed = label.trim();
   if (!trimmed) return undefined;

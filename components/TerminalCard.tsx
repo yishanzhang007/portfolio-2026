@@ -48,12 +48,12 @@ const data: Json = {
 
 const INDENT = "  ";
 
-function pad(n: number) {
+export function pad(n: number) {
   return INDENT.repeat(n);
 }
 
 /** Renders a JSON value with per-token color spans. */
-function renderValue(v: Json, indent: number): ReactNode {
+export function renderValue(v: Json, indent: number): ReactNode {
   if (v === null) return <span className={BOOL}>null</span>;
   if (typeof v === "boolean") return <span className={BOOL}>{String(v)}</span>;
   if (typeof v === "number") return <span className={NUM}>{v}</span>;
@@ -62,7 +62,7 @@ function renderValue(v: Json, indent: number): ReactNode {
   return renderObject(v as { [k: string]: Json }, indent);
 }
 
-function renderObject(obj: { [k: string]: Json }, indent: number): ReactNode {
+export function renderObject(obj: { [k: string]: Json }, indent: number): ReactNode {
   const keys = Object.keys(obj);
   if (keys.length === 0) return <>{"{}"}</>;
   return (
@@ -84,7 +84,7 @@ function renderObject(obj: { [k: string]: Json }, indent: number): ReactNode {
   );
 }
 
-function renderArray(arr: Json[], indent: number): ReactNode {
+export function renderArray(arr: Json[], indent: number): ReactNode {
   if (arr.length === 0) return <>{"[]"}</>;
   // All-primitive arrays render inline (e.g. ["confident", "ambiguous", …]).
   const allPrimitive = arr.every(
