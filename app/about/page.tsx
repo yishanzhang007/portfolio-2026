@@ -72,7 +72,6 @@ export default function AboutPage() {
 
           <div className="flex-1 flex items-center">
             <div className="flex flex-col w-full">
-              <p className="text-header font-medium mb-[24px]">About</p>
               <div className="flex flex-col gap-[40px] w-full">
                 <IntroParagraphs />
                 <div className="flex flex-col gap-[8px]">
@@ -96,7 +95,6 @@ export default function AboutPage() {
             </Link>
 
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[560px] flex flex-col transition-layout">
-              <p className="text-header font-medium mb-[24px]">About</p>
               <div className="flex flex-col gap-[40px]">
                 <IntroParagraphs />
                 <div className="flex flex-col gap-[8px]">

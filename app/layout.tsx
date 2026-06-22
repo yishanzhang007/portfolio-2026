@@ -7,19 +7,8 @@ const denim = localFont({
   variable: "--font-pp-denim",
   display: "swap",
   src: [
-    { path: "../public/fonts/Denim-TRIAL-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/Denim-TRIAL-Medium.ttf", weight: "500", style: "normal" },
-    { path: "../public/fonts/Denim-TRIAL-SemiBold.ttf", weight: "600", style: "normal" },
-    { path: "../public/fonts/Denim-TRIAL-Bold.ttf", weight: "700", style: "normal" },
-  ],
-});
-
-const denimInk = localFont({
-  variable: "--font-pp-denim-ink",
-  display: "swap",
-  src: [
-    { path: "../public/fonts/DenimINK-TRIAL-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/DenimINK-TRIAL-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/Denim-Regular.otf", weight: "400", style: "normal" },
+    { path: "../public/fonts/Denim-Medium.otf", weight: "500", style: "normal" },
   ],
 });
 
@@ -47,7 +36,7 @@ const inProgress = localFont({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  weight: ["400", "500"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -71,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${denim.variable} ${denimInk.variable} ${matterMono.variable} ${ntype.variable} ${inProgress.variable} ${inter.variable} ${robotoMono.variable} h-full antialiased`}
+      className={`${denim.variable} ${matterMono.variable} ${ntype.variable} ${inProgress.variable} ${inter.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>

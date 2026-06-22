@@ -23,7 +23,7 @@
 
   /* Font families (resolve to next/font/local variables) */
   --font-denim: var(--font-pp-denim), serif;
-  --font-ink: var(--font-pp-denim-ink), serif;
+  --font-ink: var(--font-pp-denim), serif;
   --font-tag: var(--font-roboto-mono), ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
   --font-sms: var(--font-inter), system-ui, -apple-system, sans-serif;
 
@@ -109,8 +109,8 @@ body {
   }
 
   /* Section-header token — used by `CaseStudySection`'s label.
-     18px / Denim Medium (weight 500, real glyphs — Denim-TRIAL-Medium.ttf
-     is loaded at weight 500 in app/layout.tsx). */
+     18px / Denim Medium (weight 500, real glyphs from the purchased
+     Denim-Medium.otf loaded in app/layout.tsx). */
   .text-section-header {
     font-family: var(--font-denim);
     font-size: 18px;
@@ -134,9 +134,8 @@ body {
   }
 }
 
-/* Section headers use Inter 700 — Denim Ink only has 400/500 woff2
-   files, so we can't get a real Bold from it. Inter Bold has actual
-   bold glyphs (no synthesized faux-bold) and reads cleanly at 16px. */
+/* Strong emphasis uses Inter 700 so purchased Denim can stay limited to
+   its real Regular and Medium faces. */
 .text-strong {
   font-family: var(--font-inter), system-ui, sans-serif;
   font-weight: 700;
