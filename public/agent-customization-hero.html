@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent customization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --prototype-header-height: 56px;
+      }
+
+      @font-face {
+        font-family: "Denim";
+        src: url("./fonts/Denim-Regular.otf") format("opentype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Denim";
+        src: url("./fonts/Denim-Medium.otf") format("opentype");
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: #ffffff;
+        color: #2e2d28;
+        scrollbar-gutter: stable both-edges;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      html::-webkit-scrollbar {
+        display: none;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding-top: var(--prototype-header-height);
+        background: #ffffff;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      main {
+        min-height: calc(100vh - var(--prototype-header-height));
+        overflow-x: clip;
+        background: #ffffff;
+      }
+
+      .prototype-global-header,
+      .prototype-global-header * {
+        box-sizing: border-box;
+      }
+
+      .prototype-global-header {
+        position: fixed;
+        z-index: 2147483000;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: var(--prototype-header-height);
+        display: flex;
+        align-items: center;
+        background: #2e2d28;
+        color: #ffffff;
+        font-family: "Denim", "Inter", ui-sans-serif, system-ui,
+          -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 20px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .prototype-header-inner {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 16px 16px 16px 12px;
+      }
+
+      .prototype-header-crumbs {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 8px;
+        font-weight: 500;
+      }
+
+      .prototype-header-home,
+      .prototype-header-current {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        height: 24px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #ffffff;
+        font: inherit;
+        font-weight: 500;
+        letter-spacing: 0;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .prototype-header-home,
+      .prototype-header-current {
+        padding: 0 8px;
+      }
+
+      .prototype-header-home:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .prototype-header-separator {
+        color: rgba(255, 255, 255, 0.48);
+      }
+
+      .hero-section {
+        width: 100%;
+        padding: 16px 12px 0;
+      }
+
+      .hero-wrap {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .browser-frame {
+        position: relative;
+        width: 100%;
+        height: 928px;
+        overflow: hidden;
+        border-radius: 14px;
+        border: 0.5px solid rgba(76, 76, 59, 0.2);
+        background: #f3f3f1;
+      }
+
+      .browser-chrome {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border-radius: 14px 14px 0 0;
+        background: #f3f3f1;
+      }
+
+      .traffic-light {
+        width: 12px;
+        height: 12px;
+        flex: 0 0 auto;
+        border-radius: 999px;
+      }
+
+      .traffic-light.red {
+        background: #ed6a5e;
+      }
+
+      .traffic-light.yellow {
+        background: #f5bf4f;
+      }
+
+      .traffic-light.green {
+        background: #62c554;
+      }
+
+      .address-wrap {
+        display: flex;
+        flex: 1 1 auto;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+      }
+
+      .address-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 626px;
+        height: 24px;
+        padding: 0 12px;
+        overflow: hidden;
+        border: 0.5px solid rgba(76, 76, 59, 0.15);
+        border-radius: 6px;
+        color: #a1a09d;
+        font-size: 12px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .chrome-spacer {
+        width: 60px;
+        flex: 0 0 auto;
+      }
+
+      .browser-window {
+        position: absolute;
+        top: 36px;
+        right: 4px;
+        bottom: 4px;
+        left: 4px;
+        display: flex;
+        overflow: hidden;
+        border: 0.5px solid rgba(76, 76, 59, 0.2);
+        border-radius: 12px;
+        background: #ffffff;
+      }
+
+      .browser-window iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: transparent;
+      }
+
+      @media (min-width: 55.5rem) {
+        .hero-section {
+          padding: 48px 16px 0;
+        }
+      }
+
+      .hero-section {
+        height: 100vh;
+        height: calc(100vh - var(--prototype-header-height));
+        padding: 0;
+      }
+
+      .prototype-frame {
+        display: block;
+        width: 100%;
+        height: calc(100vh - var(--prototype-header-height));
+        border: 0;
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="prototype-global-header">
+      <div class="prototype-header-inner">
+        <nav class="prototype-header-crumbs" aria-label="Prototype breadcrumb">
+          <a
+            class="prototype-header-home"
+            href="../../Agent%20customization/agent-customization-prototype/index.html"
+          >
+            Agent customization
+          </a>
+          <span class="prototype-header-separator" aria-hidden="true">/</span>
+          <span class="prototype-header-current">Agent customization</span>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="hero-section" aria-label="Agent customization">
+        <iframe
+          class="prototype-frame"
+          title="Agent customization final solution"
+          src="./work/agent-playground/final-solution/03c-flow-builder-v3.html"
+          loading="eager"
+        ></iframe>
+      </section>
+    </main>
+  </body>
+</html>

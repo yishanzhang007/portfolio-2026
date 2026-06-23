@@ -1,4 +1,36 @@
-export function AgentPlaygroundFinalUi() {
+interface AgentPlaygroundFinalUiProps {
+  autoplay?: boolean;
+  frame?: "browser" | "none";
+  motion?: "on" | "off";
+}
+
+export function AgentPlaygroundFinalUi({
+  autoplay = true,
+  frame = "browser",
+  motion = "on",
+}: AgentPlaygroundFinalUiProps = {}) {
+  const params = new URLSearchParams();
+  if (autoplay) params.set("autoplay", "1");
+  if (motion === "off") params.set("motion", "off");
+  const query = params.toString();
+  const iframe = (
+    <iframe
+      data-testid="agent-playground-final-ui"
+      title="Agent customization final solution"
+      src={`/work/agent-playground/final-solution/03c-flow-builder-v3.html${query ? `?${query}` : ""}`}
+      className="block h-full w-full border-0 bg-transparent"
+      loading="eager"
+    />
+  );
+
+  if (frame === "none") {
+    return (
+      <section className="h-screen w-full overflow-hidden bg-white">
+        {iframe}
+      </section>
+    );
+  }
+
   return (
     <section className="w-full px-[12px] pt-[16px] md:px-[16px] md:pt-[48px]">
       <div className="mx-auto w-full max-w-[1200px]">
@@ -9,13 +41,7 @@ export function AgentPlaygroundFinalUi() {
           <BrowserChrome />
           <div className="absolute bottom-[4px] left-[4px] right-[4px] top-[36px] flex overflow-hidden rounded-[12px] border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white">
             <div className="min-w-0 flex-1 bg-white">
-              <iframe
-                data-testid="agent-playground-final-ui"
-                title="Agent customization final solution"
-                src="/work/agent-playground/final-solution/03c-flow-builder-v3.html?autoplay=1"
-                className="block h-full w-full border-0 bg-transparent"
-                loading="eager"
-              />
+              {iframe}
             </div>
           </div>
         </div>
