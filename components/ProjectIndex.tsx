@@ -75,7 +75,7 @@ export function ProjectIndex({ variant }: ProjectIndexProps) {
                   the parent's gap-y-[3px], every consecutive tag pill has a
                   uniform 3px gap — whether they're stacked inside the same
                   project or in adjacent ones. */}
-              <div className="w-[180px] shrink-0 text-body text-ink leading-[19px]! sm:leading-[29px]!">{p.mobileTitle ?? p.title}</div>
+              <div className="w-[180px] shrink-0 text-body text-ink font-medium leading-[19px]! sm:leading-[29px]!">{p.mobileTitle ?? p.title}</div>
               {(() => {
                 // Mobile: drop "Development" from Pulse UI per design.
                 const mobileRoles =
@@ -164,7 +164,7 @@ export function ProjectIndex({ variant }: ProjectIndexProps) {
 
   return (
     <div ref={containerRef} className="flex items-start">
-      <div className="flex flex-col text-body text-ink transition-layout">
+      <div className="flex flex-col text-body text-ink font-medium transition-layout">
         {projects.map((p, i) => {
           const rowContent = (
             <>

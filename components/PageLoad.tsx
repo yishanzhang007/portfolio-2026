@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 /* Fires once on initial route render — paired with `Reveal`, which uses
@@ -14,10 +15,30 @@ export function PageLoad({
   className?: string;
 }) {
   const reduced = useReducedMotion();
+  const [fontsReady, setFontsReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fonts = document.fonts;
+
+    if (!fonts || fonts.status === "loaded") {
+      setFontsReady(true);
+      return;
+    }
+
+    fonts.ready.then(() => {
+      if (!cancelled) setFontsReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <motion.div
       initial={reduced ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
+      animate={{ opacity: fontsReady ? 1 : 0 }}
       transition={{ duration: 0.7, ease: "linear" }}
       className={className}
     >
