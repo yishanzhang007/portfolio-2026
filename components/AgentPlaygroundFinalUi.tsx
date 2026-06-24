@@ -52,16 +52,16 @@ export function AgentPlaygroundFinalUi({
 
 function BrowserChrome() {
   return (
-    <div className="absolute left-0 right-0 top-0 flex h-[36px] items-center gap-[8px] rounded-t-[14px] bg-[#f3f3f1] px-[12px]">
-      <span className="size-[12px] rounded-full bg-[#ed6a5e]" />
-      <span className="size-[12px] rounded-full bg-[#f5bf4f]" />
-      <span className="size-[12px] rounded-full bg-[#62c554]" />
-      <div className="flex flex-1 items-center justify-center">
-        <div className="flex h-[24px] w-full max-w-[626px] items-center justify-center rounded-[6px] border-[0.5px] border-[rgba(76,76,59,0.15)] px-[12px] font-sms text-[12px] text-[#A1A09D]">
+    <div className="absolute left-0 right-0 top-0 flex h-[36px] items-center gap-[8px] rounded-t-[14px] bg-[#f3f3f1] px-[8px] md:px-[12px]">
+      <span className="hidden size-[12px] rounded-full bg-[#ed6a5e] md:block" />
+      <span className="hidden size-[12px] rounded-full bg-[#f5bf4f] md:block" />
+      <span className="hidden size-[12px] rounded-full bg-[#62c554] md:block" />
+      <div className="flex min-w-0 flex-1 items-center justify-center">
+        <div className="flex h-[24px] w-full min-w-0 items-center justify-center overflow-hidden whitespace-nowrap rounded-[6px] border-[0.5px] border-[rgba(76,76,59,0.15)] px-[12px] font-sms text-[12px] text-[#A1A09D] md:max-w-[626px]">
           frontdesk.getfreed.ai/agent-playground
         </div>
       </div>
-      <span className="w-[60px]" />
+      <span className="hidden w-[60px] md:block" />
     </div>
   );
 }

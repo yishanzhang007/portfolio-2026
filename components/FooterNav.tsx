@@ -7,7 +7,7 @@ const links = [
 
 export function FooterNav() {
   return (
-    <nav className="text-muted flex gap-[11px] items-center text-[16px]">
+    <nav className="text-muted flex gap-[11px] items-center text-[14px] md:text-[16px]">
       {links.map((l, i) => (
         <span key={l.label} className="flex items-center gap-[11px]">
           <a

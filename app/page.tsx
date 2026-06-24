@@ -12,8 +12,8 @@ export default function Home() {
           left-aligned. */}
       <div className="landing-mobile md:hidden bg-cream min-h-dvh w-full p-[12px] sm:p-[16px] flex flex-col">
         <div className="flex flex-col">
-          <p className="text-header text-ink font-medium m-0 text-[16px]!">Yishan Zhang</p>
-          <p className="text-muted m-0 -mt-[2px] text-[16px]">Product designer</p>
+          <p className="text-header text-ink font-medium m-0 text-[14px]!">Yishan Zhang</p>
+          <p className="text-muted m-0 -mt-[2px] text-[14px]">Product designer</p>
         </div>
 
         <div className="flex-1 flex items-center">

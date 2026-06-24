@@ -393,11 +393,15 @@
       transform: scale(0.84) rotate(0deg);
     }
     .flow-node:hover .node-default-icon,
+    .card-shell.is-selected .node-default-icon,
+    .flow-node.is-focus-node .node-default-icon,
     .flow-node.autoplay-hover .node-default-icon {
       opacity: 0;
       transform: scale(0.86) rotate(0deg);
     }
     .flow-node:hover .node-edit-icon,
+    .card-shell.is-selected .node-edit-icon,
+    .flow-node.is-focus-node .node-edit-icon,
     .flow-node.autoplay-hover .node-edit-icon {
       opacity: 1;
       transform: scale(1) rotate(0deg);
@@ -1898,7 +1902,7 @@
 	      transform: translateX(12px);
     }
     .flow-node.is-focus-node .card-shell {
-      box-shadow: 0 6px 22px rgba(33,32,29,0.06);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
     }
     body.polish-focus-dim-active #canvas-nodes .flow-node:not(.is-focus-node),
     body.polish-focus-dim-active #canvas-nodes .start-node:not(.is-focus-node) {
@@ -1964,12 +1968,14 @@
       <div class="absolute top-0 left-0 right-0 h-[60px] bg-white flex items-center justify-between pl-2 pr-4 z-30" style="border: 0.5px solid transparent">
         <div class="flex items-center gap-2 flex-1 min-w-0">
           <div class="relative">
-            <button id="mode-trigger" class="top-icon-button h-8 flex items-center gap-1.5 px-2 rounded-lg text-sm font-medium text-[#21201d] leading-5">
-              <span id="mode-trigger-label">Business hours</span>
-              <span id="live-badge" class="inline-flex items-center gap-1 h-5 px-1.5 text-xs font-medium leading-5" style="background: #EAF1EA; color: #045508; border-radius: 8px">
-                Live
-              </span>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--fg-tertiary)"><polyline points="2.5 3.75 5 6.25 7.5 3.75"/></svg>
+            <button id="mode-trigger" type="button" aria-label="Open time block selector" class="top-icon-button h-8 w-8 flex items-center justify-center rounded-lg text-[#4A4A4A]" style="padding: 0">
+              <span id="mode-trigger-label" class="sr-only">Business hours</span>
+              <span id="live-badge" class="hidden">Live</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="width: 20px; height: 20px; flex-shrink: 0" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3 4.75C3 4.55109 3.07902 4.36032 3.21967 4.21967C3.36032 4.07902 3.55109 4 3.75 4H16.25C16.4489 4 16.6397 4.07902 16.7803 4.21967C16.921 4.36032 17 4.55109 17 4.75C17 4.94891 16.921 5.13968 16.7803 5.28033C16.6397 5.42098 16.4489 5.5 16.25 5.5H3.75C3.55109 5.5 3.36032 5.42098 3.21967 5.28033C3.07902 5.13968 3 4.94891 3 4.75Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3 10C3 9.80109 3.07902 9.61032 3.21967 9.46967C3.36032 9.32902 3.55109 9.25 3.75 9.25H16.25C16.4489 9.25 16.6397 9.32902 16.7803 9.46967C16.921 9.61032 17 9.80109 17 10C17 10.1989 16.921 10.3897 16.7803 10.5303C16.6397 10.671 16.4489 10.75 16.25 10.75H3.75C3.55109 10.75 3.36032 10.671 3.21967 10.5303C3.07902 10.3897 3 10.1989 3 10Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3 15.25C3 15.0511 3.07902 14.8603 3.21967 14.7197C3.36032 14.579 3.55109 14.5 3.75 14.5H16.25C16.4489 14.5 16.6397 14.579 16.7803 14.7197C16.921 14.8603 17 15.0511 17 15.25C17 15.4489 16.921 15.6397 16.7803 15.7803C16.6397 15.921 16.4489 16 16.25 16H3.75C3.55109 16 3.36032 15.921 3.21967 15.7803C3.07902 15.6397 3 15.4489 3 15.25Z" fill="currentColor"/>
+              </svg>
             </button>
             <span id="mode-trigger-dot" class="hidden"></span>
             <div id="mode-menu" class="hidden add-dropdown absolute left-0 mt-1.5 w-72 bg-white border border-stone-200 rounded-xl shadow-lg z-40 overflow-hidden">
@@ -2823,6 +2829,16 @@
       syncCanvasFocusState();
     }
 
+    function syncSelectedNodeShell() {
+      if (!$nodes) return;
+      $nodes.querySelectorAll('.card-shell.is-selected').forEach((shell) => {
+        shell.classList.remove('is-selected');
+      });
+      if (!selectedNodeId) return;
+      const selectedNode = $nodes.querySelector(`[data-node-id="${selectedNodeId}"]`);
+      selectedNode?.querySelector('.card-shell')?.classList.add('is-selected');
+    }
+
     function makeStartNode(left, topCenter) {
       // Vertically center against the welcome row.
       const top = topCenter;  // pass through the same vertical center as welcome
@@ -2874,7 +2890,7 @@
       ];
       el.addEventListener('mouseenter', () => setConnectionHover(welcomeConnectionIds(), true));
       el.addEventListener('mouseleave', () => setConnectionHover(welcomeConnectionIds(), false));
-      el.addEventListener('click', openWelcomePanel);
+      el.addEventListener('click', () => openWelcomePanel({ preserveCanvas: true }));
       return el;
     }
 
@@ -2959,9 +2975,7 @@
       el.addEventListener('mouseenter', () => setConnectionHover(connectionTarget, true));
       el.addEventListener('mouseleave', () => setConnectionHover(connectionTarget, false));
       el.addEventListener('click', () => {
-        selectedNodeId = `intent-${intent.id}`;
-        render();
-        openIntentPanel(intent.id);
+        openIntentPanel(intent.id, { preserveCanvas: true });
       });
       return el;
     }
@@ -5048,12 +5062,13 @@
       }
     });
 
-	    function openWelcomePanel() {
+	    function openWelcomePanel(options = {}) {
 	      activeInstructionConceptId = null;
 	      clearGlobalChatRoot();
 	      hideInstructionConceptChrome();
       selectedNodeId = 'welcome';
-      render();
+      if (options.preserveCanvas) syncSelectedNodeShell();
+      else render();
       setPanelHeader('Greeting');
       $panelPreviewBtn.classList.remove('hidden');
       $panelBody.innerHTML = renderWelcomeBody();
@@ -5649,14 +5664,15 @@
       else startRecording();
     });
 
-	    function openIntentPanel(intentId) {
+	    function openIntentPanel(intentId, options = {}) {
 	      activeInstructionConceptId = null;
 	      clearGlobalChatRoot();
 	      hideInstructionConceptChrome();
 	      const intent = FLOWS[activeMode].intents.find(i => i.id === intentId);
       if (!intent) return;
       selectedNodeId = `intent-${intent.id}`;
-      render();
+      if (options.preserveCanvas) syncSelectedNodeShell();
+      else render();
       setPanelHeader(intent.name, ACTION_KINDS[intent.action.type]?.headerLabel || null);
       $panelBody.innerHTML = renderIntentBody(intent);
       playPanelEntrance();
