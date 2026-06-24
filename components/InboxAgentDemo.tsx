@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 /* Inbox-Agent demo — animated 4-state UI for the Clinic AI Assistant case study.
    Translated from Figma node 1206:18275 (Section 4 of the 2026-case-study file).
@@ -45,6 +54,45 @@ const TIMING = {
   STATE4_SENT_DWELL: 1500,
 };
 
+const ICON_BUTTON_CLASS =
+  "group flex size-[30px] shrink-0 items-center justify-center rounded-[10px] text-[#B2B2B2] transition-colors hover:bg-[#F7F7F7] hover:text-[#21201D]";
+const CHAT_ROW_CLASS = "chat-message-row grid w-full items-start";
+const CHAT_COLUMN_CLASS = "chat-layout-column w-full";
+const CHAT_ACTION_COLUMN_CLASS =
+  "chat-layout-column chat-action-column w-full";
+const CHAT_BUBBLE_WIDTH_CLASS = "chat-bubble";
+const CHAT_INCOMING_CONTENT_CLASS =
+  "col-start-2 min-w-0 flex flex-col gap-[8px] items-start";
+const CHAT_OUTGOING_CONTENT_CLASS =
+  "col-start-2 min-w-0 flex flex-col gap-[8px] items-end";
+const CHAT_LAYOUT_CSS = `
+  [data-chat-canvas] {
+    container: clinic-chat-canvas / inline-size;
+  }
+
+  .chat-layout-column,
+  .chat-message-row {
+    box-sizing: border-box;
+    margin-inline: auto;
+    width: 100%;
+    max-width: min(100%, 832px);
+    padding-inline: 16px;
+  }
+
+  .chat-message-row {
+    column-gap: 8px;
+    grid-template-columns: 20px minmax(0, 1fr) 20px;
+  }
+
+  .chat-action-column {
+    padding-inline: 28px;
+  }
+
+  .chat-bubble {
+    max-width: min(100%, 600px);
+  }
+`;
+
 /* Cursor target positions in design pixels (origin = top-left of the 1207×928
    inner stage; includes the browser chrome). The new Cursor.svg has its
    pointing tip at ~(10, 5) within the 24×24 viewBox, so subtract that offset
@@ -55,8 +103,31 @@ const CURSOR_SAM = { x: 138, y: 189 };
 /* Cancel-button center (732, 735) measured live → cursor pos (722, 730). */
 const CURSOR_CANCEL = { x: 722, y: 730 };
 
-export function InboxAgentDemo() {
-  const [phase, setPhase] = useState<Phase>("state1");
+type DemoMode = "animated" | "manual";
+
+interface InboxAgentDemoProps {
+  mode?: DemoMode;
+  presentation?: "framed" | "fullscreen";
+}
+
+export function InboxAgentDemo({
+  mode = "animated",
+  presentation = "framed",
+}: InboxAgentDemoProps = {}) {
+  const isAnimated = mode === "animated";
+  const isFullscreen = presentation === "fullscreen";
+  const [phase, setPhase] = useState<Phase>(() =>
+    isAnimated ? "state1" : "state2",
+  );
+  const [isInboxCollapsed, setIsInboxCollapsed] = useState(false);
+  const [inboxFilter, setInboxFilter] = useState<InboxFilter>("open");
+  const [selectedConversationId, setSelectedConversationId] = useState("sam");
+  const [unreadConversationIds, setUnreadConversationIds] = useState<
+    Set<string>
+  >(() => new Set(["sam"]));
+  const [deletedConversationIds, setDeletedConversationIds] = useState<
+    Set<string>
+  >(() => new Set());
   const [reducedMotion, setReducedMotion] = useState(false);
   const [started, setStarted] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -70,11 +141,11 @@ export function InboxAgentDemo() {
   }, []);
 
   useEffect(() => {
-    if (reducedMotion) setPhase("state4-sent");
-  }, [reducedMotion]);
+    if (isAnimated && reducedMotion) setPhase("state4-sent");
+  }, [isAnimated, reducedMotion]);
 
   useEffect(() => {
-    if (started || reducedMotion || !wrapperRef.current) return;
+    if (!isAnimated || started || reducedMotion || !wrapperRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -89,10 +160,10 @@ export function InboxAgentDemo() {
     );
     observer.observe(wrapperRef.current);
     return () => observer.disconnect();
-  }, [started, reducedMotion]);
+  }, [isAnimated, started, reducedMotion]);
 
   useEffect(() => {
-    if (reducedMotion || !started) return;
+    if (!isAnimated || reducedMotion || !started) return;
     const next: Record<Phase, [Phase, number]> = {
       state1: ["sam-arriving", TIMING.STATE1_DWELL],
       "sam-arriving": ["sam-unread", TIMING.SAM_ARRIVAL],
@@ -113,7 +184,7 @@ export function InboxAgentDemo() {
     const [nextPhase, delay] = next[phase];
     const t = setTimeout(() => setPhase(nextPhase), delay);
     return () => clearTimeout(t);
-  }, [phase, reducedMotion, started]);
+  }, [isAnimated, phase, reducedMotion, started]);
 
   // Sam is in the inbox from sam-arriving onward (slide-in plays during that
   // phase via grid-template-rows interpolation).
@@ -140,6 +211,79 @@ export function InboxAgentDemo() {
       : phase === "state4-canceled" || phase === "state4-sent"
         ? "done"
         : "default";
+  const sortedConversations = sortConversationsByRecency(CONVERSATIONS);
+  const visibleConversations = sortedConversations.filter(
+    (conversation) => !deletedConversationIds.has(conversation.id),
+  );
+  const selectedConversation = isAnimated
+    ? samSelected
+      ? SAM_ROW
+      : JESSICA_ROW
+    : visibleConversations.find(
+        (conversation) => conversation.id === selectedConversationId,
+      ) ??
+      visibleConversations.find(
+        (conversation) => conversation.status === inboxFilter,
+      ) ??
+      visibleConversations[0] ??
+      SAM_ROW;
+  const selectedConversationIsUnread =
+    !isAnimated && unreadConversationIds.has(selectedConversation.id);
+  const handleConversationSelect = (conversationId: string) => {
+    setSelectedConversationId(conversationId);
+    setUnreadConversationIds((current) => {
+      if (!current.has(conversationId)) return current;
+      const next = new Set(current);
+      next.delete(conversationId);
+      return next;
+    });
+  };
+  const handleInboxFilterChange = (nextFilter: InboxFilter) => {
+    setInboxFilter(nextFilter);
+    const firstConversation = visibleConversations.find(
+      (conversation) => conversation.status === nextFilter,
+    );
+    if (firstConversation) setSelectedConversationId(firstConversation.id);
+  };
+  const handleToggleConversationReadState = () => {
+    setUnreadConversationIds((current) => {
+      const next = new Set(current);
+      if (next.has(selectedConversation.id)) {
+        next.delete(selectedConversation.id);
+      } else {
+        next.add(selectedConversation.id);
+      }
+      return next;
+    });
+  };
+  const handleDeleteConversation = () => {
+    const deletedId = selectedConversation.id;
+    const remainingConversations = visibleConversations.filter(
+      (conversation) => conversation.id !== deletedId,
+    );
+    const nextConversation =
+      remainingConversations.find(
+        (conversation) => conversation.status === inboxFilter,
+      ) ?? remainingConversations[0];
+
+    setDeletedConversationIds((current) => {
+      const next = new Set(current);
+      next.add(deletedId);
+      return next;
+    });
+    setUnreadConversationIds((current) => {
+      const next = new Set(current);
+      next.delete(deletedId);
+      return next;
+    });
+
+    if (nextConversation) {
+      setSelectedConversationId(nextConversation.id);
+      if (nextConversation.status !== inboxFilter) {
+        setInboxFilter(nextConversation.status);
+      }
+    }
+  };
 
   // Cursor itinerary: off → Sam → off → Cancel → off.
   const cursorPos =
@@ -148,34 +292,95 @@ export function InboxAgentDemo() {
       : phase === "to-cancel" || phase === "loading"
         ? CURSOR_CANCEL
         : CURSOR_OFF;
+  const cursorRenderPos = isFullscreen
+    ? { x: cursorPos.x - 4, y: cursorPos.y - 36 }
+    : cursorPos;
   const cursorClicking =
-    (phase === "to-sam" || phase === "to-cancel") && started;
+    isAnimated && (phase === "to-sam" || phase === "to-cancel") && started;
+  const handleSamClick =
+    !isAnimated && phase === "sam-unread"
+      ? () => setPhase("state2")
+      : undefined;
+  const handleCancelAppointment =
+    !isAnimated && cancelButtonState === "default"
+      ? () => setPhase("state4-sent")
+      : undefined;
 
   return (
     <div
       ref={wrapperRef}
-      className="relative w-full max-w-[1207px] h-[888px] md:h-[928px] overflow-hidden bg-[#f3f3f1] rounded-[14px] border-[0.5px] border-[rgba(76,76,59,0.2)]"
+      className={
+        isFullscreen
+          ? "relative h-full w-full overflow-hidden bg-white"
+          : "relative w-full max-w-[1207px] h-[888px] md:h-[928px] overflow-hidden bg-[#F7F7F7] rounded-[14px] border-[0.5px] border-[rgba(76,76,59,0.2)]"
+      }
       data-phase={phase}
+      data-motion={isAnimated ? "on" : "off"}
     >
-      <BrowserChrome />
+      {!isAnimated && (
+        <style>{`
+          [data-motion="off"] *,
+          [data-motion="off"] *::before,
+          [data-motion="off"] *::after {
+            animation: none !important;
+            transition: none !important;
+          }
+        `}</style>
+      )}
+      <style>{CHAT_LAYOUT_CSS}</style>
+      {!isFullscreen && <BrowserChrome />}
       <div
-        className="absolute left-[4px] right-[4px] top-[36px] bottom-[4px] rounded-[12px] border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white overflow-hidden flex"
+        className={
+          isFullscreen
+            ? "absolute inset-0 bg-white overflow-hidden flex"
+            : "absolute left-[4px] right-[4px] top-[36px] bottom-[4px] rounded-[12px] border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white overflow-hidden flex"
+        }
       >
         <InboxList
           samArrived={showsSam}
           samSelected={samSelected}
           samUnread={samUnread}
           samResolved={samResolved}
+          onSamClick={handleSamClick}
+          conversations={visibleConversations}
+          selectedConversationId={selectedConversation.id}
+          unreadConversationIds={unreadConversationIds}
+          inboxFilter={inboxFilter}
+          onInboxFilterChange={handleInboxFilterChange}
+          onConversationSelect={
+            isAnimated ? undefined : handleConversationSelect
+          }
+          isAnimated={isAnimated}
+          collapsed={isInboxCollapsed}
         />
         <Canvas
-          patient={samSelected ? "sam" : "jessica"}
-          showCancellationCard={showsCancellationCard}
+          conversation={selectedConversation}
+          showCancellationCard={
+            isAnimated &&
+            showsCancellationCard &&
+            selectedConversation.id === "sam"
+          }
           cancelButtonState={cancelButtonState}
-          showConfirmedMessage={showsConfirmedMessage}
+          showConfirmedMessage={
+            showsConfirmedMessage && selectedConversation.id === "sam"
+          }
+          animateMessages={isAnimated}
+          onCancelAppointment={handleCancelAppointment}
+          isInboxCollapsed={isInboxCollapsed}
+          onToggleInbox={() => setIsInboxCollapsed((collapsed) => !collapsed)}
+          isConversationUnread={selectedConversationIsUnread}
+          onToggleConversationReadState={handleToggleConversationReadState}
+          onDeleteConversation={handleDeleteConversation}
         />
-        <RightPanel patient={samSelected ? "sam" : "jessica"} />
+        <RightPanel conversation={selectedConversation} />
       </div>
-      <Cursor x={cursorPos.x} y={cursorPos.y} clicking={cursorClicking} />
+      {isAnimated && (
+        <Cursor
+          x={cursorRenderPos.x}
+          y={cursorRenderPos.y}
+          clicking={cursorClicking}
+        />
+      )}
     </div>
   );
 }
@@ -183,7 +388,7 @@ export function InboxAgentDemo() {
 /* ─── Browser chrome (top bar with traffic lights + URL) ──────────────────── */
 function BrowserChrome() {
   return (
-    <div className="absolute left-0 right-0 top-0 h-[36px] flex items-center px-[12px] gap-[8px] bg-[#f3f3f1] rounded-t-[14px]">
+    <div className="absolute left-0 right-0 top-0 h-[36px] flex items-center px-[12px] gap-[8px] bg-[#F7F7F7] rounded-t-[14px]">
       <span className="size-[12px] rounded-full bg-[#ed6a5e]" />
       <span className="size-[12px] rounded-full bg-[#f5bf4f]" />
       <span className="size-[12px] rounded-full bg-[#62c554]" />
@@ -200,87 +405,368 @@ function BrowserChrome() {
 /* ─── Inbox list (left column, 280px) ────────────────────────────────────── */
 
 interface InboxRowData {
+  id: string;
   name: string;
   subject: string;
   time: string;
+  status: InboxFilter;
+  phone: string;
+  summaryDuration: string;
+  summary: string;
+  clinicReply: string;
+  audioDuration: string;
   avatar: { kind: "letter"; letter: string; bg: string } | { kind: "reply" };
 }
 
-const ROWS_JESSICA: InboxRowData[] = [
+type InboxFilter = "open" | "resolved" | "ai-resolved";
+
+const INBOX_FILTER_OPTIONS: Array<{ id: InboxFilter; label: string }> = [
+  { id: "open", label: "Open" },
+  { id: "resolved", label: "Resolved" },
+  { id: "ai-resolved", label: "AI resolved" },
+];
+
+const CONVERSATIONS: InboxRowData[] = [
   {
+    id: "sam",
+    name: "Sam Smith",
+    subject: "Cancel an existing patient",
+    time: "2 min",
+    status: "open",
+    phone: "510-443-7333",
+    summaryDuration: "24:12s",
+    summary:
+      "Sam Smith wants to cancel his upcoming appointment with Dr. Brown tomorrow at 4 PM.",
+    clinicReply:
+      "Spring Clinic: We've received your cancellation request and our team will follow up if anything else is needed.",
+    audioDuration: "00:42",
+    avatar: { kind: "letter", letter: "S", bg: "#8e4ec6" },
+  },
+  {
+    id: "jessica",
     name: "Jessica Davis",
     subject: "Medication refill",
     time: "5min",
+    status: "open",
+    phone: "417-262-1738",
+    summaryDuration: "18:36s",
+    summary:
+      "Jessica Davis requested a refill for Lisinopril 10mg and confirmed Walgreens on Main Street as her pharmacy.",
+    clinicReply:
+      "Spring Clinic: We've sent your refill request to your provider and will text you when it is ready.",
+    audioDuration: "00:34",
     avatar: { kind: "reply" },
   },
   {
+    id: "karen-reschedule",
     name: "Karen Taylor",
-    subject: "Reschedule appointment",
+    subject: "Move annual visit to Friday",
     time: "10min",
+    status: "open",
+    phone: "925-304-1182",
+    summaryDuration: "12:08s",
+    summary:
+      "Karen Taylor needs to move her annual visit to a Friday afternoon and prefers the same provider.",
+    clinicReply:
+      "Spring Clinic: We noted your Friday afternoon preference and will send available times shortly.",
     avatar: { kind: "reply" },
+    audioDuration: "00:31",
   },
   {
-    name: "Karen Taylor",
-    subject: "Physiotherapy session",
+    id: "avery-labs",
+    name: "Avery Chen",
+    subject: "Lab result question",
     time: "15min",
-    avatar: { kind: "reply" },
+    status: "open",
+    phone: "510-882-0199",
+    summaryDuration: "09:54s",
+    summary:
+      "Avery Chen saw a flagged cholesterol result in the portal and wants to know if a follow-up is needed.",
+    clinicReply:
+      "Spring Clinic: We sent your question to the care team. They will review your lab result and respond.",
+    audioDuration: "00:29",
+    avatar: { kind: "letter", letter: "A", bg: "#3578e8" },
   },
   {
+    id: "clara-nutrition",
     name: "Clara White",
-    subject: "Nutrition consultation",
+    subject: "Nutrition referral status",
     time: "1h",
+    status: "open",
+    phone: "650-442-7811",
+    summaryDuration: "11:40s",
+    summary:
+      "Clara White is checking whether her nutrition referral was sent to the specialist office.",
+    clinicReply:
+      "Spring Clinic: We will confirm the referral status and text you once the specialist office has it.",
+    audioDuration: "00:27",
     avatar: { kind: "letter", letter: "C", bg: "#338ccd" },
   },
   {
+    id: "michael-new-patient",
     name: "Michael Smith",
     subject: "New patient appointment",
     time: "22min",
+    status: "open",
+    phone: "408-903-2201",
+    summaryDuration: "14:22s",
+    summary:
+      "Michael Smith is a new patient looking for the earliest primary care appointment next week.",
+    clinicReply:
+      "Spring Clinic: We collected your scheduling preferences and will text the first available openings.",
+    audioDuration: "00:38",
     avatar: { kind: "letter", letter: "M", bg: "#53b9ab" },
   },
   {
+    id: "liam-advice",
     name: "Liam Rodriguez",
-    subject: "Quick advice call",
+    subject: "Nurse advice request",
     time: "20min",
+    status: "open",
+    phone: "415-772-4408",
+    summaryDuration: "10:35s",
+    summary:
+      "Liam Rodriguez has mild dizziness after starting a new medication and wants to know whether to continue it.",
+    clinicReply:
+      "Spring Clinic: A nurse will review your symptoms and call back if a medication change is needed.",
+    audioDuration: "00:33",
     avatar: { kind: "reply" },
   },
   {
+    id: "tommy-medication",
     name: "Tommy Vance",
-    subject: "Medication review",
+    subject: "Medication side effects",
     time: "1min",
+    status: "open",
+    phone: "925-601-4470",
+    summaryDuration: "08:48s",
+    summary:
+      "Tommy Vance reports nausea after increasing his Metformin dose and asks whether that is expected.",
+    clinicReply:
+      "Spring Clinic: We documented the side effect and sent it to your provider for review.",
+    audioDuration: "00:26",
     avatar: { kind: "reply" },
   },
   {
+    id: "sophie-billing",
     name: "Sophie Daniels",
-    subject: "Billing questions",
+    subject: "Billing question",
     time: "1h",
+    status: "open",
+    phone: "510-915-3340",
+    summaryDuration: "07:20s",
+    summary:
+      "Sophie Daniels received a balance after her preventive visit and wants clarification on the charge.",
+    clinicReply:
+      "Spring Clinic: We routed your question to billing and they will follow up with an explanation.",
+    audioDuration: "00:24",
     avatar: { kind: "reply" },
   },
   {
+    id: "george-mental-health",
     name: "George Hall",
-    subject: "Mental health evaluation",
+    subject: "Anxiety medication follow-up",
     time: "1h",
+    status: "open",
+    phone: "415-628-1093",
+    summaryDuration: "15:05s",
+    summary:
+      "George Hall wants a follow-up after two weeks on his anxiety medication and prefers telehealth.",
+    clinicReply:
+      "Spring Clinic: We captured your telehealth preference and will text available follow-up times.",
+    audioDuration: "00:40",
     avatar: { kind: "letter", letter: "G", bg: "#6743d2" },
   },
   {
-    name: "Clara White",
-    subject: "Nutrition consultation",
+    id: "nina-insurance",
+    name: "Nina Patel",
+    subject: "Insurance verification",
     time: "1h",
+    status: "open",
+    phone: "408-773-9022",
+    summaryDuration: "06:50s",
+    summary:
+      "Nina Patel changed insurance plans and wants to confirm coverage before her dermatology visit.",
+    clinicReply:
+      "Spring Clinic: We saved your new insurance details and will confirm coverage before the appointment.",
+    audioDuration: "00:22",
     avatar: { kind: "reply" },
   },
   {
-    name: "Tommy Vance",
-    subject: "Medication review",
-    time: "1min",
+    id: "owen-imaging",
+    name: "Owen Brooks",
+    subject: "Imaging referral status",
+    time: "2h",
+    status: "open",
+    phone: "650-337-8901",
+    summaryDuration: "09:18s",
+    summary:
+      "Owen Brooks is checking whether his shoulder MRI order was sent to Bay Imaging.",
+    clinicReply:
+      "Spring Clinic: We will verify the imaging order and text you once Bay Imaging has received it.",
+    audioDuration: "00:28",
+    avatar: { kind: "letter", letter: "O", bg: "#8e4ec6" },
+  },
+  {
+    id: "priya-vaccine",
+    name: "Priya Shah",
+    subject: "Vaccine appointment",
+    time: "2h",
+    status: "open",
+    phone: "510-229-4420",
+    summaryDuration: "05:55s",
+    summary:
+      "Priya Shah wants to schedule a flu shot for herself and her son on the same afternoon.",
+    clinicReply:
+      "Spring Clinic: We noted the family scheduling request and will send matching flu-shot times.",
+    audioDuration: "00:20",
+    avatar: { kind: "reply" },
+  },
+  {
+    id: "elena-rx",
+    name: "Elena Ramirez",
+    subject: "Prescription sent",
+    time: "Yesterday",
+    status: "resolved",
+    phone: "415-901-3320",
+    summaryDuration: "06:12s",
+    summary:
+      "Elena Ramirez asked whether her antibiotic prescription had been sent to the pharmacy.",
+    clinicReply:
+      "Spring Clinic: Your prescription was sent to the pharmacy on file yesterday afternoon.",
+    audioDuration: "00:21",
+    avatar: { kind: "reply" },
+  },
+  {
+    id: "victor-records",
+    name: "Victor Lee",
+    subject: "Records request completed",
+    time: "Yesterday",
+    status: "resolved",
+    phone: "650-472-9088",
+    summaryDuration: "07:36s",
+    summary:
+      "Victor Lee requested a copy of his recent visit notes for an outside specialist.",
+    clinicReply:
+      "Spring Clinic: Your records request has been completed and sent through the patient portal.",
+    audioDuration: "00:25",
+    avatar: { kind: "letter", letter: "V", bg: "#338ccd" },
+  },
+  {
+    id: "maya-form",
+    name: "Maya Johnson",
+    subject: "School form ready",
+    time: "Mon",
+    status: "resolved",
+    phone: "510-700-1288",
+    summaryDuration: "08:05s",
+    summary:
+      "Maya Johnson called about a school physical form that needed provider signature.",
+    clinicReply:
+      "Spring Clinic: Your school form is complete and available in the portal.",
+    audioDuration: "00:23",
+    avatar: { kind: "letter", letter: "M", bg: "#53b9ab" },
+  },
+  {
+    id: "peter-copay",
+    name: "Peter Kim",
+    subject: "Copay receipt sent",
+    time: "Mon",
+    status: "resolved",
+    phone: "408-200-8711",
+    summaryDuration: "04:44s",
+    summary:
+      "Peter Kim needed a receipt for his specialist visit copay.",
+    clinicReply:
+      "Spring Clinic: We sent the copay receipt to your email on file.",
+    audioDuration: "00:18",
+    avatar: { kind: "reply" },
+  },
+  {
+    id: "iris-directions",
+    name: "Iris Martin",
+    subject: "Clinic hours answered",
+    time: "Today",
+    status: "ai-resolved",
+    phone: "925-882-1401",
+    summaryDuration: "03:35s",
+    summary:
+      "Iris Martin asked for Saturday lab hours and parking instructions.",
+    clinicReply:
+      "Spring Clinic: The AI answered with Saturday lab hours and parking details.",
+    audioDuration: "00:16",
+    avatar: { kind: "reply" },
+  },
+  {
+    id: "noah-address",
+    name: "Noah Wilson",
+    subject: "Address update captured",
+    time: "Today",
+    status: "ai-resolved",
+    phone: "415-310-2881",
+    summaryDuration: "04:10s",
+    summary:
+      "Noah Wilson called to update his mailing address before a statement was sent.",
+    clinicReply:
+      "Spring Clinic: The AI updated the mailing-address note for staff review.",
+    audioDuration: "00:17",
+    avatar: { kind: "letter", letter: "N", bg: "#6743d2" },
+  },
+  {
+    id: "amara-portal",
+    name: "Amara Singh",
+    subject: "Portal reset instructions",
+    time: "Today",
+    status: "ai-resolved",
+    phone: "650-882-9910",
+    summaryDuration: "03:58s",
+    summary:
+      "Amara Singh needed instructions to reset her patient portal password.",
+    clinicReply:
+      "Spring Clinic: The AI sent portal reset instructions by text.",
+    audioDuration: "00:15",
     avatar: { kind: "reply" },
   },
 ];
 
-const SAM_ROW: InboxRowData = {
-  name: "Sam Smith",
-  subject: "Cancel an existing patient",
-  time: "2 min",
-  avatar: { kind: "letter", letter: "S", bg: "#8e4ec6" },
-};
+const SAM_ROW = CONVERSATIONS[0]!;
+const JESSICA_ROW = CONVERSATIONS[1]!;
+
+function getConversationRecencyRank(time: string) {
+  const normalized = time.trim().toLowerCase();
+  const minutes = normalized.match(/^(\d+)\s*min$/);
+  if (minutes) return Number(minutes[1]);
+
+  const hours = normalized.match(/^(\d+)\s*h$/);
+  if (hours) return Number(hours[1]) * 60;
+
+  if (normalized === "today") return 24 * 60;
+  if (normalized === "yesterday") return 48 * 60;
+
+  const weekdayOrder: Record<string, number> = {
+    mon: 3,
+    tue: 4,
+    wed: 5,
+    thu: 6,
+    fri: 7,
+    sat: 8,
+    sun: 9,
+  };
+  return (weekdayOrder[normalized.slice(0, 3)] ?? 99) * 24 * 60;
+}
+
+function sortConversationsByRecency(conversations: InboxRowData[]) {
+  const originalIndex = new Map(
+    conversations.map((conversation, index) => [conversation.id, index]),
+  );
+
+  return [...conversations].sort((a, b) => {
+    const recencyDelta =
+      getConversationRecencyRank(a.time) - getConversationRecencyRank(b.time);
+    if (recencyDelta !== 0) return recencyDelta;
+    return (originalIndex.get(a.id) ?? 0) - (originalIndex.get(b.id) ?? 0);
+  });
+}
 
 /* When the cancellation has been resolved (confirmation SMS sent), Sam's row
    greys out — same treatment as the other "already replied" rows. */
@@ -294,88 +780,182 @@ function InboxList({
   samSelected,
   samUnread,
   samResolved,
+  onSamClick,
+  conversations,
+  selectedConversationId,
+  unreadConversationIds,
+  inboxFilter,
+  onInboxFilterChange,
+  onConversationSelect,
+  isAnimated,
+  collapsed,
 }: {
   samArrived: boolean;
   samSelected: boolean;
   samUnread: boolean;
   samResolved: boolean;
+  onSamClick?: () => void;
+  conversations: InboxRowData[];
+  selectedConversationId: string;
+  unreadConversationIds: Set<string>;
+  inboxFilter: InboxFilter;
+  onInboxFilterChange: (filter: InboxFilter) => void;
+  onConversationSelect?: (conversationId: string) => void;
+  isAnimated: boolean;
+  collapsed: boolean;
 }) {
-  /* The base list is always rendered (Jessica + 11 others). Sam's row sits in
-     a grid-template-rows wrapper above; when `samArrived` flips to true, that
-     wrapper interpolates from 0fr → 1fr (modern browsers), pushing the rest
-     of the list down — Sam appears as a brand-new conversation arriving. He
-     starts unread (blue dot, not active) and only becomes selected (grey
-     background, dot gone) after the cursor clicks his row. */
-  const baseRows = ROWS_JESSICA.slice(0, 12);
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const filterCounts = INBOX_FILTER_OPTIONS.reduce(
+    (counts, option) => {
+      counts[option.id] = conversations.filter(
+        (conversation) => conversation.status === option.id,
+      ).length;
+      return counts;
+    },
+    {} as Record<InboxFilter, number>,
+  );
+  const activeFilterOption =
+    INBOX_FILTER_OPTIONS.find((option) => option.id === inboxFilter) ??
+    INBOX_FILTER_OPTIONS[0];
+  const visibleRows = conversations.filter(
+    (conversation) => conversation.status === inboxFilter,
+  );
+  const showAnimatedSamSlot = isAnimated && inboxFilter === "open";
+  const baseRows = showAnimatedSamSlot
+    ? visibleRows.filter((conversation) => conversation.id !== "sam")
+    : visibleRows;
+  const activeRowId = isAnimated
+    ? samSelected
+      ? "sam"
+      : "jessica"
+    : selectedConversationId;
+
   return (
-    <div className="h-full w-0 min-[1072px]:w-[280px] shrink-0 overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none">
+    <div
+      data-inbox-panel
+      data-collapsed={collapsed ? "true" : "false"}
+      className={`h-full shrink-0 overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none ${
+        collapsed ? "w-0" : "w-0 min-[1072px]:w-[280px]"
+      }`}
+    >
     <div className="flex flex-col h-full w-[280px] shrink-0 font-sms">
       {/* Header: Front desk inbox */}
-      <div className="flex items-center justify-between h-[52px] pl-[16px] pr-[12px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
-        <div className="flex items-center gap-[8px]">
+      <div className="flex items-center justify-between h-[52px] pl-[8px] pr-[12px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
+        <div
+          data-text-button
+          className="group flex h-[32px] items-center gap-[8px] rounded-[10px] px-[8px] transition-colors hover:bg-[#F7F7F7]"
+        >
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             Front desk inbox
           </p>
-          <CaretDownIcon size={12} className="text-[#A1A09D]" />
+          <CaretDownIcon
+            size={18}
+            className="text-[#B2B2B2] group-hover:text-[#21201D]"
+          />
         </div>
-        <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
-          <SlidersHorizontalIcon size={18} className="text-[#A1A09D]" />
-        </span>
+        <IconButton>
+          <SlidersHorizontalIcon size={18} />
+        </IconButton>
       </div>
-      {/* "13 Open" filter row — count bumps with Sam's arrival */}
-      <div className="flex items-center justify-between h-[60px] pl-[8px] pr-[12px] py-[12px]">
-        <div className="flex items-center gap-[4px] p-[8px]">
+      {/* Filter row */}
+      <div className="relative flex h-[44px] items-center justify-between pl-[8px] pr-[12px] py-[6px]">
+        <button
+          type="button"
+          data-open-selector
+          aria-expanded={filterMenuOpen}
+          data-text-button
+          className="group flex h-[32px] items-center gap-[4px] rounded-[10px] px-[8px] transition-colors hover:bg-[#F7F7F7]"
+          onClick={() => setFilterMenuOpen((open) => !open)}
+        >
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
-            {samArrived ? "13 Open" : "12 Open"}
+            {filterCounts[inboxFilter]} {activeFilterOption.label}
           </p>
-          <CaretDownIcon size={12} className="text-[#A1A09D]" />
-        </div>
-        <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
-          <ArrowDownIcon size={16} className="text-[#A1A09D]" />
-        </span>
+          <CaretDownIcon
+            size={18}
+            className="text-[#B2B2B2] group-hover:text-[#21201D]"
+          />
+        </button>
+        {filterMenuOpen && (
+          <div
+            data-open-selector-menu
+            className="absolute left-[8px] top-[44px] z-50 min-w-[188px] overflow-hidden rounded-md border border-[rgba(76,76,59,0.16)] bg-white p-1 text-[14px] shadow-md"
+          >
+            {INBOX_FILTER_OPTIONS.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                className={`flex h-[32px] w-full items-center justify-between rounded-sm px-2 text-left text-[14px] leading-[18px] outline-none transition-colors hover:bg-[#F7F7F7] ${
+                  option.id === inboxFilter
+                    ? "text-[#21201d]"
+                    : "text-[#82807C]"
+                }`}
+                onClick={() => {
+                  onInboxFilterChange(option.id);
+                  setFilterMenuOpen(false);
+                }}
+              >
+                <span>{option.label}</span>
+                <span className="text-[#A1A09D]">
+                  {filterCounts[option.id]}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+        <IconButton>
+          <ArrowDownIcon size={20} />
+        </IconButton>
       </div>
       {/* List */}
       <div className="flex-1 flex flex-col px-[8px] overflow-hidden">
         {/* Sam's slot — collapsed (0fr) by default; expands to 1fr when he
             arrives. The inner row also fades + slides down ~12px so the entry
             reads like a new item dropping in. */}
-        <div
-          aria-hidden={!samArrived}
-          className="grid"
-          style={{
-            gridTemplateRows: samArrived ? "1fr" : "0fr",
-            transition:
-              "grid-template-rows 300ms cubic-bezier(0.215, 0.61, 0.355, 1)",
-          }}
-        >
-          <div className="overflow-hidden">
-            <div
-              className="pb-[4px]"
-              style={{
-                opacity: samArrived ? 1 : 0,
-                transform: samArrived
-                  ? "translateY(0)"
-                  : "translateY(-12px)",
-                transition:
-                  "opacity 175ms ease-out 60ms, transform 250ms cubic-bezier(0.215, 0.61, 0.355, 1)",
-              }}
-            >
-              <InboxRow
-                row={samResolved ? SAM_ROW_RESOLVED : SAM_ROW}
-                active={samSelected && !samResolved}
-                unread={samUnread}
-              />
+        {showAnimatedSamSlot && (
+          <div
+            aria-hidden={!samArrived}
+            className="grid"
+            style={{
+              gridTemplateRows: samArrived ? "1fr" : "0fr",
+              transition:
+                "grid-template-rows 300ms cubic-bezier(0.215, 0.61, 0.355, 1)",
+            }}
+          >
+            <div className="overflow-hidden">
+              <div
+                className="pb-[4px]"
+                style={{
+                  opacity: samArrived ? 1 : 0,
+                  transform: samArrived
+                    ? "translateY(0)"
+                    : "translateY(-12px)",
+                  transition:
+                    "opacity 175ms ease-out 60ms, transform 250ms cubic-bezier(0.215, 0.61, 0.355, 1)",
+                }}
+              >
+                <InboxRow
+                  row={samResolved ? SAM_ROW_RESOLVED : SAM_ROW}
+                  active={samSelected && !samResolved}
+                  unread={samUnread}
+                  onClick={onSamClick}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        {/* Existing conversations — Jessica stays active until the cursor
-            clicks Sam (samSelected flips true). */}
+        )}
+        {/* Existing conversations */}
         <div className="flex flex-col gap-[4px]">
-          {baseRows.map((row, i) => (
+          {baseRows.map((row) => (
             <InboxRow
-              key={`${row.name}-${i}`}
+              key={row.id}
               row={row}
-              active={!samSelected && i === 0}
+              active={row.id === activeRowId}
+              unread={!isAnimated && unreadConversationIds.has(row.id)}
+              onClick={
+                onConversationSelect
+                  ? () => onConversationSelect(row.id)
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -389,18 +969,18 @@ function InboxRow({
   row,
   active,
   unread = false,
+  onClick,
 }: {
   row: InboxRowData;
   active: boolean;
   unread?: boolean;
+  onClick?: () => void;
 }) {
-  return (
-    <div
-      data-row-name={row.name}
-      className={`flex gap-[12px] items-start px-[8px] py-[12px] rounded-[12px] ${
-        active ? "bg-[#f9f9f8]" : ""
-      }`}
-    >
+  const className = `flex w-full gap-[12px] items-start px-[8px] py-[12px] rounded-[12px] text-left transition-colors hover:bg-[#F7F7F7] ${
+    onClick ? "cursor-pointer" : ""
+  } ${active ? "bg-[#F7F7F7]" : ""}`;
+  const content = (
+    <>
       {row.avatar.kind === "letter" ? (
         <div
           className="size-[20px] shrink-0 rounded-full flex items-center justify-center"
@@ -411,8 +991,8 @@ function InboxRow({
           </span>
         </div>
       ) : (
-        <div className="size-[20px] shrink-0 rounded-full bg-[#f0f0ee] flex items-center justify-center">
-          <ArrowBendUpLeftIcon size={14} className="text-[#A1A09D]" />
+        <div className="size-[20px] shrink-0 rounded-full bg-[#EBEBEB] flex items-center justify-center">
+          <ArrowBendUpLeftIcon size={12} className="text-[#21201D]" />
         </div>
       )}
       <div className="flex-1 min-w-0 flex flex-col gap-[4px]">
@@ -444,6 +1024,25 @@ function InboxRow({
           {row.subject}
         </p>
       </div>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        data-row-name={row.name}
+        className={`${className} appearance-none border-0 font-[inherit]`}
+        onClick={onClick}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div data-row-name={row.name} className={className}>
+      {content}
     </div>
   );
 }
@@ -451,35 +1050,142 @@ function InboxRow({
 /* ─── Canvas (middle column) ─────────────────────────────────────────────── */
 
 interface CanvasProps {
-  patient: "jessica" | "sam";
+  conversation: InboxRowData;
   showCancellationCard: boolean;
   cancelButtonState: "default" | "loading" | "done";
   showConfirmedMessage: boolean;
+  animateMessages: boolean;
+  onCancelAppointment?: () => void;
+  isInboxCollapsed: boolean;
+  onToggleInbox: () => void;
+  isConversationUnread: boolean;
+  onToggleConversationReadState: () => void;
+  onDeleteConversation: () => void;
 }
 
 function Canvas({
-  patient,
+  conversation,
   showCancellationCard,
   cancelButtonState,
   showConfirmedMessage,
+  animateMessages,
+  onCancelAppointment,
+  isInboxCollapsed,
+  onToggleInbox,
+  isConversationUnread,
+  onToggleConversationReadState,
+  onDeleteConversation,
 }: CanvasProps) {
-  const isSam = patient === "sam";
+  const isSam = conversation.id === "sam";
+  const isJessica = conversation.id === "jessica";
+  const firstName = conversation.name.split(" ")[0] ?? conversation.name;
+  const [draft, setDraft] = useState("");
+  const [sentMessagesByConversation, setSentMessagesByConversation] = useState<
+    Record<string, string[]>
+  >({});
+  const [actionMenuOpen, setActionMenuOpen] = useState(false);
+  const sentMessages = sentMessagesByConversation[conversation.id] ?? [];
+  const canSendMessage = draft.trim().length > 0;
+  const useFigmaChatLayout = isSam && !animateMessages;
+  const acknowledgementText = useFigmaChatLayout
+    ? "[Clinic Name]: We've received your request and our team will follow up within 1-2 business days.\n\nReply STOP to opt out."
+    : conversation.clinicReply;
+  const summaryTimestamp = useFigmaChatLayout ? "24 min" : conversation.time;
+  const acknowledgementTimestamp = useFigmaChatLayout
+    ? "12 min"
+    : isSam
+      ? "1 min"
+      : "12 min";
+  const patientAvatar =
+    conversation.avatar.kind === "letter"
+      ? conversation.avatar
+      : {
+          kind: "letter" as const,
+          letter: conversation.name.charAt(0),
+          bg: isSam ? "#8e4ec6" : "#5b5bd6",
+        };
+  const handleSendMessage = () => {
+    const message = draft.trim();
+    if (!message) return;
+    setSentMessagesByConversation((current) => ({
+      ...current,
+      [conversation.id]: [...(current[conversation.id] ?? []), message],
+    }));
+    setDraft("");
+  };
+  const handleComposerKeyDown = (
+    event: KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+  const handleToggleReadState = () => {
+    onToggleConversationReadState();
+    setActionMenuOpen(false);
+  };
+  const handleDeleteConversation = () => {
+    onDeleteConversation();
+    setActionMenuOpen(false);
+  };
   return (
-    <div className="flex-1 min-w-0 h-full flex flex-col border-l-0 min-[1072px]:border-l-[0.5px] border-r-0 min-[680px]:border-r-[0.5px] border-[rgba(76,76,59,0.2)] overflow-hidden font-sms">
+    <div
+      data-chat-canvas
+      className="flex-1 min-w-0 h-full flex flex-col border-l-0 min-[1072px]:border-l-[0.5px] border-r-0 min-[1200px]:border-r-[0.5px] border-[rgba(76,76,59,0.2)] overflow-hidden font-sms"
+    >
       {/* Canvas header: avatar + name + Resolve button */}
-      <div className="flex items-center gap-[12px] h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
-        <div className="flex items-center gap-[8px] flex-1 min-w-0">
-          <span className="size-[28px] flex items-center justify-center rounded-[8px] p-[3px]">
-            <PanelLeftIcon size={18} className="text-[#A1A09D]" />
-          </span>
+      <div className="flex items-center gap-[12px] h-[52px] pl-[10px] pr-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
+        <div className="flex items-center gap-[4px] flex-1 min-w-0">
+          <IconButton
+            ariaLabel={
+              isInboxCollapsed ? "Open inbox panel" : "Collapse inbox panel"
+            }
+            onClick={onToggleInbox}
+            pressed={isInboxCollapsed}
+            dataAttribute="collapse"
+          >
+            <PanelLeftIcon closed={isInboxCollapsed} size={20} />
+          </IconButton>
           <p className="text-[14px] leading-[18px] font-medium text-[#21201d] truncate">
-            {isSam ? "Sam Smith" : "Jessica Davis"}
+            {conversation.name}
           </p>
         </div>
-        <span className="size-[36px] flex items-center justify-center rounded-[8px] p-[8px]">
-          <MoreIcon size={18} className="text-[#A1A09D]" />
-        </span>
-        <div className="h-[32px] min-w-[68px] -ml-[8px] flex items-center justify-center pl-[14px] pr-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[8px]">
+        <div className="relative">
+          <IconButton
+            ariaLabel="Conversation actions"
+            onClick={() => setActionMenuOpen((open) => !open)}
+            pressed={actionMenuOpen}
+            dataAttribute="conversation-actions"
+          >
+            <MoreIcon size={20} />
+          </IconButton>
+          {actionMenuOpen && (
+            <div
+              data-conversation-actions-menu
+              className="absolute right-0 top-[36px] z-50 min-w-[204px] overflow-hidden rounded-md border border-[rgba(76,76,59,0.16)] bg-white p-1 text-[14px] shadow-md"
+            >
+              <button
+                type="button"
+                className="flex h-[32px] w-full items-center rounded-sm px-2 text-left text-[14px] leading-[18px] text-[#21201d] outline-none transition-colors hover:bg-[#F7F7F7]"
+                onClick={handleToggleReadState}
+              >
+                {isConversationUnread ? "Mark as read" : "Mark as unread"}
+              </button>
+              <button
+                type="button"
+                className="flex h-[32px] w-full items-center rounded-sm px-2 text-left text-[14px] leading-[18px] text-[#21201d] outline-none transition-colors hover:bg-[#F7F7F7]"
+                onClick={handleDeleteConversation}
+              >
+                Delete conversation
+              </button>
+            </div>
+          )}
+        </div>
+        <div
+          data-text-button
+          className="h-[32px] min-w-[68px] -ml-[8px] flex items-center justify-center pl-[14px] pr-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[10px]"
+        >
           <span className="text-[14px] leading-[18px] font-medium text-[#21201d]">
             Resolve
           </span>
@@ -489,69 +1195,112 @@ function Canvas({
       {/* Message thread */}
       <div className="flex-1 overflow-hidden flex flex-col gap-[16px] py-[16px]">
         {/* First patient message — request summary */}
-        <div className="px-[16px] flex gap-[8px] items-start justify-end">
+        <div className={`${CHAT_ROW_CLASS} justify-start`}>
           <div
-            className="size-[20px] shrink-0 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: isSam ? "#8e4ec6" : "#5b5bd6" }}
+            className="col-start-1 size-[20px] shrink-0 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: patientAvatar.bg }}
           >
             <span className="text-[12px] leading-[16px] font-semibold text-[#fdfdfc]">
-              {isSam ? "S" : "J"}
+              {patientAvatar.letter}
             </span>
           </div>
-          <div className="flex-1 min-w-0 flex flex-col gap-[8px]">
-            <div className="bg-[#f9f9f8] rounded-[12px] p-[12px] flex flex-col gap-[16px]">
+          <div className={CHAT_INCOMING_CONTENT_CLASS}>
+            <div
+              className={`bg-[#F7F7F7] rounded-[12px] px-[14px] py-[10px] flex w-fit ${CHAT_BUBBLE_WIDTH_CLASS} flex-col gap-[8px]`}
+            >
               <div className="flex flex-col gap-[4px]">
                 <p className="flex gap-[4px] text-[14px] leading-[20px] font-medium text-[#21201d]">
-                  <span>
-                    {isSam
-                      ? "Cancel an existing patient"
-                      : "Refill for blood pressure medication"}
-                  </span>
-                  <span>(24:12s)</span>
+                  <span>{conversation.subject}</span>
+                  <span>({conversation.summaryDuration})</span>
                 </p>
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
-                  {isSam ? "510-443-7333" : "417-262-1738"}
+                  {conversation.phone}
                 </p>
               </div>
               <div className="h-px bg-[rgba(76,76,59,0.15)]" />
               <p className="text-[14px] leading-[20px] text-[#21201d]">
-                {isSam
-                  ? "Sam Smith wants to cancel his upcoming appointment with Dr. Brown tomorrow at 4 PM."
-                  : "Jessica Davis requested a refill for Lisinopril 10mg taken once daily. The AI confirmed the request was sent to her provider for processing within 24-48 hours."}
+                {conversation.summary}
               </p>
             </div>
             <p className="text-[12px] leading-[16px] text-[#A1A09D] text-left">
-              {isSam ? "2 min" : "24 min"}
+              {summaryTimestamp}
             </p>
           </div>
-          <span className="size-[24px] opacity-0 shrink-0" />
         </div>
 
         {/* Second message — clinic acknowledgment (lavender). Single avatar
-            on the RIGHT. Hidden 24px spacer on the left mirrors the grey
-            bubble's avatar gutter, so both bubbles render the same width. */}
-        <div className="px-[16px] flex gap-[8px] items-start justify-end">
-          <span className="size-[20px] opacity-0 shrink-0" aria-hidden />
-          <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-            <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-full">
-              <p className="text-[14px] leading-[20px] text-[#21201d]">
-                Spring Clinic: We&apos;ve received your request and our team
-                will follow up within 1-2 business days.
+            on the RIGHT; the bubble aligns to the right edge of the column. */}
+        <div className={`${CHAT_ROW_CLASS} justify-end`}>
+          <div className={CHAT_OUTGOING_CONTENT_CLASS}>
+            <div
+              className={`bg-[#f6f5ff] rounded-[12px] px-[12px] py-[10px] w-fit ${CHAT_BUBBLE_WIDTH_CLASS}`}
+            >
+              <p className="whitespace-pre-line text-[14px] leading-[20px] text-[#21201d]">
+                {acknowledgementText}
               </p>
             </div>
             <p className="text-[12px] leading-[16px] text-[#A1A09D] text-right">
-              {isSam ? "1 min" : "12 min"}
+              {acknowledgementTimestamp}
             </p>
           </div>
-          <ClinicAvatar />
+          <div className="col-start-3 justify-self-end">
+            <ClinicAvatar />
+          </div>
         </div>
 
+        {useFigmaChatLayout && (
+          <>
+            <div className={`${CHAT_ROW_CLASS} justify-end`}>
+              <div className={CHAT_OUTGOING_CONTENT_CLASS}>
+                <div
+                  className={`bg-[#f6f5ff] rounded-[12px] px-[12px] py-[10px] w-fit ${CHAT_BUBBLE_WIDTH_CLASS}`}
+                >
+                  <p className="text-[14px] leading-[20px] text-[#21201d]">
+                    Hi Sam, do you want to schedule your appointment at another
+                    time?
+                  </p>
+                </div>
+                <p className="text-[12px] leading-[16px] text-[#A1A09D] text-right">
+                  12 min
+                </p>
+              </div>
+              <div className="col-start-3 justify-self-end">
+                <ClinicAvatar />
+              </div>
+            </div>
+
+            <div className={`${CHAT_ROW_CLASS} justify-start`}>
+              <div
+                className="col-start-1 size-[20px] shrink-0 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: patientAvatar.bg }}
+              >
+                <span className="text-[12px] leading-[16px] font-semibold text-[#fdfdfc]">
+                  {patientAvatar.letter}
+                </span>
+              </div>
+              <div className={CHAT_INCOMING_CONTENT_CLASS}>
+                <div
+                  className={`bg-[#F7F7F7] rounded-[12px] px-[14px] py-[10px] w-fit ${CHAT_BUBBLE_WIDTH_CLASS}`}
+                >
+                  <p className="text-[14px] leading-[20px] text-[#21201d]">
+                    I&apos;m good for now.
+                  </p>
+                </div>
+                <p className="text-[12px] leading-[16px] text-[#A1A09D] text-left">
+                  1 min
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Third message — Jessica's pharmacy update (only in state 1) */}
-        {!isSam && (
-          <div className="px-[16px] flex gap-[8px] items-start justify-end">
-            <span className="size-[20px] opacity-0 shrink-0" aria-hidden />
-            <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-              <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-fit max-w-full">
+        {isJessica && (
+          <div className={`${CHAT_ROW_CLASS} justify-end`}>
+            <div className={CHAT_OUTGOING_CONTENT_CLASS}>
+              <div
+                className={`bg-[#f6f5ff] rounded-[12px] px-[12px] py-[10px] w-fit ${CHAT_BUBBLE_WIDTH_CLASS}`}
+              >
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
                   Hi Jessica, we have sent your refill request to your pharmacy
                 </p>
@@ -560,7 +1309,9 @@ function Canvas({
                 12 min
               </p>
             </div>
-            <ClinicAvatar />
+            <div className="col-start-3 justify-self-end">
+              <ClinicAvatar />
+            </div>
           </div>
         )}
 
@@ -568,10 +1319,15 @@ function Canvas({
             after the post-cancel pause). Timestamp reads "just now" because
             the SMS literally just went out. */}
         {showConfirmedMessage && (
-          <div className="px-[16px] flex gap-[8px] items-start justify-end animate-clinic-message-send-in">
-            <span className="size-[20px] opacity-0 shrink-0" aria-hidden />
-            <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-end">
-              <div className="bg-[#f6f5ff] rounded-[12px] p-[12px] w-full">
+          <div
+            className={`${CHAT_ROW_CLASS} justify-end ${
+              animateMessages ? "animate-clinic-message-send-in" : ""
+            }`}
+          >
+            <div className={CHAT_OUTGOING_CONTENT_CLASS}>
+              <div
+                className={`bg-[#f6f5ff] rounded-[12px] px-[12px] py-[10px] w-fit ${CHAT_BUBBLE_WIDTH_CLASS}`}
+              >
                 <p className="text-[14px] leading-[20px] text-[#21201d]">
                   Hi Sam — your appointment with Dr. Alex Brown tomorrow at
                   4 PM is cancelled. Want to reschedule? Reply with a date/time
@@ -582,9 +1338,35 @@ function Canvas({
                 Just now
               </p>
             </div>
-            <ClinicAvatar />
+            <div className="col-start-3 justify-self-end">
+              <ClinicAvatar />
+            </div>
           </div>
         )}
+
+        {sentMessages.map((message, index) => (
+          <div
+            key={`${conversation.id}-sent-${index}`}
+            data-sent-message
+            className={`${CHAT_ROW_CLASS} justify-end`}
+          >
+            <div className={CHAT_OUTGOING_CONTENT_CLASS}>
+              <div
+                className={`bg-[#f6f5ff] rounded-[12px] px-[12px] py-[10px] w-fit ${CHAT_BUBBLE_WIDTH_CLASS}`}
+              >
+                <p className="text-[14px] leading-[20px] text-[#21201d]">
+                  {message}
+                </p>
+              </div>
+              <p className="text-[12px] leading-[16px] text-[#A1A09D] text-right">
+                Just now
+              </p>
+            </div>
+            <div className="col-start-3 justify-self-end">
+              <ClinicAvatar />
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Appointment cancellation card (only when Sam is selected). Sits 24px
@@ -592,28 +1374,54 @@ function Canvas({
           stays horizontally centered with the composer below it). No bottom
           border / radius — the composer's top edge meets the card directly. */}
       {showCancellationCard && (
-        <div className="px-[28px]">
-          <CancellationCard state={cancelButtonState} />
+        <div className={CHAT_ACTION_COLUMN_CLASS}>
+          <CancellationCard
+            state={cancelButtonState}
+            onCancel={onCancelAppointment}
+          />
         </div>
       )}
 
       {/* Reply composer */}
-      <div className="px-[16px] pb-[16px]">
-        <div className="bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[12px] h-[120px] flex flex-col justify-between p-[12px] shadow-[0_4px_14px_0_rgba(0,0,0,0.03)]">
-          <p className="text-[14px] leading-[18px] text-[#b2b2b2]">
-            Reply to {isSam ? "Sam" : "Jessica"}…
-          </p>
-          <div className="flex items-center justify-between">
-            <span className="h-[28px] -ml-[4px] flex items-center justify-center px-[8px] py-[2px] gap-[4px] rounded-[8px]">
-              <ChatsCircleIcon size={14} className="text-[#21201d]" />
+      <div className={`${CHAT_COLUMN_CLASS} pb-[16px]`}>
+        <div
+          data-reply-composer
+          className="bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] rounded-[16px] h-[120px] flex flex-col justify-between px-[8px] pb-[6px] pt-[8px] shadow-[0_4px_14px_0_rgba(0,0,0,0.03)]"
+        >
+          <textarea
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={handleComposerKeyDown}
+            placeholder={`Reply to ${firstName}...`}
+            aria-label={`Reply to ${conversation.name}`}
+            data-reply-input
+            data-reply-placeholder
+            className="min-h-0 flex-1 resize-none bg-transparent pl-[8px] pt-[8px] text-[14px] leading-[18px] text-[#21201d] outline-none placeholder:text-[#b2b2b2]"
+          />
+          <div className="flex -translate-y-[4px] items-center justify-between">
+            <span
+              data-text-button
+              className="group ml-0 flex h-[32px] translate-y-[2px] items-center justify-center gap-[4px] rounded-[10px] px-[8px] transition-colors hover:bg-[#F7F7F7]"
+            >
+              <ChatsCircleIcon
+                size={20}
+                className="text-[#B2B2B2] group-hover:text-[#21201D]"
+              />
               <span className="text-[14px] leading-[18px] text-[#21201d]">
                 SMS
               </span>
-              <CaretDownIcon size={12} className="text-[#A1A09D]" />
+              <CaretDownIcon
+                size={18}
+                className="text-[#B2B2B2] group-hover:text-[#21201D]"
+              />
             </span>
-            <span className="size-[28px] flex items-center justify-center bg-[#f1f0ef] text-[#bcbbb7] rounded-[8px] p-[6px]">
-              <ArrowUpIcon size={14} />
-            </span>
+            <PrimaryIconButton
+              ariaLabel="Send message"
+              onClick={handleSendMessage}
+              disabled={!canSendMessage}
+            >
+              <ArrowUpIcon size={20} />
+            </PrimaryIconButton>
           </div>
         </div>
       </div>
@@ -623,8 +1431,10 @@ function Canvas({
 
 function CancellationCard({
   state,
+  onCancel,
 }: {
   state: "default" | "loading" | "done";
+  onCancel?: () => void;
 }) {
   const collapsed = state === "done";
   return (
@@ -632,7 +1442,7 @@ function CancellationCard({
       className="border-x-[0.5px] border-t-[0.5px] border-[rgba(76,76,59,0.2)] rounded-t-[12px] overflow-hidden"
       data-cancellation-card
     >
-      <div className="bg-[#f9f9f8] flex items-center justify-between h-[44px] px-[12px]">
+      <div className="bg-[#F7F7F7] flex items-center justify-between h-[44px] px-[12px]">
         <div className="flex items-center gap-[8px] min-w-0">
           {collapsed && (
             <CheckCircleIcon size={16} className="text-[#2a6b2c] shrink-0" />
@@ -647,7 +1457,7 @@ function CancellationCard({
             down → pointing right, signalling the card is now an inert summary
             row rather than something to expand. */}
         <CaretDownIcon
-          size={12}
+          size={18}
           className={`text-[#A1A09D] shrink-0 transition-transform duration-200 ease-out ${
             collapsed ? "-rotate-90" : ""
           }`}
@@ -688,8 +1498,11 @@ function CancellationCard({
             </div>
             <button
               type="button"
+              data-text-button
               data-cancel-button
-              className="h-[32px] min-w-[68px] flex items-center justify-center px-[12px] rounded-[8px] bg-[#32302c]"
+              onClick={onCancel}
+              disabled={collapsed}
+              className="h-[32px] min-w-[68px] flex items-center justify-center px-[12px] rounded-[10px] bg-[#32302c]"
             >
               {state === "loading" ? (
                 <Spinner size={16} />
@@ -714,9 +1527,9 @@ function ClinicAvatar() {
     <img
       src="/work/clinic-ai-assistant/Logo.svg"
       alt=""
-      width={24}
-      height={24}
-      className="size-[24px] shrink-0 rounded-full"
+      width={20}
+      height={20}
+      className="size-[20px] shrink-0 rounded-full"
     />
   );
 }
@@ -800,36 +1613,57 @@ const TRANSCRIPT_JESSICA: TranscriptLine[] = [
   },
 ];
 
-function RightPanel({ patient }: { patient: "jessica" | "sam" }) {
-  const transcript =
-    patient === "sam" ? TRANSCRIPT_SAM : TRANSCRIPT_JESSICA;
-  const bars = patient === "sam" ? WAVEFORM_SAM : WAVEFORM_JESSICA;
-  const duration = patient === "sam" ? DURATION_SAM : DURATION_JESSICA;
+function getTranscript(conversation: InboxRowData): TranscriptLine[] {
+  if (conversation.id === "sam") return TRANSCRIPT_SAM;
+  if (conversation.id === "jessica") return TRANSCRIPT_JESSICA;
+  return [
+    {
+      speaker: "ai",
+      text: "Thank you for calling Spring Clinic. I'm Freed, an automated assistant. How can I help you today?",
+    },
+    {
+      speaker: "patient",
+      text: conversation.summary,
+    },
+    {
+      speaker: "ai",
+      text: conversation.clinicReply,
+    },
+  ];
+}
+
+function RightPanel({ conversation }: { conversation: InboxRowData }) {
+  const transcript = getTranscript(conversation);
+  const bars = conversation.id === "sam" ? WAVEFORM_SAM : WAVEFORM_JESSICA;
+  const duration = conversation.audioDuration;
   return (
-    <div className="h-full w-0 min-[680px]:w-[360px] shrink-0 overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none">
-    <div className="flex flex-col h-full w-[360px] shrink-0 font-sms">
+    <div className="h-full w-0 min-[1200px]:w-[400px] shrink-0 overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none">
+    <div className="flex flex-col h-full w-[400px] shrink-0 font-sms">
       {/* Header */}
-      <div className="flex items-center justify-between h-[52px] px-[16px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
+      <div className="flex items-center justify-between h-[52px] px-[14px] py-[12px] border-b-[0.5px] border-[rgba(76,76,59,0.2)]">
         <p className="text-[14px] leading-[18px] font-medium text-[#21201d]">
           Detail
         </p>
-        <span className="size-[28px] flex items-center justify-center rounded-[8px] p-[4px]">
-          <XIcon size={16} className="text-[#A1A09D]" />
-        </span>
+        <IconButton>
+          <XIcon size={20} />
+        </IconButton>
       </div>
 
       {/* Body */}
       <div className="flex-1 overflow-hidden flex flex-col gap-[16px] px-[16px] py-[16px]">
         {/* Segmented toggle */}
-        <div className="bg-[#f9f9f8] rounded-[10px] p-px flex">
-          <button className="flex-1 h-[32px] flex items-center justify-center rounded-[8px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] text-[14px] leading-[18px] font-medium text-[#21201d]">
+        <div className="bg-[#F7F7F7] rounded-[10px] p-px flex">
+          <button
+            data-text-button
+            className="flex-1 h-[32px] flex items-center justify-center rounded-[10px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)] text-[14px] leading-[18px] font-medium text-[#21201d]"
+          >
             Transcript
           </button>
-          <span className="flex-1 h-[32px] flex items-center justify-center text-[14px] leading-[18px] font-medium text-[#A1A09D]">
+          <span
+            data-text-button
+            className="flex-1 h-[32px] flex items-center justify-center rounded-[10px] text-[14px] leading-[18px] font-medium text-[#A1A09D]"
+          >
             Patient
-          </span>
-          <span className="flex-1 h-[32px] flex items-center justify-center text-[14px] leading-[18px] font-medium text-[#A1A09D]">
-            History
           </span>
         </div>
 
@@ -838,11 +1672,14 @@ function RightPanel({ patient }: { patient: "jessica" | "sam" }) {
 
         {/* Player controls row */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-[4px]">
-            <span className="size-[28px] flex items-center justify-center rounded-[8px] bg-white border-[0.5px] border-[rgba(76,76,59,0.2)]">
-              <PlayIcon size={12} className="text-[#21201d]" />
-            </span>
-            <span className="h-[28px] flex items-center px-[8px] text-[14px] leading-[18px] text-[#21201d]">
+          <div className="flex items-center gap-0">
+            <IconButton className="size-[28px]! border-[0.5px] border-[rgba(76,76,59,0.2)] bg-white text-[#21201D]">
+              <PlayIcon size={24} className="text-[#21201D]" />
+            </IconButton>
+            <span
+              data-text-button
+              className="h-[32px] flex items-center rounded-[10px] px-[8px] text-[14px] leading-[18px] text-[#21201d]"
+            >
               1.0x
             </span>
           </div>
@@ -894,9 +1731,6 @@ const WAVEFORM_JESSICA = [
   2, 2, 2, 2, 11, 2, 13, 2, 4, 4, 4, 4, 11, 3, 2, 7, 3, 2, 2, 2, 2, 11,
   5, 2, 2, 7, 2, 2, 9, 13, 23, 11, 5, 13, 17,
 ];
-
-const DURATION_SAM = "00:42";
-const DURATION_JESSICA = "00:34";
 
 function Waveform({ bars }: { bars: number[] }) {
   return (
@@ -988,119 +1822,205 @@ interface IconProps {
   className?: string;
 }
 
-function CaretDownIcon({ size = 12, className = "" }: IconProps) {
+const FIGMA_ICON_DIR = "/work/clinic-ai-assistant/icons";
+
+function IconStage({
+  size,
+  className = "",
+  children,
+}: {
+  size: number;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="currentColor"
+    <span
       aria-hidden
-      className={className}
+      className={`relative block shrink-0 overflow-hidden ${className}`}
+      style={{ width: size, height: size }}
     >
-      <path d="M3.4 5.6 L4.4 4.6 L8 8.2 L11.6 4.6 L12.6 5.6 L8 10.2 Z" />
-    </svg>
+      {children}
+    </span>
   );
 }
 
-function ArrowDownIcon({ size = 18, className = "" }: IconProps) {
+function IconButton({
+  children,
+  className = "",
+  ariaLabel,
+  onClick,
+  pressed,
+  dataAttribute,
+}: {
+  children: ReactNode;
+  className?: string;
+  ariaLabel?: string;
+  onClick?: () => void;
+  pressed?: boolean;
+  dataAttribute?: "collapse" | "conversation-actions";
+}) {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        aria-label={ariaLabel}
+        aria-pressed={pressed}
+        data-icon-button
+        data-collapse-button={dataAttribute === "collapse" ? "" : undefined}
+        data-conversation-actions-button={
+          dataAttribute === "conversation-actions" ? "" : undefined
+        }
+        onClick={onClick}
+        className={`${ICON_BUTTON_CLASS} ${className}`}
+      >
+        {children}
+      </button>
+    );
+  }
+
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 18 18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
+    <span
+      data-icon-button
+      className={`${ICON_BUTTON_CLASS} ${className}`}
     >
-      <line x1="9" y1="3" x2="9" y2="15" />
-      <polyline points="14 10 9 15 4 10" />
-    </svg>
+      {children}
+    </span>
   );
 }
 
-function ArrowUpIcon({ size = 14, className = "" }: IconProps) {
+function PrimaryIconButton({
+  children,
+  ariaLabel,
+  onClick,
+  disabled = false,
+}: {
+  children: ReactNode;
+  ariaLabel?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 18 18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      onClick={onClick}
+      disabled={disabled}
+      data-icon-button
+      data-send-icon-button
+      className={`group mr-[2px] flex size-[32px] shrink-0 items-center justify-center rounded-[10px] transition-colors ${
+        disabled
+          ? "cursor-default bg-[#F7F7F7] text-[#bcbbb7] hover:bg-[#F7F7F7] hover:text-[#bcbbb7]"
+          : "bg-[#32302c] text-white hover:bg-[#32302c] hover:text-white"
+      }`}
     >
-      <line x1="9" y1="3" x2="9" y2="15" />
-      <polyline points="4 8 9 3 14 8" />
-    </svg>
+      {children}
+    </button>
   );
 }
 
-function SlidersHorizontalIcon({ size = 18, className = "" }: IconProps) {
+function IconAsset({
+  name,
+  className = "absolute inset-0 block size-full max-w-none",
+}: {
+  name: string;
+  className?: string;
+}) {
+  const url = `${FIGMA_ICON_DIR}/${name}`;
+  const maskStyle: CSSProperties = {
+    WebkitMask: `url("${url}") center / 100% 100% no-repeat`,
+    mask: `url("${url}") center / 100% 100% no-repeat`,
+    backgroundColor: "currentColor",
+  };
+
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 18 18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <span
       aria-hidden
-      className={className}
-    >
-      <line x1="3" y1="6" x2="9.5" y2="6" />
-      <line x1="11.5" y1="6" x2="15" y2="6" />
-      <circle cx="10.5" cy="6" r="1.6" />
-      <line x1="3" y1="12" x2="6" y2="12" />
-      <line x1="8" y1="12" x2="15" y2="12" />
-      <circle cx="7" cy="12" r="1.6" />
-    </svg>
+      className={`${className} pointer-events-none select-none`}
+      style={maskStyle}
+    />
   );
 }
 
-function MoreIcon({ size = 18, className = "" }: IconProps) {
+function CaretDownIcon({ size = 18, className = "" }: IconProps) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden
-      className={className}
+    <IconStage
+      size={size}
+      className={`-translate-x-[2px] -translate-y-[1px] ${className}`}
     >
-      <circle cx="4" cy="10" r="1.6" />
-      <circle cx="10" cy="10" r="1.6" />
-      <circle cx="16" cy="10" r="1.6" />
-    </svg>
+      <span
+        className="absolute"
+        style={{ inset: "41.25% 25% 31.25% 27.5%" }}
+      >
+        <IconAsset name="chevron-down.svg" />
+      </span>
+    </IconStage>
   );
 }
 
-function PanelLeftIcon({ size = 18, className = "" }: IconProps) {
+function ArrowDownIcon({ size = 20, className = "" }: IconProps) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 18 18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
-    >
-      <rect x="2.4" y="3" width="13.2" height="12" rx="1.6" />
-      <line x1="6.6" y1="3" x2="6.6" y2="15" />
-    </svg>
+    <IconStage size={size} className={className}>
+      <span className="absolute" style={{ inset: "17.5% 26.25%" }}>
+        <IconAsset name="arrow-down.svg" />
+      </span>
+    </IconStage>
+  );
+}
+
+function ArrowUpIcon({ size = 20, className = "" }: IconProps) {
+  return (
+    <IconStage size={size} className={className}>
+      <span className="absolute" style={{ inset: "17.5% 26.25%" }}>
+        <IconAsset name="arrow-up-vector.svg" />
+      </span>
+    </IconStage>
+  );
+}
+
+function SlidersHorizontalIcon({ size = 20, className = "" }: IconProps) {
+  return (
+    <IconStage size={size} className={className}>
+      <span
+        className="absolute"
+        style={{ inset: "19.99% 15% 49.99% 15%" }}
+      >
+        <IconAsset name="adjust-top.svg" />
+      </span>
+      <span className="absolute" style={{ inset: "49.99% 15% 20% 15%" }}>
+        <IconAsset name="adjust-bottom.svg" />
+      </span>
+    </IconStage>
+  );
+}
+
+function MoreIcon({ size = 20, className = "" }: IconProps) {
+  return (
+    <IconStage size={size} className={className}>
+      <span className="absolute" style={{ inset: "42.5% 70% 42.5% 15%" }}>
+        <IconAsset name="menu-dot-1.svg" />
+      </span>
+      <span className="absolute" style={{ inset: "42.5%" }}>
+        <IconAsset name="menu-dot-2.svg" />
+      </span>
+      <span
+        className="absolute"
+        style={{ inset: "42.5% 15% 42.5% 69.99%" }}
+      >
+        <IconAsset name="menu-dot-3.svg" />
+      </span>
+    </IconStage>
+  );
+}
+
+function PanelLeftIcon({
+  size = 20,
+  className = "",
+  closed = false,
+}: IconProps & { closed?: boolean }) {
+  return (
+    <IconStage size={size} className={className}>
+      <IconAsset name={closed ? "dock-side-closed.svg" : "dock-side.svg"} />
+    </IconStage>
   );
 }
 
@@ -1148,76 +2068,51 @@ function CheckCircleIcon({ size = 16, className = "" }: IconProps) {
 
 function ArrowBendUpLeftIcon({ size = 14, className = "" }: IconProps) {
   return (
-    <svg
+    <img
+      src={`${FIGMA_ICON_DIR}/reply-arrow.svg`}
+      alt=""
       width={size}
       height={size}
-      viewBox="0 0 14 14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
-    >
-      <polyline points="5 3 2 6 5 9" />
-      <path d="M2 6 H8 a4 4 0 0 1 4 4 V11" />
-    </svg>
+      draggable={false}
+      className={`block shrink-0 select-none ${className}`}
+    />
   );
 }
 
-function ChatsCircleIcon({ size = 16, className = "" }: IconProps) {
+function ChatsCircleIcon({ size = 20, className = "" }: IconProps) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
-    >
-      <path d="M2.03 8.6 C1.52 7.67 1.37 6.57 1.61 5.52 C1.84 4.46 2.45 3.53 3.32 2.89 C4.19 2.24 5.25 1.93 6.33 2.01 C7.41 2.09 8.42 2.56 9.18 3.32 C9.95 4.08 10.41 5.09 10.49 6.17 C10.57 7.25 10.26 8.32 9.61 9.18 C8.97 10.05 8.04 10.66 6.98 10.89 C5.93 11.13 4.83 10.98 3.88 10.47 L2.14 10.98 C2.05 11 1.96 11.01 1.88 10.98 C1.79 10.96 1.71 10.92 1.65 10.85 C1.58 10.79 1.54 10.71 1.52 10.62 C1.49 10.54 1.5 10.44 1.52 10.36 L2.03 8.6 Z" />
-      <path d="M10.25 5 C11 5.05 11.74 5.28 12.38 5.68 C13.02 6.08 13.55 6.63 13.92 7.29 C14.3 7.95 14.49 8.7 14.5 9.45 C14.51 10.21 14.33 10.96 13.97 11.62 L14.48 13.36 C14.5 13.45 14.51 13.54 14.48 13.62 C14.46 13.71 14.42 13.79 14.35 13.85 C14.29 13.92 14.21 13.96 14.12 13.99 C14.04 14.01 13.94 14 13.86 13.98 L12.13 13.47 C11.55 13.77 10.92 13.95 10.27 13.99 C9.62 14.03 8.98 13.93 8.37 13.7 C7.77 13.46 7.22 13.1 6.77 12.63 C6.31 12.16 5.97 11.61 5.75 10.99" />
-    </svg>
+    <IconStage size={size} className={className}>
+      <span
+        className="absolute"
+        style={{ inset: "36.25% 35% 56.25% 30%" }}
+      >
+        <IconAsset name="chat-line-1.svg" />
+      </span>
+      <span className="absolute" style={{ inset: "47.5% 45% 45% 30%" }}>
+        <IconAsset name="chat-line-2.svg" />
+      </span>
+      <span className="absolute" style={{ inset: "20% 15% 16.25% 15%" }}>
+        <IconAsset name="chat-bubble.svg" />
+      </span>
+    </IconStage>
   );
 }
 
-function XIcon({ size = 16, className = "" }: IconProps) {
+function XIcon({ size = 20, className = "" }: IconProps) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
-    >
-      <line x1="3.5" y1="3.5" x2="12.5" y2="12.5" />
-      <line x1="12.5" y1="3.5" x2="3.5" y2="12.5" />
-    </svg>
+    <IconStage size={size} className={className}>
+      <span className="absolute" style={{ inset: "23.75%" }}>
+        <IconAsset name="x.svg" />
+      </span>
+    </IconStage>
   );
 }
 
-function PlayIcon({ size = 10, className = "" }: IconProps) {
+function PlayIcon({ size = 28, className = "" }: IconProps) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 10 10"
-      fill="currentColor"
-      aria-hidden
-      className={className}
-    >
-      <polygon points="2 1.5 2 8.5 8 5" />
-    </svg>
+    <IconStage size={size} className={className}>
+      <IconAsset name="play.svg" />
+    </IconStage>
   );
 }
 

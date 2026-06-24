@@ -64,7 +64,7 @@ export function ProjectIndex({ variant }: ProjectIndexProps) {
     return (
       <div
         ref={containerRef}
-        className="flex flex-col w-full gap-y-[4px] sm:gap-y-0"
+        className="flex flex-col w-full gap-y-[3px] sm:gap-y-0"
       >
         {projects.map((p, i) => {
           const isActive = activeRowIndex === i;
@@ -72,8 +72,8 @@ export function ProjectIndex({ variant }: ProjectIndexProps) {
             <div className="flex flex-row items-start sm:items-center gap-[4px] sm:-my-[2px]">
               {/* Below sm, title leading matches tag pill height (~19px) so
                   each row is exactly as tall as its tag column. Combined with
-                  the parent's gap-y-[4px], every consecutive tag pill has a
-                  uniform 4px gap — whether they're stacked inside the same
+                  the parent's gap-y-[3px], every consecutive tag pill has a
+                  uniform 3px gap — whether they're stacked inside the same
                   project or in adjacent ones. */}
               <div className="w-[180px] shrink-0 text-body text-ink leading-[19px]! sm:leading-[29px]!">{p.mobileTitle ?? p.title}</div>
               {(() => {

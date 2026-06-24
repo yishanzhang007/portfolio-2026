@@ -7,17 +7,17 @@ const links = [
 
 export function FooterNav() {
   return (
-    <nav className="text-muted flex gap-[15px] items-center text-[14px]">
+    <nav className="text-muted flex gap-[11px] items-center text-[16px]">
       {links.map((l, i) => (
-        <span key={l.label} className="flex items-center gap-[15px]">
+        <span key={l.label} className="flex items-center gap-[11px]">
           <a
             href={l.href}
             {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            className="hover:underline hover:[text-decoration-color:var(--color-underline)] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
+            className="hover:underline hover:decoration-[#2e2d2814] hover:[text-decoration-thickness:10%] hover:[text-underline-offset:0.2em]"
           >
             {l.label}
           </a>
-          {i < links.length - 1 && <span aria-hidden>•</span>}
+          {i < links.length - 1 && <span aria-hidden className="text-[14px] leading-none opacity-40">•</span>}
         </span>
       ))}
     </nav>

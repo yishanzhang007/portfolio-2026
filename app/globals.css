@@ -5,7 +5,7 @@
   --color-cream: #ffffff;
   --color-canvas: #ffffff;
   --color-ink: #2e2d28;
-  --color-muted: #94918B;
+  --color-muted: rgba(46, 45, 40, 0.3);
   --color-hairline: rgba(46, 45, 40, 0.15);
   --color-underline: #ebeae7;
   --color-panel: #f8f8f4;
@@ -75,8 +75,8 @@ body {
 
 :root {
   /* Single project-row scale across all viewports (xl no longer scales up). */
-  --row-stride: 26px;
-  --row-marker-offset: 11px;
+  --row-stride: 25px;
+  --row-marker-offset: 10.5px;
 
   /* Re-assert the tag font chain at runtime. Tailwind v4's @theme block
      resolves `var()` references at build-time, where next/font's

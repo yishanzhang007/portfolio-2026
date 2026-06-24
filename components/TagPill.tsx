@@ -8,7 +8,7 @@ interface TagPillProps {
 export function TagPill({ role, dimmed }: TagPillProps) {
   return (
     <div
-      className={`flex items-center justify-center rounded-[4px] border border-hairline border-[0.5px] px-[5px] pt-[2px] pb-[2px] font-tag text-tag uppercase text-muted shrink-0 transition-layout ${
+      className={`flex items-center justify-center rounded-[6px] border border-[#2e2d2814] border-[0.5px] px-[4px] py-[2px] font-tag text-tag uppercase text-muted shrink-0 transition-layout ${
         dimmed ? "opacity-5" : ""
       }`}
     >
