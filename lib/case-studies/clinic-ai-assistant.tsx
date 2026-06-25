@@ -285,9 +285,14 @@ export function ClinicAIAssistant() {
 
       <SectionDivider />
 
-      <CaseStudySection label="Tuning the voice agent" labelClassName="text-[16px]">
+      <CaseStudySection
+        label="Tuning the voice agent"
+        subtitle="Balancing latency, warmth, and reliability until the agent felt present."
+        labelClassName="text-[16px]"
+        subtitleClassName="mt-[16px] text-ink"
+      >
         {/* #1 — Picking the model */}
-        <div className="flex flex-col gap-[16px]">
+        <div className="flex flex-col gap-[16px] pt-[48px]">
           <p className="text-body font-medium">
             <span className="text-muted">#1 - </span>
             <span>Picking the model</span>

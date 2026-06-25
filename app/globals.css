@@ -169,6 +169,67 @@ body {
   line-height: 15px;
 }
 
+/* Home responsive layout switch. Keep both layouts mounted so resizing
+   across md can crossfade instead of snapping between display states. */
+.home-layout-shell {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--color-cream);
+}
+
+.home-layout-panel {
+  position: absolute;
+  inset: 0;
+  transition-property: opacity, transform, visibility;
+  transition-duration: 260ms, 260ms, 0s;
+  transition-timing-function:
+    cubic-bezier(0.645, 0.045, 0.355, 1),
+    cubic-bezier(0.645, 0.045, 0.355, 1),
+    linear;
+  transition-delay: 0s, 0s, 260ms;
+}
+
+.home-mobile-layout {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.home-desktop-layout {
+  opacity: 0;
+  transform: translateY(8px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (min-width: 55.5rem) {
+  .home-mobile-layout {
+    opacity: 0;
+    transform: translateY(-8px);
+    visibility: hidden;
+    pointer-events: none;
+    transition-delay: 0s, 0s, 260ms;
+  }
+
+  .home-desktop-layout {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-layout-panel {
+    transition: none;
+  }
+}
+
 /* Text underline style — medium-grey hairline under text.
    Reusable: combine with `font-medium` for the "underline + medium" treatment.
    Named `.underline-rule` (not `.text-underline`) to avoid colliding with
@@ -507,6 +568,40 @@ body {
 }
 .case-study-shrunk .text-section-header {
   font-size: 16px;
+}
+
+.case-study-shrunk .case-study-body {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.case-study-shrunk .case-study-body .text-body,
+.case-study-shrunk .case-study-body .text-header,
+.case-study-shrunk .case-study-body .text-section-header {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.case-study-shrunk.case-study-text-16 .text-body,
+.case-study-shrunk.case-study-text-16 .text-header,
+.case-study-shrunk.case-study-text-16 .text-section-header {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Mobile case-study body copy is 14px. Scoped to the post-hero body so
+   hero artwork and embedded UI mockups keep their own sizing. */
+@media (max-width: 55.5rem) {
+  .case-study-shrunk .case-study-body,
+  .case-study-shrunk .case-study-body .text-body,
+  .case-study-shrunk .case-study-body .text-header,
+  .case-study-shrunk .case-study-body .text-section-header,
+  .case-study-shrunk.case-study-text-16 .case-study-body .text-body,
+  .case-study-shrunk.case-study-text-16 .case-study-body .text-header,
+  .case-study-shrunk.case-study-text-16 .case-study-body .text-section-header {
+    font-size: 14px;
+    line-height: 21px;
+  }
 }
 
 /* Attribute selector — the escaped-bracket class selector

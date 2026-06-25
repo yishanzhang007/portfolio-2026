@@ -5,12 +5,12 @@ import { ProjectIndex } from "@/components/ProjectIndex";
 export default function Home() {
   return (
     <PageLoad>
-    <main className="text-body">
+    <main className="home-layout-shell text-body">
       {/* Mobile layout (default, < 900px). 12px gutter on all sides at the
           narrowest viewports; bumps to 16px from the sm: breakpoint up so
           everything ≥ mobile keeps a 16px minimum gutter. Everything is
           left-aligned. */}
-      <div className="landing-mobile md:hidden bg-cream min-h-dvh w-full p-[12px] sm:p-[16px] flex flex-col">
+      <div className="home-layout-panel home-mobile-layout landing-mobile bg-cream w-full p-[12px] sm:p-[16px] flex flex-col">
         <div className="flex flex-col">
           <p className="text-header text-ink font-medium m-0 text-[14px]!">Yishan Zhang</p>
           <p className="text-muted m-0 -mt-[2px] text-[14px]">Product designer</p>
@@ -27,8 +27,8 @@ export default function Home() {
           fixed-width grid. Outer 16px gutter guarantees a 16px minimum on
           either side; the inner shrinks below 960px when the viewport is
           tight (888–991px) so content never reaches the edge. */}
-      <div className="hidden md:block bg-cream w-full min-h-screen px-[16px]">
-        <div className="relative mx-auto h-screen w-full max-w-[960px] transition-layout">
+      <div className="home-layout-panel home-desktop-layout bg-cream w-full px-[16px]">
+        <div className="relative mx-auto h-full w-full max-w-[960px] transition-layout">
           <div className="absolute left-0 top-[40px] transition-layout">
             <p className="text-header text-ink font-medium m-0 text-[16px]!">Yishan Zhang</p>
             <p className="text-muted m-0 -mt-[2px] text-[16px]">Product designer</p>

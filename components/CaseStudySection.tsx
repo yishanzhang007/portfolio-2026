@@ -10,6 +10,8 @@ interface CaseStudySectionProps {
   /** Optional muted subtitle rendered directly under the title with no
    *  vertical gap. Used for context like "Nov 2025 - present • Freed". */
   subtitle?: ReactNode;
+  /** Extra className applied to the subtitle `<p>`. Defaults to muted. */
+  subtitleClassName?: string;
   /** Suppress this section from the TOC sidebar. The id and inline
    *  title still render so anchors and the body title work. Used for
    *  the case-study-name hero section that would otherwise duplicate
@@ -36,6 +38,7 @@ export function CaseStudySection({
   subtitle,
   noToc = false,
   labelClassName = "",
+  subtitleClassName = "text-muted",
 }: CaseStudySectionProps) {
   const id = slugify(label);
   const showTitle = typeof label === "string" && label.trim().length > 0;
@@ -49,7 +52,7 @@ export function CaseStudySection({
       {showTitle && (
         <div className="mb-[24px]">
           <p className={`text-section-header ${labelClassName}`}>{label}</p>
-          {subtitle && <p className="text-muted">{subtitle}</p>}
+          {subtitle && <p className={subtitleClassName}>{subtitle}</p>}
         </div>
       )}
       <div className="flex flex-col gap-[16px]">{children}</div>

@@ -42,6 +42,12 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   return (
-    <div className="case-study-shrunk">{renderCaseStudy(slug, project)}</div>
+    <div
+      className={`case-study-shrunk ${
+        slug === "clinic-ai-assistant" ? "case-study-text-16" : ""
+      }`}
+    >
+      {renderCaseStudy(slug, project)}
+    </div>
   );
 }
