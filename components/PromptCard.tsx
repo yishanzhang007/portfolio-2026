@@ -11,7 +11,7 @@ const SOURCE = `**Don't echo, do reflect** — After the caller answers, move fo
 
 /** Inline-render a markdown line: **bold** runs and "quoted" runs get
  *  per-token color, everything else inherits text-ink. */
-function renderInline(line: string): ReactNode {
+export function renderInline(line: string): ReactNode {
   const tokens: ReactNode[] = [];
   let i = 0;
   let key = 0;
@@ -44,8 +44,9 @@ function renderInline(line: string): ReactNode {
     let next = line.length;
     const boldAt = line.indexOf("**", i);
     const quoteAt = line.indexOf('"', i);
-    if (boldAt !== -1) next = Math.min(next, boldAt);
-    if (quoteAt !== -1) next = Math.min(next, quoteAt);
+    if (boldAt !== -1 && boldAt > i) next = Math.min(next, boldAt);
+    if (quoteAt !== -1 && quoteAt > i) next = Math.min(next, quoteAt);
+    if (next === i) next = i + 1;
     tokens.push(<Fragment key={key++}>{line.slice(i, next)}</Fragment>);
     i = next;
   }
